@@ -1,0 +1,207 @@
+# 001 — Les Bases : C# et SQL
+
+> Socle théorique à maîtriser avant de commencer les projets pratiques (à partir du projet `002`).
+
+---
+
+## Partie 1 — C# : Le Langage
+
+### 1. Environnement et premier programme
+- Installation de Visual Studio / VS Code
+- Qu'est-ce que C#, .NET et le CLR
+- Structure d'un programme (`namespace`, `class`, `Main`)
+- Compilation et exécution
+
+### 2. Variables et types de données
+- Déclaration et affectation
+- Types valeur : `int`, `long`, `double`, `decimal`, `bool`, `char`
+- Type référence : `string`
+- Types date et heure : `DateTime`, `DateOnly`, `TimeSpan`
+- Génération de nombres aléatoires (`Random`)
+- Inférence de type (`var`)
+- Constantes (`const`) et `readonly`
+- Conversions et casting (`(int)`, `Convert.ToInt32`, `Parse`, `TryParse`)
+
+### 3. Opérateurs
+- Arithmétiques (`+`, `-`, `*`, `/`, `%`)
+- D'affectation (`=`, `+=`, `-=`, `*=`, `/=`)
+- D'incrémentation (`++`, `--`)
+- De comparaison (`==`, `!=`, `<`, `>`, `<=`, `>=`)
+- Logiques (`&&`, `||`, `!`)
+- Priorité des opérateurs
+
+### 4. Structures conditionnelles
+- `if`, `else if`, `else`
+- Opérateur ternaire (`? :`)
+- `switch` / `case` classique
+- `switch` expressions (C# moderne)
+
+### 5. Boucles
+- `for`
+- `foreach`
+- `while`
+- `do...while`
+- `break` et `continue`
+
+### 6. Tableaux et collections de base
+- Tableaux (`int[]`, `string[]`)
+- `List<T>` : ajout, suppression, accès, parcours
+- `Dictionary<TKey, TValue>` : clé/valeur, ajout, recherche
+- `enum` : définition et utilisation
+
+### 7. Fonctions et méthodes
+- Déclaration, paramètres et valeur de retour
+- Méthodes `void` vs méthodes avec retour
+- Paramètres optionnels et valeurs par défaut
+- Passage par valeur vs par référence (`ref`, `out`)
+- Surcharge de méthodes
+- Méthodes statiques vs d'instance
+- `params` (nombre variable d'arguments)
+
+### 8. Manipulation de chaînes
+- `Length`, `ToUpper`, `ToLower`, `Trim`
+- `Contains`, `StartsWith`, `EndsWith`
+- `Split`, `Join`, `Replace`, `Substring`
+- `IndexOf`, `Remove`, `Insert`
+- Interpolation (`$""`) et `StringBuilder`
+
+### 9. Gestion des erreurs
+- `try` / `catch` / `finally`
+- Types d'exceptions courants (`FormatException`, `NullReferenceException`, `IndexOutOfRangeException`)
+- `throw` et propagation
+- Création d'exceptions personnalisées
+
+### 10. Programmation Orientée Objet — Bases
+- Classes et objets
+- Constructeurs
+- Propriétés (`get`, `set`, `init`)
+- Encapsulation et modificateurs d'accès (`public`, `private`, `protected`, `internal`)
+- Le mot-clé `this`
+- Méthodes d'instance
+
+### 11. POO — Héritage et polymorphisme
+- Héritage (`: BaseClass`)
+- `virtual`, `override`, `base`
+- Classes `abstract` et méthodes abstraites
+- `sealed` (empêcher l'héritage)
+- Polymorphisme et transtypage (`is`, `as`)
+
+### 12. POO — Interfaces
+- Déclaration et implémentation d'interfaces
+- Implémentation multiple
+- `IComparable`, `IEquatable` (exemples concrets)
+- Quand utiliser une interface vs une classe abstraite
+
+### 13. Génériques
+- Méthodes génériques (`<T>`)
+- Classes génériques
+- Contraintes (`where T : class`, `where T : new()`, `where T : IComparable`)
+
+### 14. Delegates, lambdas et événements
+- `delegate` : déclaration et invocation
+- `Action` et `Func` (delegates prédéfinis)
+- Expressions lambda (`=>`)
+- Événements (`event`, `EventHandler`)
+
+### 15. Collections avancées
+- `Stack<T>` (pile)
+- `Queue<T>` (file)
+- `HashSet<T>` (ensemble sans doublons)
+- `SortedList<TKey, TValue>`
+- Choisir la bonne collection selon le besoin
+
+### 16. LINQ
+- Syntaxe méthode (`Where`, `Select`, `OrderBy`, `GroupBy`)
+- Syntaxe requête (`from ... where ... select`)
+- Agrégations (`Sum`, `Average`, `Count`, `Min`, `Max`)
+- `First`, `FirstOrDefault`, `Any`, `All`
+- Chaînage de requêtes
+
+### 17. Programmation asynchrone
+- Pourquoi l'asynchronisme (ne pas bloquer le thread principal)
+- `async` et `await`
+- `Task` et `Task<T>`
+- `Task.WhenAll` (parallélisme)
+
+### 18. Types modernes et Clean Code
+- `record` (types immuables)
+- `init` (propriétés en écriture seule à l'initialisation)
+- Expression `with` (copie modifiée)
+- `Nullable reference types` (`string?`)
+- `using` et libération de ressources (introduction)
+- `Stopwatch` (mesure de performance)
+- Sérialisation JSON (`System.Text.Json`)
+
+---
+
+## Partie 2 — SQL : Les Bases de Données
+
+### 19. Introduction aux bases de données relationnelles
+- Qu'est-ce qu'une base de données relationnelle
+- Tables, lignes, colonnes
+- Clés primaires et clés étrangères
+- Relations : 1-1, 1-N, N-N (tables de liaison)
+- Installation et utilisation de SQL Server / SSMS
+
+### 20. Création de tables et types de données
+- `CREATE TABLE`
+- Types de données SQL (`INT`, `VARCHAR`, `NVARCHAR`, `DATETIME`, `DECIMAL`, `BIT`)
+- Contraintes : `PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`
+- `IDENTITY` (auto-incrémentation)
+- `ALTER TABLE` (modifier une table existante)
+- `DROP TABLE`
+
+### 21. Insertion de données
+- `INSERT INTO ... VALUES`
+- Insertion de plusieurs lignes
+- Insertion depuis une autre table (`INSERT INTO ... SELECT`)
+- Valeurs par défaut et colonnes nullable
+
+### 22. Requêtes de lecture
+- `SELECT` : colonnes, alias (`AS`), `DISTINCT`
+- `WHERE` : filtres simples et combinés
+- `ORDER BY` : tri ascendant / descendant
+- `LIKE` : recherche avec motifs (`%`, `_`)
+- `IN`, `BETWEEN`, `IS NULL`
+- `TOP` / `OFFSET ... FETCH`
+
+### 23. Mise à jour et suppression
+- `UPDATE ... SET ... WHERE`
+- `DELETE FROM ... WHERE`
+- `TRUNCATE TABLE`
+- Importance du `WHERE` (éviter les suppressions massives)
+
+### 24. Jointures
+- `INNER JOIN` (intersection)
+- `LEFT JOIN` (tout à gauche + correspondances)
+- `RIGHT JOIN`
+- `CROSS JOIN` (produit cartésien)
+- Jointures sur plusieurs tables
+- Auto-jointure (table jointe à elle-même)
+
+### 25. Agrégations et groupements
+- Fonctions d'agrégation : `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
+- `GROUP BY`
+- `HAVING` (filtre après agrégation)
+- Sous-requêtes (dans `WHERE`, dans `FROM`)
+
+### 26. Procédures stockées
+- `CREATE PROCEDURE`
+- Paramètres d'entrée et de sortie
+- `EXEC` / `EXECUTE`
+- Cas d'usage (validation de commande, calculs métier)
+
+### 27. Transactions
+- `BEGIN TRANSACTION`
+- `COMMIT` et `ROLLBACK`
+- Atomicité : tout réussit ou rien ne s'applique
+- `TRY...CATCH` en SQL
+- Niveaux d'isolation (introduction)
+
+### 28. Vues et index
+- `CREATE VIEW` : requêtes pré-enregistrées
+- Cas d'usage des vues (simplifier les requêtes complexes)
+- `CREATE INDEX` : accélérer les recherches
+- Index clustered vs non-clustered
+
+---
