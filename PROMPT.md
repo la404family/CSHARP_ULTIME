@@ -27,7 +27,6 @@ NE JAMAIS CITER TES SOURCES
   2. **Syntaxe** — Comment l'écrire en C# ?
   3. **Exemple simple** — Un premier cas minimal.
   4. **Exemple avancé** — Un cas réaliste et plus complexe.
-  5. **Erreurs courantes** — Quelles sont les erreurs fréquentes des débutants ?
   6. **Bonnes pratiques** — Comment un développeur professionnel utilise cette notion ?
 
 ---
