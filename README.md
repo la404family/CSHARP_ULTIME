@@ -12,7 +12,7 @@
 [![MAUI](https://img.shields.io/badge/.NET_MAUI-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://learn.microsoft.com/fr-fr/dotnet/maui/)
 
 [![LaTeX](https://img.shields.io/badge/LaTeX-008080?style=for-the-badge&logo=latex&logoColor=white)](https://www.latex-project.org/)
-[![Projets](https://img.shields.io/badge/Projets_pratiques-100-blue?style=for-the-badge&logo=github&logoColor=white)](./PROJECT_IDEAS.md)
+[![Projets](https://img.shields.io/badge/Projets_pratiques-72-blue?style=for-the-badge&logo=github&logoColor=white)](./PROJECTS.md)
 [![Niveau](https://img.shields.io/badge/Niveau-Reconversion-orange?style=for-the-badge&logo=bookstack&logoColor=white)]()
 [![Statut](https://img.shields.io/badge/Statut-En_cours-yellow?style=for-the-badge&logo=statuspage&logoColor=white)]()
 
@@ -74,5 +74,5 @@ Le contenu théorique est rédigé en **LaTeX** sous la forme d'un livre complet
 | Fichier | Description |
 |---|---|
 | [`README.md`](./README.md) | Présentation et objectifs de la formation |
-| [`PROJECT_IDEAS.md`](./PROJECT_IDEAS.md) | Liste des 91 projets pratiques numérotés et organisés par phase |
+| [`PROJECTS.md`](./PROJECTS.md) | Liste des 72 projets pratiques organisés en 10 phases avec badges 🔵 Essentiel / 🟢 Bonus / 🔴 Fil Rouge |
 | [`PROMPT.md`](./PROMPT.md) | Instructions système pour le formateur IA |
