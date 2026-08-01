@@ -1,128 +1,138 @@
 % ==============================================================================
 % Formation C# & SQL — Module 001 : Les Bases
 % Fichier : src/P1_07_a.tex
-% Sujet   : Chapitre 7 : Fonctions et méthodes - Passage de Paramètres
+% Sujet   : Chapitre 7 : Fonctions et méthodes
 % ==============================================================================
 
 \newpage
-\section{Passage de Paramètres : \texttt{ref} et \texttt{out}}
+\section{Fonctions et Méthodes}
 \marginpar{\tiny\color{gray}P1\_07\_a.tex}
 
-En C\#, il est essentiel de comprendre comment les données voyagent entre les différentes méthodes de votre programme. Par défaut, lorsque vous transmettez une variable de type valeur (comme un \texttt{int}, un \texttt{bool} ou un \texttt{double}) en tant qu'argument à une méthode, le compilateur effectue un \textbf{passage par valeur} (souvent appelé passage par copie).
+En ingénierie logicielle, la création de méthodes (le terme C\# pour désigner les fonctions rattachées à une classe) est fondamentale pour garantir la modularité, la réutilisabilité et la lisibilité du code. Une méthode regroupe un ensemble d'instructions accomplissant une tâche algorithmique ou métier spécifique.
 
-Concrètement, cela signifie que le moteur d'exécution clone la valeur de votre variable d'origine et ne transmet que ce clone à la méthode appelée. Cette méthode va alors stocker cette copie de travail isolée dans sa propre zone de mémoire temporaire, appelée la pile d'exécution (\emph{Stack}). 
+\subsection{Déclaration, Paramètres et Valeur de Retour}
 
-Par conséquent, si la méthode altère cette donnée au cours de son exécution (en l'incrémentant ou en l'écrasant), elle ne modifie que \textbf{sa propre copie locale}. La variable d'origine, appartenant à la méthode appelante, demeure totalement intacte et protégée en mémoire.
+La signature d'une méthode définit son comportement externe : son niveau d'accès, son type de retour, son identifiant et ses paramètres d'entrée. 
+Si la méthode ne produit aucune donnée de sortie exploitable, son type de retour est déclaré comme \texttt{void}.
 
-Cependant, dans certaines architectures logicielles, ce comportement par défaut s'avère limitant. Un développeur peut avoir le besoin légitime qu'une méthode :
+\begin{lstlisting}[style=csharpstyle]
+// Méthode 'void' (aucune valeur retournée)
+public void EcrireLog(string message)
+{
+    Console.WriteLine($"[LOG] {DateTime.UtcNow} : {message}");
+}
+
+// Méthode avec retour d'une donnée typée (decimal)
+public decimal CalculerTTC(decimal montantHT, decimal tauxTVA)
+{
+    decimal montantTVA = montantHT * (tauxTVA / 100);
+    return montantHT + montantTVA;
+}
+\end{lstlisting}
+
+La clause \texttt{return} stoppe immédiatement l'exécution de la méthode et restitue la valeur à l'appelant. Le type de cette valeur doit correspondre strictement à la signature définie.
+
+\subsection{Paramètres Optionnels et Surcharge}
+
+C\# offre deux mécanismes distincts pour assouplir l'appel des méthodes :
+
+\subsubsection{Valeurs par défaut (Paramètres Optionnels)}
+Un paramètre peut se voir attribuer une valeur par défaut dans la signature. Il devient alors optionnel lors de l'appel. Les paramètres optionnels doivent obligatoirement être déclarés \textit{à la fin} de la liste des paramètres.
+
+\begin{lstlisting}[style=csharpstyle]
+public void ConfigurerConnexion(string ip, int port = 1433, int timeout = 30)
+{
+    Console.WriteLine($"Connexion à {ip}:{port} (Timeout: {timeout}s)");
+}
+
+// Appels valides :
+ConfigurerConnexion("192.168.1.10"); // port = 1433, timeout = 30
+ConfigurerConnexion("10.0.0.5", 8080); // timeout = 30
+\end{lstlisting}
+
+\subsubsection{Surcharge de Méthodes (\textit{Overloading})}
+La surcharge consiste à définir plusieurs méthodes portant \textbf{le même nom}, mais ayant une \textbf{signature différente} (nombre, type ou ordre des paramètres). Le compilateur détermine la méthode à exécuter en analysant les arguments passés.
+
+L'avantage principal de l'\textit{overloading} est de proposer une API naturelle. Au lieu d'inventer des noms comme \texttt{AfficherProfilBasique} et \texttt{AfficherProfilComplet}, on centralise l'action sous un seul verbe.
+
+\begin{lstlisting}[style=csharpstyle]
+// Version 1 : 1 paramètre (string)
+public void AfficherProfil(string pseudo)
+{
+    Console.WriteLine($"Profil basique : {pseudo}");
+}
+
+// Version 2 : 2 paramètres (string, int) -> Le nombre change
+public void AfficherProfil(string pseudo, int age)
+{
+    Console.WriteLine($"Profil complet : {pseudo}, {age} ans");
+}
+
+// Version 3 : 2 paramètres (int, string) -> L'ordre change (signature valide)
+public void AfficherProfil(int age, string pseudo)
+{
+    Console.WriteLine($"[Mode inversé] : {pseudo}");
+}
+\end{lstlisting}
+
+\subsection{Nombre Variable d'Arguments (\texttt{params})}
+
+Le mot-clé \texttt{params} permet à une méthode d'accepter un nombre indéfini d'arguments du même type, qui seront encapsulés automatiquement dans un tableau. Ce mot-clé ne peut être appliqué qu'au tout dernier paramètre de la signature.
+
+\begin{lstlisting}[style=csharpstyle]
+public decimal CalculerMoyenne(params decimal[] valeurs)
+{
+    if (valeurs.Length == 0) return 0;
+    
+    decimal somme = 0;
+    foreach (decimal val in valeurs)
+    {
+        somme += val;
+    }
+    return somme / valeurs.Length;
+}
+
+// L'appelant peut passer une liste d'arguments séparés par des virgules
+decimal moyenne = CalculerMoyenne(12.5m, 15.0m, 18.5m);
+\end{lstlisting}
+
+\subsection{Passage de Paramètres : \texttt{ref} et \texttt{out}}
+
+Par défaut, le passage d'arguments (pour les types valeur) s'effectue \textbf{par valeur} (copie isolée). Le modificateur \texttt{ref} exige un passage par référence (adresse mémoire), permettant à la méthode de muter directement la variable de l'appelant. La variable doit obligatoirement être initialisée avant l'appel.
+
+Le modificateur \texttt{out} opère de la même manière, mais son rôle est d'exporter un résultat. Il exempte l'appelant d'initialiser la variable, mais force contractuellement la méthode à lui assigner une valeur avant l'instruction de retour.
+
+\begin{lstlisting}[style=csharpstyle]
+// Exemple d'utilisation du pattern TryParse avec 'out' inline
+string fluxReseau = "1024";
+
+if (int.TryParse(fluxReseau, out int portServeur))
+{
+    Console.WriteLine($"Port alloué : {portServeur}");
+}
+\end{lstlisting}
+\textit{Note : Bien que \texttt{out} fut longtemps utilisé pour retourner de multiples valeurs, l'architecture C\# moderne préconise plutôt l'utilisation des \textbf{Tuples} pour cet usage.}
+
+\subsection{Méthodes Statiques vs d'Instance}
+
 \begin{itemize}
-    \item \textbf{Modifie directement} l'état de la variable d'origine qui lui a été confiée.
-    \item \textbf{Exporte plusieurs résultats distincts} simultanément, outrepassant ainsi la limite naturelle de l'instruction unique \texttt{return}.
+    \item \textbf{Méthodes d'instance} : Nécessitent l'instanciation préalable de la classe (la création d'un objet en mémoire). Elles peuvent manipuler l'état interne (les champs) propre à cette instance spécifique.
+    \item \textbf{Méthodes statiques (\texttt{static})} : Sont attachées au type lui-même (la classe) et non à une instance. Elles ne peuvent pas accéder aux données d'une instance. Elles sont conçues pour des opérations utilitaires pures (ex: \texttt{Math.Abs()} ou \texttt{int.TryParse()}).
 \end{itemize}
 
-C'est pour répondre à ces deux besoins spécifiques de manipulation de la mémoire que le langage C\# met à disposition les modificateurs de paramètres \textbf{\texttt{ref}} et \textbf{\texttt{out}}.
-
-\subsection{Le modificateur \texttt{ref} (Passage par référence)}
-
-\subsubsection{Introduction Théorique}
-Le mot-clé \texttt{ref} ordonne au compilateur de transmettre non pas la valeur de la variable, mais son \textbf{adresse mémoire} (un pointeur managé). La méthode accède ainsi directement à l'espace mémoire alloué par l'appelant. Une contrainte stricte s'applique : la variable cible doit obligatoirement être initialisée par l'appelant \emph{avant} d'être passée en paramètre, car la méthode appelée peut choisir de lire sa valeur initiale avant de la modifier.
-
-\subsubsection{Syntaxe et Règles}
-Le mot-clé \texttt{ref} doit être déclaré explicitement dans la signature de la méthode, ainsi qu'au moment de l'appel. Cette verbosité intentionnelle signale clairement au développeur lisant le code que la variable est susceptible de subir des mutations (effets de bord).
-
-\begin{lstlisting}[caption={Utilisation basique de ref}]
-// 1. Declaration de la methode avec le modificateur 'ref'
-void IncrementerCompteur(ref int compteur)
-{
-    compteur += 10; // Modification directe de l'adresse memoire cible
-}
-
-// 2. Initialisation prealable obligatoire
-int tentatives = 5;
-
-// 3. Appel avec le modificateur 'ref' explicite
-IncrementerCompteur(ref tentatives);
-
-Console.WriteLine(tentatives); // Affiche : 15
-\end{lstlisting}
-
-\subsubsection{Exemple d'Ingénierie : Algorithme de Permutation (Swap)}
-Le passage par référence est l'unique solution permettant d'écrire un algorithme d'échange de variables (\emph{Swap}) opérant directement sur l'état externe.
-
-\begin{lstlisting}[caption={Algorithme d'échange via passage par référence}]
-void EchangerAdresses(ref string adresseA, ref string adresseB)
-{
-    // Utilisation d'un tampon local pour la permutation
-    string tampon = adresseA;
-    adresseA = adresseB;
-    adresseB = tampon;
-}
-
-string serveurPrimaire = "192.168.1.10";
-string serveurSecondaire = "10.0.0.5";
-
-EchangerAdresses(ref serveurPrimaire, ref serveurSecondaire);
-
-Console.WriteLine($"Primaire : {serveurPrimaire} | Secondaire : {serveurSecondaire}");
-// Le routage est inverse en memoire de maniere permanente
-\end{lstlisting}
-
-\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges courants : Oubli d'initialisation}]
-    Le compilateur Roslyn émettra l'erreur stricte \texttt{CS0165 : Use of unassigned local variable} si vous tentez de passer une variable non initialisée avec \texttt{ref}. Le CLR exige une adresse mémoire contenant une donnée typée valide.
-\end{tcolorbox}
-
-\subsection{Le modificateur \texttt{out} (Paramètre de sortie)}
-
-\subsubsection{Introduction Théorique}
-Le modificateur \texttt{out} permet également le passage par référence, mais impose un contrat sémantique inversé : son but exclusif est \textbf{d'exporter des données} hors de la méthode. Contrairement à \texttt{ref}, la variable passée via \texttt{out} n'a pas besoin d'être initialisée par l'appelant. En contrepartie, le compilateur force contractuellement la méthode appelée à y assigner une valeur avant toute instruction de retour (\texttt{return} ou fin de bloc d'exécution).
-
-\subsubsection{Syntaxe et Cas d'Usage : Le Pattern Try-Parse}
-L'usage le plus incontournable du modificateur \texttt{out} réside dans les méthodes de conversion sécurisées, nommées \emph{TryParse}. Ces méthodes utilisent leur type de retour classique (\texttt{bool}) pour signaler le succès ou l'échec de l'opération, tout en injectant le résultat du calcul dans la variable \texttt{out}.
-
-\begin{lstlisting}[caption={Pattern Try-Parse avec déclaration inline}]
-string chargeUtileReseau = "1024";
-
-// C# 7+ : Declaration "inline" de la variable 'out' directement lors de l'appel
-bool conversionReussie = int.TryParse(chargeUtileReseau, out int portServeur);
-
-if (conversionReussie)
-{
-    Console.WriteLine($"Connexion etablie sur le port : {portServeur}");
-}
-else
-{
-    Console.WriteLine("Erreur de parsing : La donnee reseau est corrompue.");
-}
-\end{lstlisting}
-
-\paragraph{Analyse de l'implémentation :}
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges Courants \& Erreurs}]
 \begin{itemize}
-    \item L'appel à \texttt{int.TryParse} tente de parser la chaîne de caractères brute.
-    \item Si le contenu échoue à la conversion (ex: caractères non numériques), la méthode retourne \texttt{false} et la variable \texttt{portServeur} reçoit la valeur par défaut du type (\texttt{0}). Aucune exception n'est levée, économisant les ressources CPU.
-    \item Si le parsing réussit, la valeur convertie est affectée à l'adresse de \texttt{portServeur} et la méthode retourne \texttt{true}.
+    \item \textbf{Ambiguïté de surcharge} : Créer deux méthodes avec des signatures identiques mais des types de retour différents génère une erreur de compilation, car le type de retour ne fait pas partie de la signature permettant de résoudre la surcharge.
+    \item \textbf{Rupture du contrat \texttt{out}} : \texttt{CS0177} survient inévitablement si la méthode omet d'affecter une valeur au paramètre \texttt{out} avant de se terminer.
+    \item \textbf{Ordre des paramètres optionnels} : Tenter de définir un paramètre optionnel \textit{avant} un paramètre requis provoquera une erreur stricte du compilateur.
 \end{itemize}
-
-\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Pièges courants : Rupture du contrat out}]
-    L'erreur de compilation \texttt{CS0177 : The out parameter must be assigned to before control leaves the current method} survient inévitablement si le code de la méthode appelée omet d'affecter une valeur au paramètre \texttt{out}. Le compilateur garantit ainsi la sécurité mémoire et empêche de récupérer une valeur non allouée.
 \end{tcolorbox}
 
-\subsection{Évolution Architecturale : Tuples et Bonnes Pratiques}
-
-Bien que les paramètres \texttt{out} aient été historiquement employés pour retourner de multiples valeurs, l'architecture C\# moderne (depuis C\# 7) préconise désormais l'utilisation des \textbf{Tuples} pour des raisons de syntaxe fonctionnelle et de lisibilité. 
-
-Par conséquent, l'usage des paramètres \texttt{out} doit être strictement restreint au pattern canonique \texttt{TryParse} (ou scénarios de validation similaires). De son côté, l'emploi de \texttt{ref} doit être réservé à l'optimisation des performances de bas niveau (ex: éviter de copier des structures très lourdes en mémoire, ou manipuler des buffers d'entrées/sorties natives). 
-
-\subsection{Synthèse du Chapitre}
-
-\begin{center}
-    \textbf{Tableau : Comparaison des modificateurs de paramètres} \\[0.3cm]
-    \begin{tabular}{@{}llp{7cm}@{}}
-        \toprule
-        \textbf{Modificateur} & \textbf{Initialisation par l'appelant} & \textbf{Contrat de la méthode} \\
-        \midrule
-        Aucun (par valeur) & Obligatoire & Travaille sur une copie isolée. \\
-        \textbf{\texttt{ref}} & Obligatoire & Modifie directement l'adresse mémoire source. \\
-        \textbf{\texttt{out}} & Optionnelle (déclaration \emph{inline} permise) & Obligation absolue d'assigner une valeur avant de retourner. \\
-        \bottomrule
-    \end{tabular}
-\end{center}
+\subsection{Synthèse}
+\begin{itemize}
+    \item \textbf{\texttt{void} / Type de retour} : Définit si la méthode opère comme une action silencieuse ou comme une fonction calculant un résultat.
+    \item \textbf{Surcharge \& Paramètres optionnels} : Flexibilisent l'API de votre classe et facilitent l'appel de vos méthodes.
+    \item \textbf{\texttt{params}} : Simplifie le passage d'une liste dynamique de variables du même type.
+    \item \textbf{\texttt{ref} / \texttt{out}} : Permettent le passage par référence, utiles pour muter la variable appelante ou implémenter le pattern \texttt{TryParse}.
+    \item \textbf{\texttt{static}} : Rend la méthode globale et indépendante de tout état d'instance.
+\end{itemize}

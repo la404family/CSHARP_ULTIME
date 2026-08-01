@@ -48,22 +48,20 @@
 - `List<T>` : ajout, suppression, accès, parcours
 - `Dictionary<TKey, TValue>` : clé/valeur, ajout, recherche
 - `enum` : définition et utilisation
+- Fonctions de manipulation des structures de données
 
 ### 7. Fonctions et méthodes
 - Déclaration, paramètres et valeur de retour
 - Méthodes `void` vs méthodes avec retour
 - Paramètres optionnels et valeurs par défaut
 - Passage par valeur vs par référence (`ref`, `out`)
-- Surcharge de méthodes
+- Surcharge de fonction / méthodes
 - Méthodes statiques vs d'instance
 - `params` (nombre variable d'arguments)
 
-### 8. Manipulation de chaînes
-- `Length`, `ToUpper`, `ToLower`, `Trim`
-- `Contains`, `StartsWith`, `EndsWith`
-- `Split`, `Join`, `Replace`, `Substring`
-- `IndexOf`, `Remove`, `Insert`
-- Interpolation (`$""`) et `StringBuilder`
+### 8. Manipulation des types de base (Chaînes et Nombres)
+- Manipulation de chaînes : `Length`, `ToUpper`, `Substring`, `Split`, `Join`, Interpolation
+- Manipulation de Int et Mathématiques : `Math.Abs`, `Math.Round`, `Min`, `Max`, `Parse`
 
 ### 9. Gestion des erreurs
 - `try` / `catch` / `finally`

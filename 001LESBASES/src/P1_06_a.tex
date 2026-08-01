@@ -103,6 +103,50 @@ if (statutActuel == StatutCommande.Payee)
 \end{itemize}
 \end{tcolorbox}
 
+\subsection{Fonctions de Manipulation Avancées}
+
+Le framework .NET propose de nombreuses fonctions utilitaires pour interagir avec les collections sans réinventer la roue.
+
+\subsubsection{Utilitaires pour Tableaux et Listes}
+\begin{lstlisting}[style=csharpstyle]
+int[] nombres = { 5, 3, 1, 4, 2 };
+
+// Tri et Inversion
+Array.Sort(nombres);    // { 1, 2, 3, 4, 5 }
+Array.Reverse(nombres); // { 5, 4, 3, 2, 1 }
+
+// Recherche d'éléments
+bool contientTrois = Array.Exists(nombres, n => n == 3);
+int premierPair = Array.Find(nombres, n => n % 2 == 0); // 4
+int[] tousPairs = Array.FindAll(nombres, n => n % 2 == 0); // { 4, 2 }
+
+// Effacement et Copie
+Array.Clear(nombres, 0, nombres.Length); // Rempli de zéros
+\end{lstlisting}
+
+\subsubsection{Utilitaires pour Dictionnaires}
+\begin{lstlisting}[style=csharpstyle]
+Dictionary<string, int> inventaire = new Dictionary<string, int>
+{
+    { "Pommes", 50 },
+    { "Bananes", 20 }
+};
+
+// Vérification d'existence (O(1))
+bool aPommes = inventaire.ContainsKey("Pommes"); // true
+bool aQuantiteVingt = inventaire.ContainsValue(20); // true
+
+// Extraction sécurisée (pattern TryGetValue)
+if (inventaire.TryGetValue("Oranges", out int quantite))
+{
+    Console.WriteLine($"Oranges en stock : {quantite}");
+}
+else
+{
+    Console.WriteLine("Oranges introuvables.");
+}
+\end{lstlisting}
+
 \subsection{Synthèse}
 \begin{itemize}
     \item \textbf{Tableau (\texttt{T[]})} : Taille fixe, bas niveau, performant. Idéal pour les données immuables.

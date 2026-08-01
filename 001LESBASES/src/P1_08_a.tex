@@ -1,0 +1,158 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_08_a.tex
+% Sujet   : Chapitre 8 : Manipulation des types de base (Chaînes et Nombres)
+% ==============================================================================
+
+\newpage
+\section{Manipulation des Types de Base (Chaînes et Nombres)}
+\marginpar{\tiny\color{gray}P1\_08\_a.tex}
+
+En C\#, le type \texttt{string} (alias de la classe \texttt{System.String}) représente une séquence de caractères Unicode. Une caractéristique fondamentale à assimiler en ingénierie logicielle est l'\textbf{immutabilité} des objets \texttt{string} : une fois créée en mémoire, une chaîne de caractères ne peut plus être modifiée. Toute opération de transformation (mise en majuscules, remplacement, découpage) instancie et retourne une \textit{nouvelle} chaîne en mémoire, laissant la chaîne d'origine intacte.
+
+\subsection{Propriétés et Méthodes de Base}
+
+\begin{lstlisting}[style=csharpstyle]
+string texte = "   Connexion au serveur...   ";
+
+// Propriété Length : Obtient la longueur totale (incluant les espaces)
+int longueur = texte.Length; // 29
+
+// Trim() : Supprime les espaces blancs (espaces, tabulations, sauts de ligne) aux extrémités
+string clean = texte.Trim(); // "Connexion au serveur..."
+
+// Transformation de la casse
+string majuscule = clean.ToUpper(); // "CONNEXION AU SERVEUR..."
+string minuscule = clean.ToLower(); // "connexion au serveur..."
+\end{lstlisting}
+
+\subsection{Recherche et Vérification}
+
+Pour vérifier le contenu d'une chaîne sans nécessairement l'extraire, C\# propose des méthodes d'évaluation retournant un booléen ou un index.
+
+\begin{lstlisting}[style=csharpstyle]
+string log = "[ERROR] Timeout de la base de données";
+
+// Vérifications booléennes
+bool estErreur = log.StartsWith("[ERROR]"); // true
+bool concerneBDD = log.EndsWith("données"); // true
+bool contientTimeout = log.Contains("Timeout"); // true
+
+// Recherche d'index (retourne la position zéro-indexée, ou -1 si introuvable)
+int position = log.IndexOf("Timeout"); // 8
+\end{lstlisting}
+
+\subsection{Découpage, Concaténation et Remplacement}
+
+La manipulation de données brutes (comme des fichiers CSV ou des logs) requiert souvent d'extraire, d'isoler ou de remplacer des segments de texte.
+
+\begin{lstlisting}[style=csharpstyle]
+// Substring(startIndex, length) : Extrait un segment précis
+string identifiant = "USER_1024_ADMIN";
+string idNum = identifiant.Substring(5, 4); // Extrait "1024"
+
+// Replace(oldValue, newValue) : Remplace toutes les occurrences
+string requeteSql = "SELECT * FROM [Table]";
+string requeteSecurisee = requeteSql.Replace("[Table]", "Utilisateurs");
+
+// Split() : Divise une chaîne en tableau (ex: lecture de CSV)
+string ligneCsv = "Alice,Dupont,30,Paris";
+string[] colonnes = ligneCsv.Split(','); 
+// colonnes = ["Alice", "Dupont", "30", "Paris"]
+
+// Join() : Recompose un tableau en une chaîne avec un séparateur
+string nouvelleLigne = string.Join(";", colonnes); 
+// "Alice;Dupont;30;Paris"
+\end{lstlisting}
+
+\subsection{Insertion et Suppression}
+
+\begin{lstlisting}[style=csharpstyle]
+string chemin = "C:\\dossier\\fichier.txt";
+
+// Insert(index, valeur) : Insère une chaîne à une position précise
+string cheminBackup = chemin.Insert(18, "_backup"); 
+// "C:\dossier\fichier_backup.txt"
+
+// Remove(index, length) : Supprime une partie de la chaîne
+string nomCourt = cheminBackup.Remove(0, 11); 
+// "fichier_backup.txt"
+\end{lstlisting}
+
+\subsection{Interpolation et Optimisation (\texttt{StringBuilder})}
+
+\subsubsection{Interpolation de chaînes (\texttt{\$""})}
+L'interpolation, introduite en C\# 6, permet d'injecter directement des expressions ou variables dans une chaîne à l'aide d'accolades \texttt{\{\}}. C'est l'approche la plus lisible pour la construction de chaînes dynamiques, bien supérieure à la concaténation par l'opérateur \texttt{+}.
+
+\begin{lstlisting}[style=csharpstyle]
+string serveur = "192.168.1.10";
+int port = 443;
+// Le préfixe $ active l'interpolation
+string uri = $"https://{serveur}:{port}/api/v1/status";
+\end{lstlisting}
+
+\subsubsection{Optimisation avec \texttt{StringBuilder}}
+À cause de l'immutabilité du type \texttt{string}, une boucle qui concatène des milliers de chaînes via \texttt{+=} provoquera autant d'allocations mémoires superflues, saturant le \textit{Garbage Collector}. Dans les contextes de forte performance ou de modifications intensives, il est impératif d'utiliser la classe \texttt{StringBuilder} (namespace \texttt{System.Text}).
+
+\begin{lstlisting}[style=csharpstyle]
+using System.Text;
+
+StringBuilder sb = new StringBuilder();
+for (int i = 0; i < 10000; i++)
+{
+    // Ne recrée pas de nouvel objet à chaque tour, modifie le buffer existant
+    sb.Append($"Ligne {i} | ");
+}
+string resultatFinal = sb.ToString();
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges Courants \& Erreurs}]
+\begin{itemize}
+    \item \textbf{Immutabilité ignorée} : Écrire \texttt{texte.Trim();} seul sans récupérer le résultat (\texttt{texte = texte.Trim();}) n'aura aucun effet sur la variable \texttt{texte}.
+    \item \textbf{NullReferenceException} : Appeler \texttt{Contains} ou \texttt{ToLower} sur une variable \texttt{string} valant \texttt{null} provoquera un crash instantané. Il faut toujours vérifier la nullité avec \texttt{string.IsNullOrEmpty(texte)} ou \texttt{string.IsNullOrWhiteSpace(texte)} avant manipulation.
+    \item \textbf{Concaténation dans des boucles} : Utiliser l'opérateur \texttt{+=} sur une \texttt{string} dans une boucle de plus d'une dizaine d'itérations est considéré comme un défaut d'architecture (\textit{Code Smell}) pour les performances mémoire.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Manipulation des Nombres et Mathématiques}
+
+La classe statique \texttt{System.Math} fournit l'ensemble des opérations mathématiques fondamentales nécessaires en ingénierie logicielle. Parallèlement, les types primitifs numériques disposent de méthodes de parsing sécurisées.
+
+\begin{lstlisting}[style=csharpstyle]
+// Méthodes mathématiques de base
+int absolu = Math.Abs(-5); // 5
+int maximum = Math.Max(10, 20); // 20
+double puissance = Math.Pow(2, 3); // 8 (2 au cube)
+double arrondi = Math.Round(5.5); // 6
+
+// Limitation d'une valeur dans un intervalle (Clamp)
+int valeurRestreinte = Math.Clamp(15, 0, 10); // 10
+\end{lstlisting}
+
+\subsubsection{Conversion et Parsing}
+La conversion d'une chaîne de caractères vers un entier est une opération risquée qui doit toujours être sécurisée.
+
+\begin{lstlisting}[style=csharpstyle]
+string saisie = "42";
+
+// Parse : Lève une exception (FormatException) si la chaîne est invalide
+int nombre = int.Parse(saisie);
+
+// TryParse : Approche sécurisée (ne lève pas d'exception, retourne un booléen)
+if (int.TryParse("texte_invalide", out int resultatSecurise))
+{
+    Console.WriteLine($"Conversion réussie : {resultatSecurise}");
+}
+else
+{
+    Console.WriteLine("Échec de la conversion.");
+}
+\end{lstlisting}
+
+\subsection{Synthèse}
+\begin{itemize}
+    \item \textbf{Propriétés fondamentales} : Les objets \texttt{string} sont immuables. Chaque modification génère une nouvelle allocation mémoire.
+    \item \textbf{Évaluation} : Utiliser \texttt{StartsWith}, \texttt{Contains} et \texttt{IndexOf} pour analyser le contenu sans créer de nouvelles chaînes.
+    \item \textbf{Formatage dynamique} : Privilégier systématiquement l'interpolation (\texttt{\$""}) pour la lisibilité du code.
+    \item \textbf{Performance} : Utiliser exclusivement \texttt{StringBuilder} lors de la construction itérative de chaînes dans des boucles.
+\end{itemize}

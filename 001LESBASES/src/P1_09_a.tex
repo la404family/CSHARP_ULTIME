@@ -1,0 +1,118 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_09_a.tex
+% Sujet   : Chapitre 9 : Gestion des erreurs
+% ==============================================================================
+
+\newpage
+\section{Gestion des Erreurs et Exceptions}
+\marginpar{\tiny\color{gray}P1\_09\_a.tex}
+
+En ingénierie logicielle, un programme informatique ne s'exécute jamais dans un environnement parfait. Des anomalies externes (perte de réseau, fichier inexistant, base de données injoignable) ou internes (division par zéro, référence nulle) peuvent survenir. Le framework .NET gère ces anomalies via le concept d'\textbf{Exception}. 
+
+Une exception est un objet (héritant de la classe de base \texttt{System.Exception}) qui est "levé" (\textit{thrown}) par le runtime lorsqu'une erreur critique empêche la poursuite normale de l'exécution. Si cette exception n'est pas "capturée" (\textit{caught}) par le développeur, le programme s'arrête brutalement (\textit{Crash}).
+
+\subsection{Le Bloc \texttt{try / catch / finally}}
+
+L'interception des erreurs s'effectue via une structure de contrôle dédiée.
+
+\begin{lstlisting}[style=csharpstyle]
+try
+{
+    // 1. Zone à risque : code susceptible de déclencher une erreur
+    int diviseur = 0;
+    int resultat = 10 / diviseur; 
+    
+    // Si une erreur survient au-dessus, les lignes suivantes sont ignorées
+    Console.WriteLine("Calcul terminé.");
+}
+catch (DivideByZeroException ex)
+{
+    // 2. Interception spécifique d'une division par zéro
+    Console.WriteLine($"[CRITIQUE] Tentative de division par zéro : {ex.Message}");
+}
+catch (Exception ex)
+{
+    // 3. Interception globale (Fallback) pour toute autre erreur non prévue
+    Console.WriteLine($"[ERREUR INCONNUE] {ex.Message}");
+}
+finally
+{
+    // 4. Nettoyage : s'exécute TOUJOURS, qu'il y ait eu une erreur ou non
+    Console.WriteLine("Libération de la mémoire de calcul.");
+}
+\end{lstlisting}
+
+Il est primordial en C\# de toujours ordonner les blocs \texttt{catch} du type d'exception le plus précis (ex: \texttt{DivideByZeroException}) vers le type le plus générique (\texttt{Exception}).
+
+\subsubsection{Exceptions courantes du Framework}
+\begin{itemize}
+    \item \textbf{\texttt{NullReferenceException}} : Tentative d'accès à un membre d'un objet valant \texttt{null}.
+    \item \textbf{\texttt{IndexOutOfRangeException}} : Accès à un index de tableau inexistant.
+    \item \textbf{\texttt{FormatException}} : Échec lors du \textit{parsing} d'un type (ex: \texttt{int.Parse("ABC")}).
+\end{itemize}
+
+\subsection{Le Mot-Clé \texttt{throw} et la Propagation}
+
+Il est souvent nécessaire de déclencher volontairement une erreur lorsqu'une validation métier échoue. Le mot-clé \texttt{throw} interrompt immédiatement la méthode courante et remonte l'exception à l'appelant.
+
+\begin{lstlisting}[style=csharpstyle]
+public void TraiterPaiement(decimal montant)
+{
+    if (montant <= 0)
+    {
+        // Levée intentionnelle d'une exception
+        throw new ArgumentOutOfRangeException(nameof(montant), "Le montant doit être positif.");
+    }
+    
+    // Suite du traitement...
+}
+\end{lstlisting}
+
+\subsection{Création d'Exceptions Personnalisées}
+
+Pour modéliser des erreurs métiers spécifiques (ex: un solde insuffisant), il convient de créer ses propres classes d'exception héritant de \texttt{Exception}.
+
+\begin{lstlisting}[style=csharpstyle]
+// Définition d'une exception métier
+public class SoldeInsuffisantException : Exception
+{
+    public SoldeInsuffisantException(string message) : base(message) { }
+}
+
+// Utilisation
+if (soldeCompte < prixPanier)
+{
+    throw new SoldeInsuffisantException($"Fonds manquants. Solde: {soldeCompte}");
+}
+\end{lstlisting}
+
+\subsection{Gestion des Ressources : Le Bloc \texttt{using}}
+
+La libération des ressources dites "non-managées" (fichiers système, connexions réseaux, flux de base de données) ne doit pas dépendre du Garbage Collector. Le bloc \texttt{using} garantit que la méthode \texttt{Dispose()} de la ressource sera appelée à la fin du bloc, \textbf{même si une exception est levée} à l'intérieur.
+
+\begin{lstlisting}[style=csharpstyle]
+// Le bloc using assure la fermeture du fichier système en toutes circonstances
+using (StreamReader reader = new StreamReader("C:\\data\\config.json"))
+{
+    string contenu = reader.ReadToEnd();
+    Console.WriteLine(contenu);
+} // reader.Dispose() est appelé implicitement et automatiquement ici
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges Courants \& Anti-Patterns}]
+\begin{itemize}
+    \item \textbf{Le Catch Vide (\textit{Swallowing})} : Écrire un \texttt{catch(Exception) \{ \}} sans logguer ou traiter l'erreur masque silencieusement les bugs critiques du programme.
+    \item \textbf{Mauvaise Propagation (\texttt{throw ex;})} : Écrire \texttt{throw ex;} dans un bloc \texttt{catch} écrase la trace d'appel (\textit{Stack Trace}) d'origine. Il faut utiliser le mot-clé \texttt{throw;} seul pour propager l'erreur sans la masquer.
+    \item \textbf{Utiliser les exceptions pour le contrôle de flux} : Les exceptions coûtent extrêmement cher en temps de calcul CPU. Ne les utilisez jamais pour vérifier des conditions prévisibles (préférez \texttt{int.TryParse} plutôt qu'un \texttt{try/catch} sur \texttt{int.Parse}).
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Synthèse}
+\begin{itemize}
+    \item \textbf{\texttt{try}} : Encapsule le code susceptible d'échouer.
+    \item \textbf{\texttt{catch}} : Intercepte et traite un type spécifique d'erreur.
+    \item \textbf{\texttt{finally}} : Assure l'exécution du code de nettoyage critique.
+    \item \textbf{\texttt{throw}} : Déclenche manuellement ou propage une exception.
+    \item \textbf{\texttt{using}} : Remplace avantageusement un bloc \texttt{try/finally} pour garantir la destruction des ressources non-managées (\texttt{IDisposable}).
+\end{itemize}
