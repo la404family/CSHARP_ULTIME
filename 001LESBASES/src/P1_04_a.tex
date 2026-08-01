@@ -1,147 +1,136 @@
 % ==============================================================================
 % Formation C# & SQL — Module 001 : Les Bases
 % Fichier : src/P1_04_a.tex
-% Sujet   : Chapitre 4 : Architecture des Types de Variables et Mémoire
+% Sujet   : Chapitre 4 : Structures conditionnelles
 % ==============================================================================
 
 \newpage
-\section{Architecture des Types de Variables et Mémoire}
+\section{Structures Conditionnelles}
 \marginpar{\tiny\color{gray}P1\_04\_a.tex}
 
-En programmation C\#, chaque variable possède un \textbf{type} statique fondamental qui définit non seulement l'espace mémoire alloué, mais également la nature des opérations permises par le processeur. Comprendre la dichotomie entre les types valeur et les types référence est essentiel pour maîtriser la gestion mémoire du Common Language Runtime (CLR).
+Les structures conditionnelles, ou structures de contrôle de flux, permettent de dévier l'exécution linéaire d'un programme en fonction de l'évaluation d'expressions booléennes (vrai ou faux). Ces structures constituent le cœur de la logique décisionnelle algorithmique.
 
-\subsection{Types Valeur et Types Référence}
+\subsection{L'instruction \texttt{if} / \texttt{else}}
 
-Le CLR divise la mémoire de l'application en deux zones distinctes : la \textbf{Pile d'exécution} (\emph{Stack}) et le \textbf{Tas managé} (\emph{Managed Heap}). La classification d'un type détermine la zone d'allocation de la donnée.
+L'instruction \texttt{if} évalue une condition. Si celle-ci retourne \texttt{true}, le bloc de code associé est exécuté. Les clauses \texttt{else if} et \texttt{else} permettent de traiter des alternatives exclusives, optimisant le processus car l'évaluation s'arrête dès qu'une condition est remplie.
 
-\subsubsection{Les Types Valeur (\emph{Value Types})}
-Les types valeur stockent directement leur contenu (la donnée brute) dans la zone mémoire qui leur est allouée sur la \textbf{pile} (\emph{Stack}).
-Lorsqu'un type valeur est assigné à une nouvelle variable, le système effectue une \textbf{copie complète} de la valeur. Les deux variables opèrent alors sur des emplacements mémoire strictement indépendants.
+\begin{lstlisting}[caption={Logique décisionnelle en cascade}]
+int debitReseau = 450; // Mbps
 
-\begin{lstlisting}[caption={Comportement en mémoire des types valeur (pile)}]
-// Allocation sur la pile (Stack)
-int ageUtilisateur = 25; 
-
-// Copie bit à bit dans un nouvel emplacement mémoire
-int ageSauvegarde = ageUtilisateur; 
-
-// La modification de la copie n'a aucun effet sur l'original
-ageSauvegarde = 30; 
-
-Console.WriteLine(ageUtilisateur); // Affiche 25
-Console.WriteLine(ageSauvegarde); // Affiche 30
-\end{lstlisting}
-
-\subsubsection{Les Types Référence (\emph{Reference Types})}
-Les types référence ne contiennent pas directement la donnée. Ils stockent une \textbf{adresse mémoire} (un pointeur managé) pointant vers l'objet réel alloué dans le \textbf{Tas} (\emph{Heap}). 
-Lors de l'affectation d'un type référence à une autre variable, seule l'adresse mémoire est copiée. Les deux variables pointent alors vers la \textbf{même instance} sous-jacente.
-
-\begin{lstlisting}[caption={Comportement en mémoire des types référence (tas)}]
-// Allocation de l'objet dans le tas, et du pointeur dans la pile
-int[] notesExamen = new int[] { 10, 15, 20 };
-
-// Copie de l'adresse mémoire : les deux variables pointent vers le même objet
-int[] copieNotes = notesExamen;
-
-// La modification via la référence secondaire altère l'objet partagé
-copieNotes[0] = 5;
-
-Console.WriteLine(notesExamen[0]); // Affiche 5
-\end{lstlisting}
-
-\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Piège de l'ingénierie : L'Exception de Référence Nulle}]
-    Tenter d'accéder aux membres d'un type référence qui ne pointe vers aucune instance (état \texttt{null}) provoquera l'arrêt brutal du programme via une \texttt{NullReferenceException}. Il est impératif d'initialiser les instances ou de vérifier la nullité avant accès.
-\end{tcolorbox}
-
-\subsection{Familles de Types Primitifs}
-
-\subsubsection{Les Types Entiers (\texttt{int}, \texttt{long}, \texttt{byte})}
-Les entiers stockent des nombres sans composante fractionnaire. Le choix du type dépend de l'espace mémoire souhaité et des limites mathématiques attendues.
-
-\begin{itemize}
-    \item \textbf{\texttt{byte}} : Entier non signé de 8 bits (0 à 255). Hautement optimisé pour la manipulation de flux binaires ou le traitement de trames réseau.
-    \item \textbf{\texttt{int}} : Entier signé de 32 bits ($-2 \times 10^9$ à $2 \times 10^9$). Le type standard par défaut pour les boucles et les compteurs.
-    \item \textbf{\texttt{long}} : Entier signé de 64 bits. Indispensable pour l'architecture Big Data, les identifiants de bases de données massives ou le calcul astronomique (suffixe \texttt{L} recommandé).
-\end{itemize}
-
-\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{L'Overflow (Dépassement de Capacité)}]
-    Assigner une valeur dépassant la limite physique du type (ex: assigner 256 à un \texttt{byte}) provoque un \emph{Overflow}. Selon la configuration du compilateur, cela entraînera une \texttt{OverflowException} ou un comportement cyclique silencieux entraînant des bugs critiques dans la logique d'état.
-\end{tcolorbox}
-
-\subsubsection{Les Types Flottants (\texttt{float}, \texttt{double}, \texttt{decimal})}
-Les types à virgule flottante implémentent la norme IEEE 754 pour stocker des valeurs décimales. La précision de l'ingénierie détermine le choix du type.
-
-\begin{itemize}
-    \item \textbf{\texttt{float}} (32-bit, suffixe \texttt{f}) : Optimisé pour les calculs vectoriels, la physique 3D et le rendu GPU où la vitesse de calcul prime sur l'exactitude extrême au micron près.
-    \item \textbf{\texttt{double}} (64-bit) : Le standard C\# par défaut pour les calculs scientifiques et géométriques.
-    \item \textbf{\texttt{decimal}} (128-bit, suffixe \texttt{m}) : Implémentation en base 10. Ce type requiert plus de cycles CPU mais évite toute aberration d'arrondi binaire. Son usage est \textbf{strictement obligatoire} pour les transactions financières et monétaires.
-\end{itemize}
-
-\subsubsection{Les Types Textuels (\texttt{char} et \texttt{string})}
-\begin{itemize}
-    \item \textbf{\texttt{char}} : Type valeur représentant un unique caractère Unicode UTF-16 (encadré par des guillemets simples \texttt{'\ '}).
-    \item \textbf{\texttt{string}} : Type référence immuable représentant une séquence de caractères (encadrée par des guillemets doubles \texttt{"\ "}). Toute opération de modification (concaténation) alloue secrètement un nouvel objet en mémoire géré par le Garbage Collector.
-\end{itemize}
-
-L'ingénierie logicielle moderne favorise l'utilisation de l'\textbf{Interpolation de chaînes} (\texttt{\$"{}"}) pour des raisons de lisibilité et de maintenance, évitant ainsi les concaténations verbeuses.
-
-\begin{lstlisting}[caption={Interpolation de chaînes de caractères}]
-string adresseServeur = "192.168.1.1";
-int portReseau = 8080;
-
-// Injection directe des variables via l'interpolation (préfixe $)
-string requeteLog = $"Connexion entrante sur le serveur {adresseServeur}:{portReseau}";
-
-Console.WriteLine(requeteLog);
-\end{lstlisting}
-
-\subsection{L'État Indéfini : Les Types Nullable}
-
-Les types valeur (\texttt{int}, \texttt{bool}) ne peuvent, par définition structurelle, pas contenir \texttt{null}. Or, dans l'interaction avec des bases de données relationnelles ou des API JSON, une donnée peut légitimement être absente. 
-C\# permet d'envelopper un type valeur dans une structure autorisant le vide via l'opérateur suffixe \texttt{?}.
-
-\begin{lstlisting}[caption={Types nullable et opérateur de coalescence}]
-// L'ajout de '?' permet à un type valeur d'accepter l'état 'null'
-int? identifiantSessionFacultatif = null;
-
-// L'opérateur de coalescence nulle '??' vérifie si la variable de gauche est null.
-// Si oui, il injecte la valeur de repli située à sa droite.
-int idSessionActif = identifiantSessionFacultatif ?? 9999;
-
-Console.WriteLine($"Session de secours allouée : {idSessionActif}"); // Affiche 9999
-\end{lstlisting}
-
-\subsection{Conversions Stratégiques : Le Parsing}
-
-Il est très fréquent d'ingérer des flux textuels (\texttt{string}) nécessitant une transformation en types mathématiques exploitables. L'utilisation de \texttt{TryParse} est la norme de l'industrie pour prévenir les crashs liés aux entrées utilisateur malformées.
-
-\begin{lstlisting}[caption={Conversion sécurisée via TryParse}]
-string chargeUtileReseau = "CORROMPU_1024";
-
-// TryParse tente la conversion sans jamais lever d'exception bloquante.
-// Il retourne un booléen et injecte le résultat dans le paramètre 'out' en cas de succès.
-if (int.TryParse(chargeUtileReseau, out int octetsRecus))
+if (debitReseau >= 1000)
 {
-    Console.WriteLine($"Traitement des paquets : {octetsRecus} octets.");
+    Console.WriteLine("Connexion Fibre Optique détectée.");
+}
+else if (debitReseau >= 100)
+{
+    Console.WriteLine("Connexion Très Haut Débit (VDSL/Câble).");
+}
+else if (debitReseau >= 10)
+{
+    Console.WriteLine("Connexion ADSL standard.");
 }
 else
 {
-    Console.WriteLine("Erreur de protocole : charge utile non-numérique détectée.");
+    Console.WriteLine("Connexion à débit réduit.");
 }
 \end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Règle d'ingénierie : Blocs d'instructions (Accolades)}]
+    Bien que le langage C\# autorise l'omission des accolades \texttt{\{\}} si le bloc ne contient qu'une seule instruction, les conventions strictes (\emph{Clean Code}) exigent de toujours les inclure. Cela prévient les bugs critiques de portée (\emph{scope}) lors d'ajouts ultérieurs de code.
+\end{tcolorbox}
+
+\subsection{L'instruction \texttt{switch}}
+
+Le \texttt{switch} est utilisé pour évaluer une unique expression par rapport à une liste de modèles (\emph{patterns}) ou de constantes. Il est structurellement plus lisible qu'une longue chaîne de \texttt{if/else} lors de la comparaison d'une même variable contre de multiples valeurs.
+
+\subsubsection{Syntaxe classique}
+
+Dans sa forme traditionnelle, chaque cas (\texttt{case}) doit se terminer obligatoirement par l'instruction \texttt{break} pour empêcher le compilateur de continuer l'exécution sur le cas suivant (erreur \texttt{CS0163}).
+
+\begin{lstlisting}[caption={Routage par instruction switch}]
+int codeErreurHttp = 404;
+
+switch (codeErreurHttp)
+{
+    case 200:
+        Console.WriteLine("Succès : La requête a abouti.");
+        break;
+    case 401:
+    case 403: // Regroupement de cas (Fall-through explicite)
+        Console.WriteLine("Erreur de sécurité : Accès refusé.");
+        break;
+    case 404:
+        Console.WriteLine("Erreur de routage : Ressource introuvable.");
+        break;
+    case 500:
+        Console.WriteLine("Erreur interne du serveur.");
+        break;
+    default:
+        Console.WriteLine("Code d'état non répertorié.");
+        break; // Le break est exigé même sur le cas par défaut
+}
+\end{lstlisting}
+
+\subsubsection{Les Expressions \texttt{switch} (C\# 8.0+)}
+
+Le C\# moderne a introduit les \textbf{expressions \texttt{switch}}, qui transforment la structure de contrôle classique en une instruction retournant directement une valeur. La syntaxe remplace \texttt{case} par l'opérateur "flèche" \texttt{=>} et \texttt{default} par le rejet (\emph{discard}) \texttt{\_}.
+
+\begin{lstlisting}[caption={Affectation via expression switch moderne}]
+string protocole = "HTTPS";
+
+// Retourne directement la valeur affectée au port
+int portReseau = protocole switch
+{
+    "HTTP"  => 80,
+    "HTTPS" => 443,
+    "FTP"   => 21,
+    "SSH"   => 22,
+    _       => throw new ArgumentException("Protocole inconnu.")
+};
+
+Console.WriteLine($"Connexion établie sur le port {portReseau}");
+\end{lstlisting}
+
+\subsection{L'opérateur Ternaire Conditionnel (\texttt{?:})}
+
+L'opérateur ternaire condense une affectation conditionnelle simple sur une seule ligne de code. Il évalue une expression booléenne, puis retourne l'une des deux valeurs proposées.
+
+\textbf{Syntaxe :} \texttt{condition ? valeur\_si\_vrai : valeur\_si\_faux;}
+
+\begin{lstlisting}[caption={Optimisation par opérateur ternaire}]
+int chargeProcesseur = 85;
+
+// Syntaxe classique en 6 lignes
+string etatServeur;
+if (chargeProcesseur > 90)
+{
+    etatServeur = "CRITIQUE";
+}
+else
+{
+    etatServeur = "STABLE";
+}
+
+// Syntaxe ternaire optimisée en 1 ligne
+string etatServeurOptimise = (chargeProcesseur > 90) ? "CRITIQUE" : "STABLE";
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Anti-pattern : Les ternaires imbriqués}]
+    L'imbrication d'opérateurs ternaires (ex: \texttt{a ? b : c ? d : e}) détruit la lisibilité du code. L'ingénierie logicielle proscrit formellement cette pratique au profit d'un \texttt{if / else} standard ou d'une expression \texttt{switch}.
+\end{tcolorbox}
 
 \subsection{Synthèse du Chapitre}
 
 \begin{center}
-    \textbf{Tableau : Rétrospective de l'architecture des types} \\[0.3cm]
+    \textbf{Tableau : Rétrospective des structures de contrôle} \\[0.3cm]
     \begin{tabular}{@{}lp{10cm}@{}}
         \toprule
-        \textbf{Concept} & \textbf{Règle de l'Ingénierie} \\
+        \textbf{Structure} & \textbf{Cas d'usage architectural} \\
         \midrule
-        \textbf{Stack (Pile)} & Zone mémoire ultra-rapide hébergeant les \emph{Types Valeur}. \\
-        \textbf{Heap (Tas)} & Zone mémoire gérée par le GC hébergeant les instances des \emph{Types Référence}. \\
-        \textbf{\texttt{decimal}} & Le seul type flottant autorisé pour les opérations financières. \\
-        \textbf{\texttt{TryParse}} & Approche architecturale requise pour toute conversion d'entrée externe incertaine. \\
+        \textbf{\texttt{if / else if}} & Évaluation de conditions hétérogènes complexes (ex: plages de valeurs, combinaison de variables). \\
+        \textbf{\texttt{switch} classique} & Exécution de blocs d'instructions distincts basés sur l'état d'une variable unique. \\
+        \textbf{\texttt{switch} expression} & Affectation directe et fonctionnelle d'une variable basée sur de multiples valeurs statiques. \\
+        \textbf{Ternaire (\texttt{?:})} & Affectation binaire rapide sur une seule ligne (à condition stricte de non-imbrication). \\
         \bottomrule
     \end{tabular}
 \end{center}

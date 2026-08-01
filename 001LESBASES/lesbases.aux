@@ -69,18 +69,71 @@
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.2}Commande de Formatage CLI}{15}{subsubsection.3.7.2}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {17}Commandes dotnet format}{15}{lstlisting.17}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Synthèse des Conventions}{15}{subsection.3.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {4}Passage de Paramètres : \texttt  {ref} et \texttt  {out}}{16}{section.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Le modificateur \texttt  {ref} (Passage par référence)}{16}{subsection.4.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Introduction Théorique}{16}{subsubsection.4.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Syntaxe et Règles}{16}{subsubsection.4.1.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {18}Utilisation basique de ref}{16}{lstlisting.18}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.3}Exemple d'Ingénierie : Algorithme de Permutation (Swap)}{17}{subsubsection.4.1.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {19}Algorithme d'échange via passage par référence}{17}{lstlisting.19}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Le modificateur \texttt  {out} (Paramètre de sortie)}{17}{subsection.4.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Introduction Théorique}{17}{subsubsection.4.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Syntaxe et Cas d'Usage : Le Pattern Try-Parse}{17}{subsubsection.4.2.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {20}Pattern Try-Parse avec déclaration inline}{17}{lstlisting.20}\protected@file@percent }
-\@writefile{toc}{\contentsline {paragraph}{Analyse de l'implémentation :}{18}{section*.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Évolution Architecturale : Tuples et Bonnes Pratiques}{18}{subsection.4.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Synthèse du Chapitre}{18}{subsection.4.4}\protected@file@percent }
-\gdef \@abspage@last{19}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Architecture des Types de Variables et Mémoire}{16}{section.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Types Valeur et Types Référence}{16}{subsection.4.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.1}Les Types Valeur (\emph  {Value Types})}{16}{subsubsection.4.1.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {18}Comportement en mémoire des types valeur (pile)}{16}{lstlisting.18}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.1.2}Les Types Référence (\emph  {Reference Types})}{16}{subsubsection.4.1.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {19}Comportement en mémoire des types référence (tas)}{16}{lstlisting.19}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Familles de Types Primitifs}{17}{subsection.4.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.1}Les Types Entiers (\texttt  {int}, \texttt  {long}, \texttt  {byte})}{17}{subsubsection.4.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.2}Les Types Flottants (\texttt  {float}, \texttt  {double}, \texttt  {decimal})}{17}{subsubsection.4.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {4.2.3}Les Types Textuels (\texttt  {char} et \texttt  {string})}{17}{subsubsection.4.2.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {20}Interpolation de chaînes de caractères}{17}{lstlisting.20}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}L'État Indéfini : Les Types Nullable}{18}{subsection.4.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {21}Types nullable et opérateur de coalescence}{18}{lstlisting.21}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Conversions Stratégiques : Le Parsing}{18}{subsection.4.4}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {22}Conversion sécurisée via TryParse}{18}{lstlisting.22}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Synthèse du Chapitre}{18}{subsection.4.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {5}Les Opérateurs et Expressions}{20}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Opérateurs Arithmétiques}{20}{subsection.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {23}Division entière vs Division flottante}{20}{lstlisting.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Opérateurs d'Affectation}{20}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Opérateurs d'Incrémentation et Décrémentation}{20}{subsection.5.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {24}Incrémentation préfixée et suffixée}{21}{lstlisting.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Opérateurs de Comparaison (Relationnels)}{21}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Opérateurs Logiques}{21}{subsection.5.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {25}Évaluation logique conditionnelle}{21}{lstlisting.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Opérateurs Avancés et Bit à Bit (\emph  {Bitwise})}{22}{subsection.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Opérateurs Spécifiques au Typage et Contrôle}{22}{subsection.5.7}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {26}Utilisation de l'opérateur is et as}{22}{lstlisting.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Synthèse du Chapitre}{22}{subsection.5.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Structures Conditionnelles}{23}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}L'instruction \texttt  {if} / \texttt  {else}}{23}{subsection.6.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {27}Logique décisionnelle en cascade}{23}{lstlisting.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}L'instruction \texttt  {switch}}{23}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Syntaxe classique}{23}{subsubsection.6.2.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {28}Routage par instruction switch}{23}{lstlisting.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Les Expressions \texttt  {switch} (C\# 8.0+)}{24}{subsubsection.6.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {29}Affectation via expression switch moderne}{24}{lstlisting.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}L'opérateur Ternaire Conditionnel (\texttt  {?:})}{24}{subsection.6.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {30}Optimisation par opérateur ternaire}{24}{lstlisting.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Synthèse du Chapitre}{25}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Les Boucles (Structures Itératives)}{26}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}La boucle \texttt  {for}}{26}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}La boucle \texttt  {while}}{26}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}La boucle \texttt  {do...while}}{26}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}La boucle \texttt  {foreach}}{27}{subsection.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Contrôle de Flux : \texttt  {break} et \texttt  {continue}}{27}{subsection.7.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Synthèse}{27}{subsection.7.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Tableaux et Collections de base}{28}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Les Tableaux (\texttt  {Array})}{28}{subsection.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Les Listes (\texttt  {List<T>})}{28}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Les Dictionnaires (\texttt  {Dictionary<TKey, TValue>})}{29}{subsection.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Les Énumérations (\texttt  {enum})}{29}{subsection.8.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Synthèse}{30}{subsection.8.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Passage de Paramètres : \texttt  {ref} et \texttt  {out}}{31}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Le modificateur \texttt  {ref} (Passage par référence)}{31}{subsection.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.1.1}Introduction Théorique}{31}{subsubsection.9.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.1.2}Syntaxe et Règles}{31}{subsubsection.9.1.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {31}Utilisation basique de ref}{31}{lstlisting.31}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.1.3}Exemple d'Ingénierie : Algorithme de Permutation (Swap)}{32}{subsubsection.9.1.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {32}Algorithme d'échange via passage par référence}{32}{lstlisting.32}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Le modificateur \texttt  {out} (Paramètre de sortie)}{32}{subsection.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.1}Introduction Théorique}{32}{subsubsection.9.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.2}Syntaxe et Cas d'Usage : Le Pattern Try-Parse}{32}{subsubsection.9.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {33}Pattern Try-Parse avec déclaration inline}{32}{lstlisting.33}\protected@file@percent }
+\@writefile{toc}{\contentsline {paragraph}{Analyse de l'implémentation :}{33}{section*.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Évolution Architecturale : Tuples et Bonnes Pratiques}{33}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Synthèse du Chapitre}{33}{subsection.9.4}\protected@file@percent }
+\gdef \@abspage@last{34}

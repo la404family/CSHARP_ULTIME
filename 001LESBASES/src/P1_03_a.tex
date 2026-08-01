@@ -1,128 +1,174 @@
 % ==============================================================================
 % Formation C# & SQL — Module 001 : Les Bases
 % Fichier : src/P1_03_a.tex
-% Sujet   : Chapitre 3 : Passage de Paramètres - Les modificateurs ref et out
+% Sujet   : Chapitre 3 : Les Opérateurs
 % ==============================================================================
 
 \newpage
-\section{Passage de Paramètres : \texttt{ref} et \texttt{out}}
+\section{Les Opérateurs et Expressions}
 \marginpar{\tiny\color{gray}P1\_03\_a.tex}
 
-En C\#, il est essentiel de comprendre comment les données voyagent entre les différentes méthodes de votre programme. Par défaut, lorsque vous transmettez une variable de type valeur (comme un \texttt{int}, un \texttt{bool} ou un \texttt{double}) en tant qu'argument à une méthode, le compilateur effectue un \textbf{passage par valeur} (souvent appelé passage par copie).
+En C\#, les opérateurs sont des symboles syntaxiques spécifiques qui indiquent au compilateur de réaliser des opérations mathématiques, logiques ou d'affectation sur des opérandes (variables ou valeurs). La maîtrise des opérateurs est indispensable pour manipuler les données et contrôler le flux d'exécution.
 
-Concrètement, cela signifie que le moteur d'exécution clone la valeur de votre variable d'origine et ne transmet que ce clone à la méthode appelée. Cette méthode va alors stocker cette copie de travail isolée dans sa propre zone de mémoire temporaire, appelée la pile d'exécution (\emph{Stack}). 
+\subsection{Opérateurs Arithmétiques}
 
-Par conséquent, si la méthode altère cette donnée au cours de son exécution (en l'incrémentant ou en l'écrasant), elle ne modifie que \textbf{sa propre copie locale}. La variable d'origine, appartenant à la méthode appelante, demeure totalement intacte et protégée en mémoire.
+Les opérateurs arithmétiques effectuent des calculs mathématiques standard. Le comportement de la division dépend du type de ses opérandes : si les deux sont des entiers, le résultat est une division entière (tronquée).
 
-Cependant, dans certaines architectures logicielles, ce comportement par défaut s'avère limitant. Un développeur peut avoir le besoin légitime qu'une méthode :
+\begin{center}
+    \textbf{Tableau : Opérateurs Arithmétiques} \\[0.3cm]
+    \begin{tabular}{@{}cllp{5cm}@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Opération} & \textbf{Exemple} & \textbf{Résultat} \\
+        \midrule
+        \texttt{+} & Addition & \texttt{5 + 3} & \texttt{8} \\
+        \texttt{-} & Soustraction & \texttt{5 - 3} & \texttt{2} \\
+        \texttt{*} & Multiplication & \texttt{5 * 3} & \texttt{15} \\
+        \texttt{/} & Division entière & \texttt{10 / 3} & \texttt{3} \\
+        \texttt{\%} & Modulo (reste) & \texttt{10 \% 3} & \texttt{1} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{lstlisting}[caption={Division entière vs Division flottante}]
+int a = 10, b = 3;
+Console.WriteLine(a / b);         // Affiche : 3
+// Le transtypage (cast) explicite force une division à virgule flottante
+Console.WriteLine((double)a / b); // Affiche : 3.3333333333333335
+\end{lstlisting}
+
+\subsection{Opérateurs d'Affectation}
+
+L'opérateur d'affectation de base est le signe \texttt{=}. C\# propose également des opérateurs d'affectation composés, qui combinent une opération arithmétique ou binaire avec l'affectation, permettant d'alléger la syntaxe.
+
+\begin{center}
+    \textbf{Tableau : Opérateurs d'Affectation Composés} \\[0.3cm]
+    \begin{tabular}{@{}cll@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Syntaxe équivalente} & \textbf{Exemple} \\
+        \midrule
+        \texttt{+=} & \texttt{a = a + b} & \texttt{valeur += 3;} \\
+        \texttt{-=} & \texttt{a = a - b} & \texttt{valeur -= 3;} \\
+        \texttt{*=} & \texttt{a = a * b} & \texttt{valeur *= 3;} \\
+        \texttt{/=} & \texttt{a = a / b} & \texttt{valeur /= 3;} \\
+        \texttt{\%=} & \texttt{a = a \% b} & \texttt{valeur \%= 3;} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsection{Opérateurs d'Incrémentation et Décrémentation}
+
+Ces opérateurs unaires augmentent ou diminuent la valeur d'une variable numérique de \texttt{1}. L'emplacement de l'opérateur (préfixe ou suffixe) détermine le moment de l'évaluation par le CLR.
+
 \begin{itemize}
-    \item \textbf{Modifie directement} l'état de la variable d'origine qui lui a été confiée.
-    \item \textbf{Exporte plusieurs résultats distincts} simultanément, outrepassant ainsi la limite naturelle de l'instruction unique \texttt{return}.
+    \item \textbf{Préfixé (\texttt{++a})} : La variable est incrémentée \textbf{avant} l'évaluation de l'expression.
+    \item \textbf{Suffixé (\texttt{a++})} : La variable est évaluée dans l'expression courante, puis incrémentée \textbf{après}.
 \end{itemize}
 
-C'est pour répondre à ces deux besoins spécifiques de manipulation de la mémoire que le langage C\# met à disposition les modificateurs de paramètres \textbf{\texttt{ref}} et \textbf{\texttt{out}}.
-
-\subsection{Le modificateur \texttt{ref} (Passage par référence)}
-
-\subsubsection{Introduction Théorique}
-Le mot-clé \texttt{ref} ordonne au compilateur de transmettre non pas la valeur de la variable, mais son \textbf{adresse mémoire} (un pointeur managé). La méthode accède ainsi directement à l'espace mémoire alloué par l'appelant. Une contrainte stricte s'applique : la variable cible doit obligatoirement être initialisée par l'appelant \emph{avant} d'être passée en paramètre, car la méthode appelée peut choisir de lire sa valeur initiale avant de la modifier.
-
-\subsubsection{Syntaxe et Règles}
-Le mot-clé \texttt{ref} doit être déclaré explicitement dans la signature de la méthode, ainsi qu'au moment de l'appel. Cette verbosité intentionnelle signale clairement au développeur lisant le code que la variable est susceptible de subir des mutations (effets de bord).
-
-\begin{lstlisting}[caption={Utilisation basique de ref}]
-// 1. Declaration de la methode avec le modificateur 'ref'
-void IncrementerCompteur(ref int compteur)
-{
-    compteur += 10; // Modification directe de l'adresse memoire cible
-}
-
-// 2. Initialisation prealable obligatoire
-int tentatives = 5;
-
-// 3. Appel avec le modificateur 'ref' explicite
-IncrementerCompteur(ref tentatives);
-
-Console.WriteLine(tentatives); // Affiche : 15
+\begin{lstlisting}[caption={Incrémentation préfixée et suffixée}]
+int index = 5;
+Console.WriteLine(index++);  // Affiche 5, puis index devient 6
+Console.WriteLine(++index);  // index devient 7, puis s'affiche (7)
 \end{lstlisting}
 
-\subsubsection{Exemple d'Ingénierie : Algorithme de Permutation (Swap)}
-Le passage par référence est l'unique solution permettant d'écrire un algorithme d'échange de variables (\emph{Swap}) opérant directement sur l'état externe.
+\subsection{Opérateurs de Comparaison (Relationnels)}
 
-\begin{lstlisting}[caption={Algorithme d'échange via passage par référence}]
-void EchangerAdresses(ref string adresseA, ref string adresseB)
-{
-    // Utilisation d'un tampon local pour la permutation
-    string tampon = adresseA;
-    adresseA = adresseB;
-    adresseB = tampon;
-}
+Ils évaluent la relation entre deux opérandes et retournent systématiquement une valeur de type \texttt{bool} (\texttt{true} ou \texttt{false}). Ils constituent la base des structures conditionnelles.
 
-string serveurPrimaire = "192.168.1.10";
-string serveurSecondaire = "10.0.0.5";
+\begin{center}
+    \textbf{Tableau : Opérateurs de Comparaison} \\[0.3cm]
+    \begin{tabular}{@{}cll@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Signification} & \textbf{Exemple} \\
+        \midrule
+        \texttt{==} & Égal à & \texttt{a == b} \\
+        \texttt{!=} & Différent de & \texttt{a != b} \\
+        \texttt{>} & Strictement supérieur & \texttt{a > b} \\
+        \texttt{<} & Strictement inférieur & \texttt{a < b} \\
+        \texttt{>=} & Supérieur ou égal & \texttt{a >= b} \\
+        \texttt{<=} & Inférieur ou égal & \texttt{a <= b} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
 
-EchangerAdresses(ref serveurPrimaire, ref serveurSecondaire);
-
-Console.WriteLine($"Primaire : {serveurPrimaire} | Secondaire : {serveurSecondaire}");
-// Le routage est inverse en memoire de maniere permanente
-\end{lstlisting}
-
-\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges courants : Oubli d'initialisation}]
-    Le compilateur Roslyn émettra l'erreur stricte \texttt{CS0165 : Use of unassigned local variable} si vous tentez de passer une variable non initialisée avec \texttt{ref}. Le CLR exige une adresse mémoire contenant une donnée typée valide.
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Erreur Courante : Affectation vs Égalité}]
+    Une erreur classique d'ingénierie consiste à utiliser l'opérateur d'affectation \texttt{=} (un seul signe égal) au lieu de l'opérateur de comparaison \texttt{==} dans une condition. Le compilateur C\# bloquera cette erreur (\texttt{Cannot implicitly convert type...}) si le résultat n'est pas un booléen.
 \end{tcolorbox}
 
-\subsection{Le modificateur \texttt{out} (Paramètre de sortie)}
+\subsection{Opérateurs Logiques}
 
-\subsubsection{Introduction Théorique}
-Le modificateur \texttt{out} permet également le passage par référence, mais impose un contrat sémantique inversé : son but exclusif est \textbf{d'exporter des données} hors de la méthode. Contrairement à \texttt{ref}, la variable passée via \texttt{out} n'a pas besoin d'être initialisée par l'appelant. En contrepartie, le compilateur force contractuellement la méthode appelée à y assigner une valeur avant toute instruction de retour (\texttt{return} ou fin de bloc d'exécution).
+Les opérateurs logiques permettent de combiner plusieurs expressions booléennes. C\# implémente l'évaluation "court-circuit" : si le premier opérande suffit à déterminer le résultat final, le second opérande n'est pas évalué.
 
-\subsubsection{Syntaxe et Cas d'Usage : Le Pattern Try-Parse}
-L'usage le plus incontournable du modificateur \texttt{out} réside dans les méthodes de conversion sécurisées, nommées \emph{TryParse}. Ces méthodes utilisent leur type de retour classique (\texttt{bool}) pour signaler le succès ou l'échec de l'opération, tout en injectant le résultat du calcul dans la variable \texttt{out}.
+\begin{center}
+    \textbf{Tableau : Opérateurs Logiques} \\[0.3cm]
+    \begin{tabular}{@{}clp{9cm}@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Nom} & \textbf{Comportement Court-Circuit} \\
+        \midrule
+        \texttt{\&\&} & ET Logique (\emph{AND}) & Si l'opérande gauche est \texttt{false}, l'opérande droit est ignoré (le résultat sera \texttt{false}). \\
+        \texttt{||} & OU Logique (\emph{OR}) & Si l'opérande gauche est \texttt{true}, l'opérande droit est ignoré (le résultat sera \texttt{true}). \\
+        \texttt{!} & NON Logique (\emph{NOT}) & Inverse la valeur booléenne (opérateur unaire). \\
+        \bottomrule
+    \end{tabular}
+\end{center}
 
-\begin{lstlisting}[caption={Pattern Try-Parse avec déclaration inline}]
-string chargeUtileReseau = "1024";
+\begin{lstlisting}[caption={Évaluation logique conditionnelle}]
+bool accesBdd = true;
+bool compteVerrouille = false;
 
-// C# 7+ : Declaration "inline" de la variable 'out' directement lors de l'appel
-bool conversionReussie = int.TryParse(chargeUtileReseau, out int portServeur);
-
-if (conversionReussie)
+// Vérifie si l'accès est disponible ET que le compte n'est PAS verrouillé
+if (accesBdd && !compteVerrouille)
 {
-    Console.WriteLine($"Connexion etablie sur le port : {portServeur}");
-}
-else
-{
-    Console.WriteLine("Erreur de parsing : La donnee reseau est corrompue.");
+    Console.WriteLine("Autorisation accordée.");
 }
 \end{lstlisting}
 
-\paragraph{Analyse de l'implémentation :}
+\subsection{Opérateurs Avancés et Bit à Bit (\emph{Bitwise})}
+
+Les opérateurs de bits manipulent directement la représentation binaire (les bits) d'une donnée en mémoire. Bien qu'essentiels en cryptographie, programmation réseau ou systèmes embarqués, ils sont rarement utilisés dans des applications de gestion standard.
+
 \begin{itemize}
-    \item L'appel à \texttt{int.TryParse} tente de parser la chaîne de caractères brute.
-    \item Si le contenu échoue à la conversion (ex: caractères non numériques), la méthode retourne \texttt{false} et la variable \texttt{portServeur} reçoit la valeur par défaut du type (\texttt{0}). Aucune exception n'est levée, économisant les ressources CPU.
-    \item Si le parsing réussit, la valeur convertie est affectée à l'adresse de \texttt{portServeur} et la méthode retourne \texttt{true}.
+    \item \textbf{ET bit à bit (\texttt{\&})} : \texttt{1} si les deux bits sont à \texttt{1}.
+    \item \textbf{OU bit à bit (\texttt{|})} : \texttt{1} si au moins un des bits est à \texttt{1}.
+    \item \textbf{OU exclusif (\texttt{\textasciicircum})} : \texttt{1} si les bits sont différents.
+    \item \textbf{Décalage (\texttt{<<} / \texttt{>>})} : Décale les bits à gauche (multiplie par 2) ou à droite (divise par 2).
 \end{itemize}
 
-\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Pièges courants : Rupture du contrat out}]
-    L'erreur de compilation \texttt{CS0177 : The out parameter must be assigned to before control leaves the current method} survient inévitablement si le code de la méthode appelée omet d'affecter une valeur au paramètre \texttt{out}. Le compilateur garantit ainsi la sécurité mémoire et empêche de récupérer une valeur non allouée.
-\end{tcolorbox}
+\subsection{Opérateurs Spécifiques au Typage et Contrôle}
 
-\subsection{Évolution Architecturale : Tuples et Bonnes Pratiques}
+C\# intègre des opérateurs haut niveau pour gérer les types et l'état \texttt{null}.
 
-Bien que les paramètres \texttt{out} aient été historiquement employés pour retourner de multiples valeurs, l'architecture C\# moderne (depuis C\# 7) préconise désormais l'utilisation des \textbf{Tuples} pour des raisons de syntaxe fonctionnelle et de lisibilité. 
+\begin{itemize}
+    \item \textbf{Opérateur ternaire (\texttt{?:})} : Raccourci syntaxique pour une condition \texttt{if...else} sur une seule ligne. Syntaxe : \texttt{condition ? valeur\_si\_vrai : valeur\_si\_faux}.
+    \item \textbf{Opérateur de coalescence (\texttt{??})} : Retourne l'opérande de gauche s'il n'est pas \texttt{null}, sinon retourne l'opérande de droite.
+    \item \textbf{\texttt{is}} : Évalue si un objet est compatible avec un type donné, au moment de l'exécution (Runtime).
+    \item \textbf{\texttt{as}} : Tente un transtypage (cast) en toute sécurité. Si l'opération échoue, retourne \texttt{null} au lieu de lever une exception.
+\end{itemize}
 
-Par conséquent, l'usage des paramètres \texttt{out} doit être strictement restreint au pattern canonique \texttt{TryParse} (ou scénarios de validation similaires). De son côté, l'emploi de \texttt{ref} doit être réservé à l'optimisation des performances de bas niveau (ex: éviter de copier des structures très lourdes en mémoire, ou manipuler des buffers d'entrées/sorties natives). 
+\begin{lstlisting}[caption={Utilisation de l'opérateur is et as}]
+object donneeInconnue = 42;
+
+// Vérification de type (Pattern matching)
+if (donneeInconnue is int nombre) 
+{
+    Console.WriteLine($"C'est un entier de valeur {nombre}");
+}
+
+// Transtypage sécurisé (fonctionne uniquement avec les types référence ou nullable)
+string? texteConnu = donneeInconnue as string; 
+// texteConnu vaut null car donneeInconnue est un entier
+\end{lstlisting}
 
 \subsection{Synthèse du Chapitre}
 
 \begin{center}
-    \textbf{Tableau : Comparaison des modificateurs de paramètres} \\[0.3cm]
-    \begin{tabular}{@{}llp{7cm}@{}}
+    \textbf{Tableau : Récapitulatif des opérateurs critiques} \\[0.3cm]
+    \begin{tabular}{@{}lp{10cm}@{}}
         \toprule
-        \textbf{Modificateur} & \textbf{Initialisation par l'appelant} & \textbf{Contrat de la méthode} \\
+        \textbf{Concept} & \textbf{Règle de l'Ingénierie} \\
         \midrule
-        Aucun (par valeur) & Obligatoire & Travaille sur une copie isolée. \\
-        \textbf{\texttt{ref}} & Obligatoire & Modifie directement l'adresse mémoire source. \\
-        \textbf{\texttt{out}} & Optionnelle (déclaration \emph{inline} permise) & Obligation absolue d'assigner une valeur avant de retourner. \\
+        \textbf{Division entière} & \texttt{10 / 3} donne toujours \texttt{3}. Transtyper en \texttt{double} pour une précision flottante. \\
+        \textbf{Court-circuit (\texttt{\&\&}, \texttt{||})} & Optimise les performances CPU en annulant l'évaluation de la partie droite si le résultat final est déjà connu. \\
+        \textbf{\texttt{is} et \texttt{as}} & Outils indispensables pour la vérification dynamique et le transtypage sécurisé sans levée d'exceptions bloquantes. \\
         \bottomrule
     \end{tabular}
 \end{center}

@@ -1,0 +1,112 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_06_a.tex
+% Sujet   : Chapitre 6 : Tableaux et collections de base
+% ==============================================================================
+
+\newpage
+\section{Tableaux et Collections de base}
+\marginpar{\tiny\color{gray}P1\_06\_a.tex}
+
+En ingénierie logicielle, la capacité à regrouper et manipuler efficacement de multiples données connexes est primordiale. C\# propose plusieurs structures fondamentales : depuis les tableaux primitifs à taille fixe jusqu'aux collections génériques dynamiques fournies par le framework .NET. Le choix de la bonne structure influence directement les performances en termes d'allocation mémoire et de rapidité d'exécution.
+
+\subsection{Les Tableaux (\texttt{Array})}
+Les tableaux représentent la structure la plus bas niveau du langage. Ils stockent des éléments de même type de manière contiguë en mémoire. Leur caractéristique principale est leur \textbf{taille fixe}, définie obligatoirement au moment de l'instanciation.
+
+\begin{lstlisting}[style=csharpstyle]
+// Déclaration et instanciation d'un tableau de 5 entiers
+int[] tableau = new int[5];
+
+// Affectation par index (zéro-indexé)
+tableau[0] = 10;
+tableau[1] = 20;
+
+// Initialisation directe (sucre syntaxique)
+string[] jours = { "Lundi", "Mardi", "Mercredi" };
+
+// Redimensionnement dynamique
+Array.Resize(ref tableau, 10);
+\end{lstlisting}
+
+L'accès à un élément par son index s'effectue en temps constant $O(1)$. Cependant, la méthode \texttt{Array.Resize} crée en réalité un \textit{nouveau} tableau en mémoire et y copie tous les éléments de l'ancien. Cette opération est très coûteuse en performance, c'est pourquoi les tableaux ne doivent être utilisés que lorsque la quantité d'éléments est connue et définitive.
+
+\subsection{Les Listes (\texttt{List<T>})}
+Pour pallier la rigidité des tableaux, le framework .NET fournit la collection générique \texttt{List<T>}. Elle encapsule un tableau sous-jacent et gère automatiquement et silencieusement son redimensionnement lors de l'ajout ou de la suppression d'éléments.
+
+\begin{lstlisting}[style=csharpstyle]
+using System.Collections.Generic;
+
+List<int> liste = new List<int>();
+
+// Ajout dynamique à la fin de la collection
+liste.Add(10);
+liste.Add(20);
+liste.Add(30);
+
+// Suppression de la première occurrence de la valeur 20
+liste.Remove(20);
+
+// Accès par index et parcours
+Console.WriteLine(liste[0]); // Affiche 10
+\end{lstlisting}
+
+La \texttt{List<T>} est la structure par défaut recommandée en C\# pour stocker des données séquentielles nécessitant de la flexibilité.
+
+\subsection{Les Dictionnaires (\texttt{Dictionary<TKey, TValue>})}
+Le dictionnaire implémente une table de hachage (\textit{Hash Table}). Il stocke des données sous forme de paires "Clé/Valeur". La recherche d'une valeur à partir de sa clé s'effectue via un calcul de hachage, garantissant un temps de recherche proche de $O(1)$.
+
+\begin{lstlisting}[style=csharpstyle]
+using System.Collections.Generic;
+
+// Déclaration : Clés de type string, Valeurs de type int
+Dictionary<string, int> ages = new Dictionary<string, int>();
+
+// Ajout de paires (les clés doivent être uniques)
+ages.Add("Alice", 28);
+ages.Add("Bob", 35);
+
+// Suppression via la clé unique
+ages.Remove("Alice");
+
+// Accès très rapide par clé
+Console.WriteLine(ages["Bob"]); // Affiche 35
+\end{lstlisting}
+
+Le dictionnaire est incontournable lorsque les données doivent être indexées et retrouvées via un identifiant métier (ex: un matricule employé, un code produit) plutôt que par une simple position ordinale.
+
+\subsection{Les Énumérations (\texttt{enum})}
+Bien qu'il ne s'agisse pas d'une collection à proprement parler, l'\texttt{enum} est un type fondamental permettant de définir un ensemble de constantes liées. Il améliore drastiquement la lisibilité du code en remplaçant les entiers bruts (souvent qualifiés de "nombres magiques") par des identifiants sémantiques clairs.
+
+\begin{lstlisting}[style=csharpstyle]
+public enum StatutCommande
+{
+    EnAttente = 0,
+    Payee = 1,
+    Expediee = 2,
+    Livree = 3
+}
+
+// Utilisation typée et robuste
+StatutCommande statutActuel = StatutCommande.Payee;
+
+if (statutActuel == StatutCommande.Payee)
+{
+    Console.WriteLine("La commande peut être expédiée.");
+}
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges Courants \& Erreurs}]
+\begin{itemize}
+    \item \textbf{IndexOutOfRangeException} : Essayer d'accéder à \texttt{tableau[5]} sur un tableau de taille 5 (les index valides vont de 0 à 4 puisque indexés à partir de 0).
+    \item \textbf{KeyNotFoundException} : Tenter de lire une valeur dans un dictionnaire avec une clé inexistante (ex: \texttt{ages["Inconnu"]}). Si l'existence de la clé est incertaine, utilisez plutôt \texttt{ages.TryGetValue(...)}.
+    \item \textbf{ArgumentException (Clé doublée)} : Utiliser la méthode \texttt{Add} d'un dictionnaire avec une clé qui y est déjà présente. Un dictionnaire exige des clés strictement uniques.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Synthèse}
+\begin{itemize}
+    \item \textbf{Tableau (\texttt{T[]})} : Taille fixe, bas niveau, performant. Idéal pour les données immuables.
+    \item \textbf{Liste (\texttt{List<T>})} : Taille dynamique, encapsulation intelligente. Idéale pour les collections appelées à évoluer en nombre.
+    \item \textbf{Dictionnaire (\texttt{Dictionary<K, V>})} : Recherche instantanée par clé métier. L'arme absolue pour retrouver une donnée précise sans parcourir toute la collection.
+    \item \textbf{Énumération (\texttt{enum})} : Permet de définir des états restreints de manière propre, typée et compréhensible.
+\end{itemize}

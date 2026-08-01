@@ -1,174 +1,89 @@
 % ==============================================================================
 % Formation C# & SQL — Module 001 : Les Bases
 % Fichier : src/P1_05_a.tex
-% Sujet   : Chapitre 5 : Les Opérateurs
+% Sujet   : Chapitre 5 : Les Boucles
 % ==============================================================================
 
 \newpage
-\section{Les Opérateurs et Expressions}
+\section{Les Boucles (Structures Itératives)}
 \marginpar{\tiny\color{gray}P1\_05\_a.tex}
 
-En C\#, les opérateurs sont des symboles syntaxiques spécifiques qui indiquent au compilateur de réaliser des opérations mathématiques, logiques ou d'affectation sur des opérandes (variables ou valeurs). La maîtrise des opérateurs est indispensable pour manipuler les données et contrôler le flux d'exécution.
+Les boucles, ou structures itératives, sont des mécanismes de contrôle de flux permettant d'exécuter un bloc d'instructions de manière répétée tant qu'une condition booléenne demeure évaluée à \texttt{true}. Elles sont indispensables en ingénierie logicielle pour l'automatisation de tâches répétitives, le parcours de structures de données ou l'attente d'événements asynchrones.
 
-\subsection{Opérateurs Arithmétiques}
+\subsection{La boucle \texttt{for}}
+La boucle \texttt{for} est privilégiée lorsque le nombre d'itérations est connu à l'avance ou déterminé par une borne fixe. Elle encapsule l'initialisation de l'index, la condition de maintien et l'incrémentation (ou décrémentation) dans une seule ligne de déclaration.
 
-Les opérateurs arithmétiques effectuent des calculs mathématiques standard. Le comportement de la division dépend du type de ses opérandes : si les deux sont des entiers, le résultat est une division entière (tronquée).
-
-\begin{center}
-    \textbf{Tableau : Opérateurs Arithmétiques} \\[0.3cm]
-    \begin{tabular}{@{}cllp{5cm}@{}}
-        \toprule
-        \textbf{Opérateur} & \textbf{Opération} & \textbf{Exemple} & \textbf{Résultat} \\
-        \midrule
-        \texttt{+} & Addition & \texttt{5 + 3} & \texttt{8} \\
-        \texttt{-} & Soustraction & \texttt{5 - 3} & \texttt{2} \\
-        \texttt{*} & Multiplication & \texttt{5 * 3} & \texttt{15} \\
-        \texttt{/} & Division entière & \texttt{10 / 3} & \texttt{3} \\
-        \texttt{\%} & Modulo (reste) & \texttt{10 \% 3} & \texttt{1} \\
-        \bottomrule
-    \end{tabular}
-\end{center}
-
-\begin{lstlisting}[caption={Division entière vs Division flottante}]
-int a = 10, b = 3;
-Console.WriteLine(a / b);         // Affiche : 3
-// Le transtypage (cast) explicite force une division à virgule flottante
-Console.WriteLine((double)a / b); // Affiche : 3.3333333333333335
+\begin{lstlisting}[style=csharpstyle]
+for (int i = 0; i < 5; i++)
+{
+    Console.WriteLine($"Itération numéro : {i}");
+}
 \end{lstlisting}
 
-\subsection{Opérateurs d'Affectation}
-
-L'opérateur d'affectation de base est le signe \texttt{=}. C\# propose également des opérateurs d'affectation composés, qui combinent une opération arithmétique ou binaire avec l'affectation, permettant d'alléger la syntaxe.
-
-\begin{center}
-    \textbf{Tableau : Opérateurs d'Affectation Composés} \\[0.3cm]
-    \begin{tabular}{@{}cll@{}}
-        \toprule
-        \textbf{Opérateur} & \textbf{Syntaxe équivalente} & \textbf{Exemple} \\
-        \midrule
-        \texttt{+=} & \texttt{a = a + b} & \texttt{valeur += 3;} \\
-        \texttt{-=} & \texttt{a = a - b} & \texttt{valeur -= 3;} \\
-        \texttt{*=} & \texttt{a = a * b} & \texttt{valeur *= 3;} \\
-        \texttt{/=} & \texttt{a = a / b} & \texttt{valeur /= 3;} \\
-        \texttt{\%=} & \texttt{a = a \% b} & \texttt{valeur \%= 3;} \\
-        \bottomrule
-    \end{tabular}
-\end{center}
-
-\subsection{Opérateurs d'Incrémentation et Décrémentation}
-
-Ces opérateurs unaires augmentent ou diminuent la valeur d'une variable numérique de \texttt{1}. L'emplacement de l'opérateur (préfixe ou suffixe) détermine le moment de l'évaluation par le CLR.
-
+\textbf{Analyse de l'exécution :}
 \begin{itemize}
-    \item \textbf{Préfixé (\texttt{++a})} : La variable est incrémentée \textbf{avant} l'évaluation de l'expression.
-    \item \textbf{Suffixé (\texttt{a++})} : La variable est évaluée dans l'expression courante, puis incrémentée \textbf{après}.
+    \item \textbf{Initialisation} (\texttt{int i = 0}) : Exécutée une seule fois au démarrage de la boucle.
+    \item \textbf{Condition} (\texttt{i < 5}) : Évaluée avant chaque itération. Si elle est \texttt{false}, la boucle s'arrête et le programme continue à l'instruction suivante.
+    \item \textbf{Incrémentation} (\texttt{i++}) : Exécutée à la fin de chaque itération, juste avant de réévaluer la condition.
 \end{itemize}
 
-\begin{lstlisting}[caption={Incrémentation préfixée et suffixée}]
-int index = 5;
-Console.WriteLine(index++);  // Affiche 5, puis index devient 6
-Console.WriteLine(++index);  // index devient 7, puis s'affiche (7)
+\subsection{La boucle \texttt{while}}
+La boucle \texttt{while} évalue sa condition de maintien \textit{avant} d'exécuter son bloc d'instructions. Elle est typiquement employée lorsque le nombre d'itérations est indéterminé, dépendant d'un état dynamique du système ou de la lecture d'un flux de données (ex: lecture de fichiers, écoute réseau).
+
+\begin{lstlisting}[style=csharpstyle]
+int bufferSize = 0;
+while (bufferSize < 5)
+{
+    Console.WriteLine($"Traitement du bloc mémoire {bufferSize}...");
+    bufferSize++;
+}
 \end{lstlisting}
+Contrairement au \texttt{for}, l'initialisation de la variable de contrôle est externe à la boucle, et son altération doit obligatoirement figurer à l'intérieur du bloc pour éviter une boucle infinie.
 
-\subsection{Opérateurs de Comparaison (Relationnels)}
+\subsection{La boucle \texttt{do...while}}
+Contrairement à la boucle \texttt{while}, la variante \texttt{do...while} évalue la condition \textit{après} l'exécution du bloc. Cela garantit que les instructions internes seront exécutées au strict minimum une fois, indépendamment de l'état initial.
 
-Ils évaluent la relation entre deux opérandes et retournent systématiquement une valeur de type \texttt{bool} (\texttt{true} ou \texttt{false}). Ils constituent la base des structures conditionnelles.
+\begin{lstlisting}[style=csharpstyle]
+int retryCount = 0;
+do
+{
+    Console.WriteLine($"Tentative de connexion réseau (Essai {retryCount + 1})");
+    retryCount++;
+} while (retryCount < 5);
+\end{lstlisting}
+Cette boucle est très utile pour les scénarios nécessitant au moins une action initiale, tels que les tentatives de connexion (\textit{retry policy}) ou l'exécution d'un menu interactif.
 
-\begin{center}
-    \textbf{Tableau : Opérateurs de Comparaison} \\[0.3cm]
-    \begin{tabular}{@{}cll@{}}
-        \toprule
-        \textbf{Opérateur} & \textbf{Signification} & \textbf{Exemple} \\
-        \midrule
-        \texttt{==} & Égal à & \texttt{a == b} \\
-        \texttt{!=} & Différent de & \texttt{a != b} \\
-        \texttt{>} & Strictement supérieur & \texttt{a > b} \\
-        \texttt{<} & Strictement inférieur & \texttt{a < b} \\
-        \texttt{>=} & Supérieur ou égal & \texttt{a >= b} \\
-        \texttt{<=} & Inférieur ou égal & \texttt{a <= b} \\
-        \bottomrule
-    \end{tabular}
-\end{center}
+\subsection{La boucle \texttt{foreach}}
+La structure \texttt{foreach} offre une syntaxe abstraite et sécurisée pour itérer sur l'ensemble des éléments d'une collection (tableaux, listes) implémentant l'interface \texttt{IEnumerable}. Elle élimine la gestion manuelle de l'index et prévient les erreurs de dépassement.
 
-\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Erreur Courante : Affectation vs Égalité}]
-    Une erreur classique d'ingénierie consiste à utiliser l'opérateur d'affectation \texttt{=} (un seul signe égal) au lieu de l'opérateur de comparaison \texttt{==} dans une condition. Le compilateur C\# bloquera cette erreur (\texttt{Cannot implicitly convert type...}) si le résultat n'est pas un booléen.
+\begin{lstlisting}[style=csharpstyle]
+int[] tcpPorts = { 80, 443, 8080, 1433 };
+foreach (int port in tcpPorts)
+{
+    Console.WriteLine($"Analyse du port : {port}");
+}
+\end{lstlisting}
+Bien que cette boucle produise un code plus concis et robuste, la variable d'itération (\texttt{port} dans l'exemple) est en lecture seule. Vous ne pouvez pas modifier directement l'élément du tableau via cette variable.
+
+\subsection{Contrôle de Flux : \texttt{break} et \texttt{continue}}
+Au sein de toute structure itérative, il est possible d'altérer le flux standard à l'aide de deux mots-clés :
+\begin{itemize}
+    \item \texttt{break} : Interrompt immédiatement et définitivement la boucle englobante, forçant le programme à passer à l'instruction qui suit la boucle.
+    \item \texttt{continue} : Interrompt l'itération courante et passe directement à l'évaluation de la condition pour démarrer l'itération suivante.
+\end{itemize}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges Courants \& Erreurs}]
+\begin{itemize}
+    \item \textbf{La boucle infinie} : Oublier d'incrémenter la variable d'arrêt ou de modifier la condition dans une boucle \texttt{while}, entraînant le blocage complet du thread (\textit{Thread Starvation}).
+    \item \textbf{Modification de la collection} : Tenter d'ajouter ou de supprimer un élément d'une liste qui est actuellement en train d'être parcourue par un \texttt{foreach} déclenche immanquablement une \texttt{InvalidOperationException} à l'exécution.
+    \item \textbf{Erreur de borne (\textit{Off-by-one error})} : Utiliser \texttt{<=} au lieu de \texttt{<} lors du parcours d'un tableau classique avec une boucle \texttt{for}. Puisque les tableaux sont indexés à partir de 0, cela mène à une \texttt{IndexOutOfRangeException}.
+\end{itemize}
 \end{tcolorbox}
 
-\subsection{Opérateurs Logiques}
-
-Les opérateurs logiques permettent de combiner plusieurs expressions booléennes. C\# implémente l'évaluation "court-circuit" : si le premier opérande suffit à déterminer le résultat final, le second opérande n'est pas évalué.
-
-\begin{center}
-    \textbf{Tableau : Opérateurs Logiques} \\[0.3cm]
-    \begin{tabular}{@{}clp{9cm}@{}}
-        \toprule
-        \textbf{Opérateur} & \textbf{Nom} & \textbf{Comportement Court-Circuit} \\
-        \midrule
-        \texttt{\&\&} & ET Logique (\emph{AND}) & Si l'opérande gauche est \texttt{false}, l'opérande droit est ignoré (le résultat sera \texttt{false}). \\
-        \texttt{||} & OU Logique (\emph{OR}) & Si l'opérande gauche est \texttt{true}, l'opérande droit est ignoré (le résultat sera \texttt{true}). \\
-        \texttt{!} & NON Logique (\emph{NOT}) & Inverse la valeur booléenne (opérateur unaire). \\
-        \bottomrule
-    \end{tabular}
-\end{center}
-
-\begin{lstlisting}[caption={Évaluation logique conditionnelle}]
-bool accesBdd = true;
-bool compteVerrouille = false;
-
-// Vérifie si l'accès est disponible ET que le compte n'est PAS verrouillé
-if (accesBdd && !compteVerrouille)
-{
-    Console.WriteLine("Autorisation accordée.");
-}
-\end{lstlisting}
-
-\subsection{Opérateurs Avancés et Bit à Bit (\emph{Bitwise})}
-
-Les opérateurs de bits manipulent directement la représentation binaire (les bits) d'une donnée en mémoire. Bien qu'essentiels en cryptographie, programmation réseau ou systèmes embarqués, ils sont rarement utilisés dans des applications de gestion standard.
-
+\subsection{Synthèse}
 \begin{itemize}
-    \item \textbf{ET bit à bit (\texttt{\&})} : \texttt{1} si les deux bits sont à \texttt{1}.
-    \item \textbf{OU bit à bit (\texttt{|})} : \texttt{1} si au moins un des bits est à \texttt{1}.
-    \item \textbf{OU exclusif (\texttt{\textasciicircum})} : \texttt{1} si les bits sont différents.
-    \item \textbf{Décalage (\texttt{<<} / \texttt{>>})} : Décale les bits à gauche (multiplie par 2) ou à droite (divise par 2).
+    \item \textbf{\texttt{for}} : À privilégier pour les itérations indexées dont le nombre est prévisible et fini.
+    \item \textbf{\texttt{while}} : Idéal pour les processus en attente d'un état ou lisant un flux de données continu.
+    \item \textbf{\texttt{do...while}} : Utile lorsqu'un premier traitement est impératif avant toute vérification de condition.
+    \item \textbf{\texttt{foreach}} : La méthode la plus élégante et robuste pour parcourir des structures de données en toute sécurité.
 \end{itemize}
-
-\subsection{Opérateurs Spécifiques au Typage et Contrôle}
-
-C\# intègre des opérateurs haut niveau pour gérer les types et l'état \texttt{null}.
-
-\begin{itemize}
-    \item \textbf{Opérateur ternaire (\texttt{?:})} : Raccourci syntaxique pour une condition \texttt{if...else} sur une seule ligne. Syntaxe : \texttt{condition ? valeur\_si\_vrai : valeur\_si\_faux}.
-    \item \textbf{Opérateur de coalescence (\texttt{??})} : Retourne l'opérande de gauche s'il n'est pas \texttt{null}, sinon retourne l'opérande de droite.
-    \item \textbf{\texttt{is}} : Évalue si un objet est compatible avec un type donné, au moment de l'exécution (Runtime).
-    \item \textbf{\texttt{as}} : Tente un transtypage (cast) en toute sécurité. Si l'opération échoue, retourne \texttt{null} au lieu de lever une exception.
-\end{itemize}
-
-\begin{lstlisting}[caption={Utilisation de l'opérateur is et as}]
-object donneeInconnue = 42;
-
-// Vérification de type (Pattern matching)
-if (donneeInconnue is int nombre) 
-{
-    Console.WriteLine($"C'est un entier de valeur {nombre}");
-}
-
-// Transtypage sécurisé (fonctionne uniquement avec les types référence ou nullable)
-string? texteConnu = donneeInconnue as string; 
-// texteConnu vaut null car donneeInconnue est un entier
-\end{lstlisting}
-
-\subsection{Synthèse du Chapitre}
-
-\begin{center}
-    \textbf{Tableau : Récapitulatif des opérateurs critiques} \\[0.3cm]
-    \begin{tabular}{@{}lp{10cm}@{}}
-        \toprule
-        \textbf{Concept} & \textbf{Règle de l'Ingénierie} \\
-        \midrule
-        \textbf{Division entière} & \texttt{10 / 3} donne toujours \texttt{3}. Transtyper en \texttt{double} pour une précision flottante. \\
-        \textbf{Court-circuit (\texttt{\&\&}, \texttt{||})} & Optimise les performances CPU en annulant l'évaluation de la partie droite si le résultat final est déjà connu. \\
-        \textbf{\texttt{is} et \texttt{as}} & Outils indispensables pour la vérification dynamique et le transtypage sécurisé sans levée d'exceptions bloquantes. \\
-        \bottomrule
-    \end{tabular}
-\end{center}
