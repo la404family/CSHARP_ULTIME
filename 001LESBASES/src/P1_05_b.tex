@@ -1,0 +1,136 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_05_b.tex
+% Sujet   : Chapitre 5b : Structures conditionnelles
+% ==============================================================================
+
+\newpage
+\section{Structures Conditionnelles}
+\marginpar{\tiny\color{gray}P1\_05\_b.tex}
+
+Les structures conditionnelles, ou structures de contrôle de flux, permettent de dévier l'exécution linéaire d'un programme en fonction de l'évaluation d'expressions booléennes (vrai ou faux). Ces structures constituent le cœur de la logique décisionnelle algorithmique.
+
+\subsection{L'instruction \texttt{if} / \texttt{else}}
+
+L'instruction \texttt{if} évalue une condition. Si celle-ci retourne \texttt{true}, le bloc de code associé est exécuté. Les clauses \texttt{else if} et \texttt{else} permettent de traiter des alternatives exclusives, optimisant le processus car l'évaluation s'arrête dès qu'une condition est remplie.
+
+\begin{lstlisting}[caption={Logique décisionnelle en cascade}]
+int debitReseau = 450; // Mbps
+
+if (debitReseau >= 1000)
+{
+    Console.WriteLine("Connexion Fibre Optique détectée.");
+}
+else if (debitReseau >= 100)
+{
+    Console.WriteLine("Connexion Très Haut Débit (VDSL/Câble).");
+}
+else if (debitReseau >= 10)
+{
+    Console.WriteLine("Connexion ADSL standard.");
+}
+else
+{
+    Console.WriteLine("Connexion à débit réduit.");
+}
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Règle d'ingénierie : Blocs d'instructions (Accolades)}]
+    Bien que le langage C\# autorise l'omission des accolades \texttt{\{\}} si le bloc ne contient qu'une seule instruction, les conventions strictes (\emph{Clean Code}) exigent de toujours les inclure. Cela prévient les bugs critiques de portée (\emph{scope}) lors d'ajouts ultérieurs de code.
+\end{tcolorbox}
+
+\subsection{L'instruction \texttt{switch}}
+
+Le \texttt{switch} est utilisé pour évaluer une unique expression par rapport à une liste de modèles (\emph{patterns}) ou de constantes. Il est structurellement plus lisible qu'une longue chaîne de \texttt{if/else} lors de la comparaison d'une même variable contre de multiples valeurs.
+
+\subsubsection{Syntaxe classique}
+
+Dans sa forme traditionnelle, chaque cas (\texttt{case}) doit se terminer obligatoirement par l'instruction \texttt{break} pour empêcher le compilateur de continuer l'exécution sur le cas suivant (erreur \texttt{CS0163}).
+
+\begin{lstlisting}[caption={Routage par instruction switch}]
+int codeErreurHttp = 404;
+
+switch (codeErreurHttp)
+{
+    case 200:
+        Console.WriteLine("Succès : La requête a abouti.");
+        break;
+    case 401:
+    case 403: // Regroupement de cas (Fall-through explicite)
+        Console.WriteLine("Erreur de sécurité : Accès refusé.");
+        break;
+    case 404:
+        Console.WriteLine("Erreur de routage : Ressource introuvable.");
+        break;
+    case 500:
+        Console.WriteLine("Erreur interne du serveur.");
+        break;
+    default:
+        Console.WriteLine("Code d'état non répertorié.");
+        break; // Le break est exigé même sur le cas par défaut
+}
+\end{lstlisting}
+
+\subsubsection{Les Expressions \texttt{switch} (C\# 8.0+)}
+
+Le C\# moderne a introduit les \textbf{expressions \texttt{switch}}, qui transforment la structure de contrôle classique en une instruction retournant directement une valeur. La syntaxe remplace \texttt{case} par l'opérateur "flèche" \texttt{=>} et \texttt{default} par le rejet (\emph{discard}) \texttt{\_}.
+
+\begin{lstlisting}[caption={Affectation via expression switch moderne}]
+string protocole = "HTTPS";
+
+// Retourne directement la valeur affectée au port
+int portReseau = protocole switch
+{
+    "HTTP"  => 80,
+    "HTTPS" => 443,
+    "FTP"   => 21,
+    "SSH"   => 22,
+    _       => throw new ArgumentException("Protocole inconnu.")
+};
+
+Console.WriteLine($"Connexion établie sur le port {portReseau}");
+\end{lstlisting}
+
+\subsection{L'opérateur Ternaire Conditionnel (\texttt{?:})}
+
+L'opérateur ternaire condense une affectation conditionnelle simple sur une seule ligne de code. Il évalue une expression booléenne, puis retourne l'une des deux valeurs proposées.
+
+\textbf{Syntaxe :} \texttt{condition ? valeur\_si\_vrai : valeur\_si\_faux;}
+
+\begin{lstlisting}[caption={Optimisation par opérateur ternaire}]
+int chargeProcesseur = 85;
+
+// Syntaxe classique en 6 lignes
+string etatServeur;
+if (chargeProcesseur > 90)
+{
+    etatServeur = "CRITIQUE";
+}
+else
+{
+    etatServeur = "STABLE";
+}
+
+// Syntaxe ternaire optimisée en 1 ligne
+string etatServeurOptimise = (chargeProcesseur > 90) ? "CRITIQUE" : "STABLE";
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Anti-pattern : Les ternaires imbriqués}]
+    L'imbrication d'opérateurs ternaires (ex: \texttt{a ? b : c ? d : e}) détruit la lisibilité du code. L'ingénierie logicielle proscrit formellement cette pratique au profit d'un \texttt{if / else} standard ou d'une expression \texttt{switch}.
+\end{tcolorbox}
+
+\subsection{Synthèse du Chapitre}
+
+\begin{center}
+    \textbf{Tableau : Rétrospective des structures de contrôle} \\[0.3cm]
+    \begin{tabular}{@{}lp{10cm}@{}}
+        \toprule
+        \textbf{Structure} & \textbf{Cas d'usage architectural} \\
+        \midrule
+        \textbf{\texttt{if / else if}} & Évaluation de conditions hétérogènes complexes (ex: plages de valeurs, combinaison de variables). \\
+        \textbf{\texttt{switch} classique} & Exécution de blocs d'instructions distincts basés sur l'état d'une variable unique. \\
+        \textbf{\texttt{switch} expression} & Affectation directe et fonctionnelle d'une variable basée sur de multiples valeurs statiques. \\
+        \textbf{Ternaire (\texttt{?:})} & Affectation binaire rapide sur une seule ligne (à condition stricte de non-imbrication). \\
+        \bottomrule
+    \end{tabular}
+\end{center}

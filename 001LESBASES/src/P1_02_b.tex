@@ -1,0 +1,334 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases (Module Complémentaire / Bonus)
+% Fichier : src/P1_02_b.tex
+% Sujet   : Conventions de Nommage, Formatage, Clean Code et Outillage C#
+% Note    : Pas de page de titre (suite directe de P1_01_a.tex)
+% ==============================================================================
+
+\section{Conventions de Nommage, Formatage et Clean Code}
+\marginpar{\tiny\color{gray}P1\_02\_b.tex}
+
+Écrire du code informatique ne se limite pas à produire une séquence d'instructions exécutables par le compilateur. Dans l'ingénierie logicielle professionnelle, le code C\# doit être \textbf{lisible}, \textbf{maintenable} et \textbf{homogène}. Les conventions de style constituent le langage commun facilitant la collaboration au sein des équipes de développement.
+
+
+
+\subsection{Conventions de Nommage Officielles}
+
+Le nommage d'un élément logiciel doit rendre le code auto-documenté. Microsoft définit des règles précises de casse selon la nature et la portée de chaque symbole.
+
+\subsubsection{Les Styles de Casse en C\#}
+
+\begin{center}
+    \textbf{Tableau : Règles de casse officielles C\# (Microsoft Design Guidelines)} \\[0.3cm]
+    \begin{tabular}{@{}lllp{6cm}@{}}
+        \toprule
+        \textbf{Style} & \textbf{Format} & \textbf{Exemple} & \textbf{Cas d'utilisation} \\
+        \midrule
+        \textbf{PascalCase} & Majuscule à chaque mot & \texttt{CalculerPrixTotal} & Classes, structures, enums, méthodes, propriétés, événements. \\
+        \textbf{camelCase} & 1\textsuperscript{er} mot en minuscule & \texttt{prixUnitaire} & Variables locales, paramètres de méthodes. \\
+        \textbf{\_camelCase} & camelCase précédé de \texttt{\_} & \texttt{\_compteurClient} & Champs privés d'une classe (\emph{private fields}). \\
+        \textbf{IPascalCase} & PascalCase avec préfixe \texttt{I} & \texttt{IDisposable} & Interfaces. \\
+        \textbf{PascalCase} & Majuscule à chaque mot & \texttt{NombreMaxEssais} & Constantes (\texttt{const} et \texttt{readonly}). \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsubsection{Exemples de Conformité Syntaxique}
+
+\begin{lstlisting}[caption={Conventions de nommage recommandées en C\#}]
+// Interface : Prefix 'I' + PascalCase
+public interface ICalculable
+{
+    // Propriete : PascalCase
+    decimal Total { get; }
+}
+
+// Classe : PascalCase
+public class GestionnaireCommande : ICalculable
+{
+    // Constante : PascalCase
+    public const int LimiteArticles = 100;
+
+    // Champ prive : _camelCase
+    private readonly string _identifiantCommande;
+    private int _nombreArticles;
+
+    // Propriete publique : PascalCase
+    public decimal Total { get; private set; }
+
+    // Constructeur : parametre en camelCase
+    public GestionnaireCommande(string identifiantCommande)
+    {
+        _identifiantCommande = identifiantCommande;
+    }
+
+    // Methode : PascalCase, parametre : camelCase, variable locale : camelCase
+    public void AjouterArticle(decimal prixUnitaire, int quantite)
+    {
+        decimal sousTotal = prixUnitaire * quantite;
+        Total += sousTotal;
+        _nombreArticles += quantite;
+    }
+}
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=codegray,title=\textbf{Pièges de nommage à éviter}]
+    \begin{itemize}
+        \item \textbf{Ne pas utiliser le \texttt{snake\_case}} (\texttt{prix\_total}) : réservé à d'autres langages (Python, Rust).
+        \item \textbf{Éviter la notation hongroise} (\texttt{strNom}, \texttt{intAge}) : le typage C\# est déjà statique et explicite.
+        \item \textbf{Omettre le préfixe \texttt{I} sur les interfaces} : rend la distinction impossible avec les classes abstraites.
+    \end{itemize}
+\end{tcolorbox}
+
+
+
+\subsection{Conventions de Formatage (Style Allman)}
+
+Le formatage régit l'organisation visuelle du code source. C\# adopte historiquement le style d'accolades \textbf{Allman}.
+
+\subsubsection{Règles Fondamentales d'Organigramme Visuel}
+
+\begin{enumerate}
+    \item \textbf{Accolades Allman} : L'accolade ouvrante \texttt{\{} se place \textbf{toujours sur sa propre ligne}, alignée verticalement avec la structure parente.
+    \item \textbf{Indentation} : Strictement 4 espaces par niveau de bloc (ne pas mélanger tabulations et espaces).
+    \item \textbf{Espacement des opérateurs} : Un espace unique de part et d'autre des opérateurs binaires (\texttt{=}, \texttt{+}, \texttt{==}, \texttt{\&\&}).
+\end{enumerate}
+
+\begin{lstlisting}[caption={Comparaison de formatage : Allman (C\#) vs K\&R (Java/JS)}]
+// [CORRECT] Style Allman officiel C#
+public void InscrireUtilisateur(string nom)
+{
+    if (string.IsNullOrWhiteSpace(nom))
+    {
+        throw new ArgumentException("Nom invalide", nameof(nom));
+    }
+}
+
+// [INCORRECT] Style K&R (Anti-pattern en C#)
+public void InscrireUtilisateur(string nom) {
+    if (string.IsNullOrWhiteSpace(nom)) {
+        throw new ArgumentException("Nom invalide", nameof(nom));
+    }
+}
+\end{lstlisting}
+
+
+
+\subsection{Organisation Interne d'une Classe C\#}
+
+Une classe lisible regroupe ses membres selon un ordre standardisé reconnu par la communauté.
+
+\begin{center}
+    \textbf{Tableau : Ordre d'agencement recommandé des membres d'une classe} \\[0.3cm]
+    \begin{tabular}{@{}c>{\bfseries}lp{8.5cm}@{}}
+        \toprule
+        \textbf{Ordre} & \textbf{Catégorie de Membre} & \textbf{Description} \\
+        \midrule
+        1 & Constantes & \texttt{public const} et \texttt{private const}. \\
+        2 & Champs privés & Champs d'instance d'encapsulation (\texttt{\_camelCase}). \\
+        3 & Constructeurs & Initialisateurs d'instance. \\
+        4 & Propriétés publiques & Accesseurs de données (\texttt{get}, \texttt{set}, \texttt{init}). \\
+        5 & Méthodes publiques & Points d'entrée de la logique métier. \\
+        6 & Méthodes privées & Méthodes utilitaires internes d'assistance. \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{lstlisting}[caption={Exemple de structure canonique d'un service C\#}]
+namespace LesBases.Services
+{
+    public class ServiceCompteBancaire
+    {
+        // 1. Constantes
+        private const decimal SoldeMinimumAutorise = -500.00m;
+
+        // 2. Champs privés
+        private readonly string _numeroCompte;
+        private decimal _solde;
+
+        // 3. Constructeurs
+        public ServiceCompteBancaire(string numeroCompte, decimal soldeInitial)
+        {
+            _numeroCompte = numeroCompte;
+            _solde = soldeInitial;
+        }
+
+        // 4. Proprietes publiques
+        public string NumeroCompte => _numeroCompte;
+        public decimal Solde => _solde;
+
+        // 5. Methodes publiques
+        public void Deposer(decimal montant)
+        {
+            ValiderMontantPositif(montant);
+            _solde += montant;
+        }
+
+        // 6. Methodes privees d'assistance
+        private static void ValiderMontantPositif(decimal montant)
+        {
+            if (montant <= 0)
+            {
+                throw new ArgumentOutOfRangeException(nameof(montant), "Le montant doit etre positif.");
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+
+
+\subsection{Inférence de Type (\texttt{var}) vs Type Explicite}
+
+Le mot-clé \texttt{var} (introduit en C\# 3) permet l'inférence de type à la compilation. Son utilisation est encadrée par des critères d'évidence visuelle.
+
+\begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Règle d'or de l'inférence \texttt{var}}]
+    Utiliser \texttt{var} uniquement lorsque le type retourné est \textbf{immédiatement explicite} à la lecture du côté droit de l'affectation (opérateur \texttt{new} ou littéral). Dans le cas contraire, conserver le type explicite pour maintenir la clarté.
+\end{tcolorbox}
+
+\begin{lstlisting}[caption={Usage correct et incorrect de var}]
+// [BON] Le type est evident via l'instanciation directe ou le litteral
+var nomUtilisateur = "Alice";                             // string
+var listeClients = new List<string>();                   // List<string>
+var dictionnaire = new Dictionary<int, string>();         // Evite la repetition inutile
+
+// [MAUVAIS] Le type est masque par l'appel de methode
+var resultat = CalculerIndiceForme();                     // De quel type est resultat ? int ? double ? CustomType ?
+
+// [CORRECT] Type explicite quand l'intention doit être clarifiée
+decimal indiceForme = CalculerIndiceForme();
+\end{lstlisting}
+
+
+
+\subsection{Contrôle de Flux et Retours Anticipés (\emph{Early Return})}
+
+Pour éviter l'empilement excessif de conditions imbriquées (syndrome de la pyramide d'indentation), C\# préconise la technique des **retours anticipés**.
+
+\begin{lstlisting}[caption={Réfractorisation d'une méthode complexe par Early Return}]
+// [MAUVAIS] Imbrication profonde et illisible
+public string TraiterCommande(Commande cmd)
+{
+    if (cmd != null)
+    {
+        if (cmd.EstValidee)
+        {
+            if (cmd.StockDisponible)
+            {
+                return "Commande expediee";
+            }
+            else
+            {
+                return "Rupture de stock";
+            }
+        }
+        else
+        {
+            return "Commande non validee";
+        }
+    }
+    return "Erreur commande nulle";
+}
+
+// [EXCELLENT] Structure avec retours anticipes (Early Return)
+public string TraiterCommandePropre(Commande cmd)
+{
+    if (cmd == null) return "Erreur commande nulle";
+    if (!cmd.EstValidee) return "Commande non validee";
+    if (!cmd.StockDisponible) return "Rupture de stock";
+
+    return "Commande expediee";
+}
+\end{lstlisting}
+
+
+
+\subsection{Gestion Rigoureuse des Exceptions}
+
+La gestion des erreurs doit respecter la chaîne de rétropropagation des exceptions sans altérer la pile d'appels (\emph{stack trace}).
+
+\begin{tcolorbox}[colback=backcolour,colframe=codegray,title=\textbf{Règle d'or : \texttt{throw;} vs \texttt{throw ex;}}]
+    Lors du re-lancement d'une exception dans un bloc \texttt{catch}, utiliser strictement \textbf{\texttt{throw;}} sans argument. L'instruction \texttt{throw ex;} réinitialise la pile d'appels au niveau du catch, masquant l'origine exacte du plantage.
+\end{tcolorbox}
+
+\begin{lstlisting}[caption={Bonnes pratiques de re-lancement d'exceptions}]
+try
+{
+    ExecuterTraitementReseau();
+}
+catch (TimeoutException ex)
+{
+    // [BON] Conserve l'integralite de la stack trace originale
+    Logger.LogError(ex, "Timeout reseau detecte");
+    throw; 
+}
+catch (Exception ex)
+{
+    // [INCORRECT] Ecraser la stack trace originale
+    // throw ex; <-- NE JAMAIS FAIRE CELA
+}
+\end{lstlisting}
+
+
+
+\subsection{Outillage Automatisé (\texttt{.editorconfig} \& Roslyn)}
+
+Afin de garantir le respect des conventions sans effort manuel, l'écosystème .NET utilise des fichiers de configuration standardisés à la racine du dépôt.
+
+\subsubsection{Fichier de Configuration \texttt{.editorconfig}}
+
+\begin{lstlisting}[caption={Exemple de fichier .editorconfig standard pour projet C\#}]
+root = true
+
+[*.cs]
+# Indentation
+indent_style = space
+indent_size = 4
+
+# Regles de nommage des champs prives
+dotnet_naming_rule.private_fields_should_have_underscore.severity = warning
+dotnet_naming_rule.private_fields_should_have_underscore.symbols  = private_fields
+dotnet_naming_rule.private_fields_should_have_underscore.style    = prefix_underscore
+
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+dotnet_naming_style.prefix_underscore.required_prefix = _
+dotnet_naming_style.prefix_underscore.capitalization = camel_case
+
+# Respect obligatoire des accolades Allman
+csharp_prefer_braces = true:warning
+\end{lstlisting}
+
+\subsubsection{Commande de Formatage CLI}
+
+La CLI .NET intègre un outil natif pour corriger le formatage du projet entier :
+
+\begin{lstlisting}[caption={Commandes dotnet format}]
+# Reformate automatiquement tous les fichiers de la solution selon le .editorconfig
+dotnet format
+
+# Verification sans modification (ideal pour les pipelines CI/CD)
+dotnet format --verify-no-changes
+\end{lstlisting}
+
+
+
+\subsection{Synthèse des Conventions}
+
+\begin{center}
+    \textbf{Tableau : Tableau récapitulatif des règles d'ingénierie C\#} \\[0.3cm]
+    \begin{tabular}{@{}lll@{}}
+        \toprule
+        \textbf{Élément} & \textbf{Convention Officielle} & \textbf{Exemple Validé} \\
+        \midrule
+        Classe / Structure & PascalCase & \texttt{class CompteUtilisateur} \\
+        Interface & I + PascalCase & \texttt{interface IRepository} \\
+        Méthode / Propriété & PascalCase & \texttt{public void Sauvegarder()} \\
+        Variable locale & camelCase & \texttt{int totalElements = 0;} \\
+        Champ privé & \_camelCase & \texttt{private string \_cleApi;} \\
+        Accolades & Style Allman & Première ligne dédiée \\
+        Re-throw exception & \texttt{throw;} & Préserve la pile d'appels \\
+        \bottomrule
+    \end{tabular}
+\end{center}

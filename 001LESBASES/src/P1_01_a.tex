@@ -1,0 +1,205 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_01_a.tex
+% Sujet   : Partie 1 - Chapitre 1 : Environnement et Premier Programme
+% ==============================================================================
+
+% ==============================================================================
+% CHAPITRE 1 : ENVIRONNEMENT ET PREMIER PROGRAMME
+% ==============================================================================
+\section{Environnement et Premier Programme}
+\marginpar{\tiny\color{gray}P1\_01\_a.tex}
+
+\subsection{Installation de l'Environnement de Développement}
+
+Pour développer efficacement en C\#, le choix et la configuration de l'Environnement de Développement Intégré (IDE) sont cruciaux. Deux options principales s'offrent au développeur :
+
+\subsubsection{Visual Studio (Environnement Complet)}
+Visual Studio est l'IDE de référence pour le développement .NET sous Windows.
+\begin{enumerate}
+    \item Télécharger la version \textbf{Visual Studio Community} (gratuite pour l'apprentissage et l'usage individuel).
+    \item Lors de l'installation via le \emph{Visual Studio Installer}, cocher impérativement la charge de travail (\emph{workload}) :
+    \begin{quote}
+        \textbf{Développement .NET Desktop} (comprend le SDK .NET, les outils de débogage et C\#).
+    \end{quote}
+\end{enumerate}
+
+\subsubsection{Visual Studio Code (Éditeur Léger \& Multiplateforme)}
+VS Code est un éditeur de code extensible, idéal pour les environnements Linux, macOS ou Windows légers.
+\begin{enumerate}
+    \item Télécharger et installer le \textbf{SDK .NET 8+} depuis le site officiel Microsoft.
+    \item Installer \textbf{Visual Studio Code}.
+    \item Ouvrir l'onglet Extensions (\texttt{Ctrl+Shift+X}) et installer la suite d'extensions officielles :
+    \begin{itemize}
+        \item \textbf{C\# Dev Kit} (fournit IntelliSense, la gestion de solutions et le débogage avancé).
+        \item \textbf{C\#} (support du langage via OmniSharp/Roslyn).
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Qu'est-ce que C\#, .NET, CLI et CLR ?}
+
+Pour programmer en C\# avec rigueur, il est essentiel d'assimiler l'architecture de la plateforme.
+
+\subsubsection{Vue d'Ensemble de l'Écosystème}
+
+\begin{center}
+    \textbf{Tableau : Composants clés de l'écosystème Microsoft .NET} \\[0.3cm]
+    \begin{tabular}{@{}llp{8cm}@{}}
+        \toprule
+        \textbf{Terme} & \textbf{Nature} & \textbf{Description} \\
+        \midrule
+        \textbf{C\#} & Langage & Langage de programmation moderne, orienté objet, à typage fort. \\
+        \textbf{.NET} & Plateforme & Écosystème réunissant le runtime, les bibliothèques standard et les outils. \\
+        \textbf{Roslyn} & Compilateur & Compilateur officiel traduisant le C\# en langage intermédiaire (CIL). \\
+        \textbf{CLI} & Norme & \emph{Common Language Infrastructure} — Norme (ECMA-335) régissant .NET. \\
+        \textbf{CLR} & Runtime & \emph{Common Language Runtime} — Moteur d'exécution virtuel exécutant le code. \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsubsection{Définitions des Concepts Clés}
+
+Afin de bien appréhender l'écosystème .NET, il est crucial de comprendre la terminologie employée :
+
+\begin{itemize}
+    \item \textbf{Langage typé vs non typé (Typage fort)} : 
+    Un \textbf{langage typé} (comme C\# ou Java) exige que chaque donnée en mémoire possède une nature stricte (entier, texte, booléen) définie à l'avance. À l'inverse, un langage \textbf{à typage dynamique} (souvent appelé vulgairement "non typé", comme JavaScript ou Python) permet de changer la nature d'une variable à la volée. C\# est un langage \textbf{fortement typé} : le compilateur vérifie la cohérence des opérations et interdit les actions illogiques (ex: diviser un texte par un entier) avant même l'exécution, garantissant ainsi une grande fiabilité et robustesse des applications.
+
+    \item \textbf{Runtime (Moteur d'exécution)} : 
+    Un \emph{runtime} est un environnement logiciel qui s'exécute en arrière-plan et héberge votre programme. Sans le runtime (le CLR pour .NET), votre code compilé serait incompréhensible pour le système d'exploitation. Le runtime est responsable de la traduction finale des instructions pour le processeur physique, de l'allocation mémoire et de la sécurité logicielle.
+
+    \item \textbf{Bibliothèque (Library)} : 
+    Une bibliothèque est une collection de code pré-écrit, optimisé et testé, prêt à être intégré dans vos propres projets pour vous éviter de "réinventer la roue". La plateforme .NET inclut la \emph{Base Class Library} (BCL), offrant des milliers de fonctionnalités prêtes à l'emploi (manipulation de fichiers, connexions réseau, algorithmes cryptographiques).
+
+    \item \textbf{Outils (Tools)} : 
+    Ce sont les utilitaires qui accompagnent le développeur tout au long du cycle de production logicielle. Quelques exemples incontournables dans .NET :
+    \begin{itemize}
+        \item \textbf{NuGet} : Le gestionnaire de paquets officiel, permettant de rechercher, télécharger et intégrer des bibliothèques externes tierces.
+        \item \textbf{CLI dotnet} (\emph{Command Line Interface}) : L'outil permettant de créer, compiler, tester et déployer des applications .NET depuis un terminal.
+        \item \textbf{MSBuild} : Le moteur de construction sous-jacent qui orchestre la compilation des solutions complexes.
+    \end{itemize}
+
+    \item \textbf{Norme (Standard / Spécification)} : 
+    Une norme est un document théorique et officiel (tel un cahier des charges). Elle ne contient aucun code exécutable, mais dicte les règles absolues de fonctionnement d'un système. Par exemple, la \textbf{CLI} est la norme (le plan de construction architectural), tandis que le \textbf{CLR} est l'implémentation de cette norme (le moteur réel construit en respectant rigoureusement ce plan).
+\end{itemize}
+
+\subsubsection{La CLI (Common Language Infrastructure) : La Norme Théorique}
+
+La \textbf{CLI} (\emph{Common Language Infrastructure}) est une spécification internationale qui décrit l'architecture nécessaire pour permettre à plusieurs langages haute performance (C\#, F\#, VB.NET) de s'exécuter sur la même plateforme sans recompilation spécifique à la machine hôte.
+
+La CLI définit deux piliers fondamentaux :
+\begin{enumerate}
+    \item \textbf{CIL / IL (Common Intermediate Language)} : Le jeu d'instructions universel auquel tous les langages .NET se réduisent après la première phase de compilation.
+    \item \textbf{CTS (Common Type System)} : La spécification unifiée des types de données (garantissant qu'un entier \texttt{int} possède la même représentation mémoire en C\# et en F\#).
+\end{enumerate}
+
+\subsubsection{Le CLR (Common Language Runtime) : Le Moteur d'Exécution}
+
+Le \textbf{CLR} est l'implémentation concrète de la spécification CLI par Microsoft. Il agit comme une machine virtuelle hautement optimisée qui prend en charge :
+
+\begin{itemize}
+    \item \textbf{La Compilation JIT (Just-In-Time)} : Traduction à la volée du code IL en instructions machines natives (0 et 1) adaptées au processeur cible (x64, ARM64).
+    \item \textbf{Le Garbage Collector (GC)} : Gestion automatique de la mémoire et libération des objets inutilisés.
+    \item \textbf{La Sécurité de Typage} : Vérification que le code n'accède pas à des zones mémoire non autorisées.
+\end{itemize}
+
+\subsubsection{Les 4 Piliers de l'Architecture .NET}
+
+Voici le rôle exact de chaque composant dans le cycle de vie de votre code :
+
+\begin{itemize}
+    \item \textbf{La CLI (L'Infrastructure)} : C'est le cahier des charges. Elle dicte les règles que tout langage .NET doit respecter (les types de données, la structure du code). Elle garantit que le code C\# pourra cohabiter avec du code F\#.
+    \item \textbf{Roslyn (Le Compilateur)} : C'est l'outil qui lit votre code source C\# (\texttt{.cs}). Il vérifie qu'il n'y a pas d'erreurs de syntaxe, puis le traduit en \textbf{Code IL} (un code intermédiaire compréhensible par la machine virtuelle).
+    \item \textbf{Le CLR (Le Moteur d'Exécution)} : C'est le cœur de .NET. Il prend le Code IL généré par Roslyn et le fait tourner. Il s'occupe de gérer la mémoire (Garbage Collector) et d'assurer la sécurité du programme pendant qu'il tourne.
+    \item \textbf{Le JIT (Le Traducteur Final)} : C'est un composant interne au CLR. Juste avant l'exécution, il traduit le Code IL en instructions binaires ultra-rapides, spécifiquement optimisées pour le processeur de la machine sur laquelle le programme tourne (Intel, AMD, ARM).
+\end{itemize}
+
+\subsection{Structure d'un Programme C\#}
+
+Tout programme C\# s'articule autour de trois éléments fondamentaux : l'espace de noms (\texttt{namespace}), la classe (\texttt{class}), et le point d'entrée (\texttt{Main}).
+
+\subsubsection{Structure Classique (Explicite)}
+
+Voici le squelette standard d'une application C\# console :
+
+\begin{lstlisting}[caption={Structure classique d'un fichier C\# (Program.cs)}]
+using System;
+
+namespace LesBases.Chapitre1
+{
+    internal class Program
+    {
+        static void Main(string[] args)
+        {
+            // Point d'entree principal de l'application
+            Console.WriteLine("Bienvenue dans la formation C# !");
+        }
+    }
+}
+\end{lstlisting}
+
+\paragraph{Explication détaillée du code :}
+\begin{itemize}
+    \item \texttt{using System;} : En C\#, le code est organisé en bibliothèques (espaces de noms). Cette ligne dit au compilateur : \emph{"Je veux utiliser les outils fournis par Microsoft, notamment ceux pour écrire dans la console"}. Sans cette ligne, il faudrait écrire \texttt{System.Console.WriteLine(...)}.
+    \item \texttt{namespace LesBases.Chapitre1} : Un \texttt{namespace} (espace de noms) est un dossier virtuel. Il permet de ranger vos classes pour que votre code ne se mélange pas avec celui d'autres développeurs. Si deux classes s'appellent \texttt{Program}, le namespace permet de les différencier.
+    \item \texttt{internal class Program} : En C\# classique, tout doit obligatoirement être contenu dans une "classe". La classe \texttt{Program} est traditionnellement le point de départ. Le mot-clé \texttt{internal} signifie que cette classe n'est visible que dans ce projet.
+    \item \texttt{static void Main(string[] args)} : C'est le point d'entrée critique de l'application. Quand vous lancez le programme, le moteur de .NET cherche très exactement cette méthode \texttt{Main} et exécute le code qui se trouve à l'intérieur de ses accolades.
+\end{itemize}
+
+\subsubsection{Structure Moderne : Top-Level Statements (C\# 9+ / .NET 8)}
+
+Dans les versions modernes de C\#, le boilerplate (code répétitif) peut être omis pour les scripts simples et les points d'entrée :
+
+\begin{lstlisting}[caption={Structure moderne avec Top-Level Statements}]
+// Les instructions sont directement au niveau racine
+Console.WriteLine("Bienvenue dans la formation C# moderne !");
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Quelle structure choisir et comment l'afficher ?}]
+    Aujourd'hui, \textbf{Microsoft recommande d'utiliser les Top-Level Statements} (la structure moderne) pour les nouveaux projets. C'est plus clair et cela enlève le code inutile pour démarrer. C'est le comportement par défaut quand on crée un nouveau projet .NET.
+    
+    Cependant, Roslyn cache simplement l'ancienne structure : il génère toujours une classe \texttt{Program} et une méthode \texttt{Main} en arrière-plan pendant la compilation. 
+    
+    \textbf{Comment revenir à la structure classique ?}
+    Si votre projet nécessite une configuration complexe au démarrage ou si vous préférez l'ancienne méthode, vous pouvez forcer la structure classique :
+    \begin{itemize}
+        \item Dans Visual Studio, lors de la création du projet, cochez : \emph{"Do not use top-level statements"}.
+        \item En ligne de commande (CLI), tapez : \texttt{dotnet new console --use-program-main}.
+    \end{itemize}
+\end{tcolorbox}
+
+\subsection{Le Cycle de Compilation et d'Exécution}
+
+Le processus complet de transformation du code source C\# en exécution système suit un pipeline strict en deux phases :
+
+\begin{enumerate}
+    \item \textbf{Phase 1 : Compilation Statique (Roslyn)}
+    \begin{itemize}
+        \item Analyse syntaxique et sémantique du fichier \texttt{.cs}.
+        \item Génération de l'assemblage (fichier \texttt{.dll} ou \texttt{.exe}).
+        \item L'assemblage contient le \textbf{Code IL} et les \textbf{Métadonnées}.
+    \end{itemize}
+
+    \item \textbf{Phase 2 : Exécution Dynamique (CLR / JIT)}
+    \begin{itemize}
+        \item Chargement de l'assemblage par le CLR.
+        \item Le compilateur **JIT** traduit les blocs IL nécessaires en instructions machines natives.
+        \item Le processeur exécute le code natif.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Synthèse du Chapitre}
+
+\begin{center}
+    \textbf{Tableau : Récapitulatif des notions clés du Chapitre 1} \\[0.3cm]
+    \begin{tabular}{@{}lp{10cm}@{}}
+        \toprule
+        \textbf{Concept} & \textbf{A retenir} \\
+        \midrule
+        \textbf{Roslyn} & Compilateur C\# qui transforme le code \texttt{.cs} en \textbf{IL}. \\
+        \textbf{Code IL} & Langage intermédiaire universel de la plateforme .NET. \\
+        \textbf{CLR} & Moteur d'exécution qui gère la mémoire (GC) et compile le code IL via le \textbf{JIT}. \\
+        \textbf{Main()} & Point d'entrée obligatoire de toute application console C\#. \\
+        \bottomrule
+    \end{tabular}
+\end{center}

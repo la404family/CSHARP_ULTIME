@@ -1,0 +1,127 @@
+% ==============================================================================
+% Document Maître Assemblé : Les Bases C# et SQL
+% Généré automatiquement par compile.py
+% ==============================================================================
+
+\documentclass[11pt,a4paper]{article}
+
+% --- Packages fondamentaux ---
+\usepackage[french]{babel}
+\usepackage{geometry}
+\geometry{margin=2.5cm}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{hyperref}
+
+% --- Configuration Typographique et Code ---
+\usepackage{iftex}
+
+\ifXeTeX
+  \usepackage{fontspec}
+  \setmonofont{JetBrains Mono}[
+      Path = ./fonts/,
+      Extension = .ttf,
+      UprightFont = *-Regular,
+      BoldFont = *-Bold,
+      ItalicFont = *-Italic,
+      BoldItalicFont = *-BoldItalic,
+      Scale = 0.88,
+      ErrorFilter = ignore
+  ]
+\else
+  \ifLuaTeX
+    \usepackage{fontspec}
+    \setmonofont{JetBrainsMono-Regular}[Scale=0.88]
+  \else
+    \usepackage[utf8]{inputenc}
+    \usepackage[T1]{fontenc}
+  \fi
+\fi
+
+\usepackage{listings}
+\usepackage{tcolorbox}
+\tcbuselibrary{skins,breakable}
+
+% --- Couleurs du thème ---
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{backcolour}{rgb}{0.97,0.97,0.98}
+\definecolor{keywordcolor}{rgb}{0.0,0.45,0.75}
+\definecolor{stringcolor}{rgb}{0.8,0.25,0.1}
+
+% --- Style de code C# et SQL ---
+\lstdefinestyle{csharpstyle}{
+    backgroundcolor=\color{backcolour},
+    commentstyle=\color{codegray}\itshape,
+    keywordstyle=\color{keywordcolor}\bfseries,
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{stringcolor},
+    basicstyle=\ttfamily\small,
+    breakatwhitespace=false,
+    breaklines=true,
+    captionpos=b,
+    keepspaces=true,
+    numbers=left,
+    numbersep=8pt,
+    showspaces=false,
+    showstringspaces=false,
+    showtabs=false,
+    tabsize=4,
+    extendedchars=true,
+    literate=
+        {é}{{\'e}}1
+        {è}{{\`e}}1
+        {à}{{\`a}}1
+        {ç}{{\c{c}}}1
+        {œ}{{\oe}}1
+        {ù}{{\`u}}1
+        {É}{{\'E}}1
+        {È}{{\`E}}1
+        {À}{{\`A}}1
+        {Ç}{{\c{C}}}1
+        {î}{{\^i}}1
+        {ê}{{\^e}}1
+        {ô}{{\^o}}1
+        {û}{{\^u}}1
+        {ë}{{\"e}}1
+        {ï}{{\"i}}1
+        {ü}{{\"u}}1
+}
+\lstset{style=csharpstyle}
+
+% --- Liens Hyperref ---
+\hypersetup{
+    colorlinks=true,
+    linkcolor=keywordcolor,
+    filecolor=magenta,      
+    urlcolor=keywordcolor,
+    pdftitle={001 - Les Bases : C\# et SQL},
+    pdfauthor={Formation .NET}
+}
+
+\begin{document}
+
+% --- Inclusion de P1_00_a.tex ---
+\input{src/P1_00_a.tex}
+
+% --- Inclusion de P1_01_a.tex ---
+\input{src/P1_01_a.tex}
+
+% --- Inclusion de P1_02_a.tex ---
+\input{src/P1_02_a.tex}
+
+% --- Inclusion de P1_02_b.tex ---
+\input{src/P1_02_b.tex}
+
+% --- Inclusion de P1_03_a.tex ---
+\input{src/P1_03_a.tex}
+
+% --- Inclusion de P1_04_a.tex ---
+\input{src/P1_04_a.tex}
+
+
+
+\end{document}

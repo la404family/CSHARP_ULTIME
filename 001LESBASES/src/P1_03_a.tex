@@ -1,0 +1,128 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_03_a.tex
+% Sujet   : Chapitre 3 : Passage de Paramètres - Les modificateurs ref et out
+% ==============================================================================
+
+\newpage
+\section{Passage de Paramètres : \texttt{ref} et \texttt{out}}
+\marginpar{\tiny\color{gray}P1\_03\_a.tex}
+
+En C\#, il est essentiel de comprendre comment les données voyagent entre les différentes méthodes de votre programme. Par défaut, lorsque vous transmettez une variable de type valeur (comme un \texttt{int}, un \texttt{bool} ou un \texttt{double}) en tant qu'argument à une méthode, le compilateur effectue un \textbf{passage par valeur} (souvent appelé passage par copie).
+
+Concrètement, cela signifie que le moteur d'exécution clone la valeur de votre variable d'origine et ne transmet que ce clone à la méthode appelée. Cette méthode va alors stocker cette copie de travail isolée dans sa propre zone de mémoire temporaire, appelée la pile d'exécution (\emph{Stack}). 
+
+Par conséquent, si la méthode altère cette donnée au cours de son exécution (en l'incrémentant ou en l'écrasant), elle ne modifie que \textbf{sa propre copie locale}. La variable d'origine, appartenant à la méthode appelante, demeure totalement intacte et protégée en mémoire.
+
+Cependant, dans certaines architectures logicielles, ce comportement par défaut s'avère limitant. Un développeur peut avoir le besoin légitime qu'une méthode :
+\begin{itemize}
+    \item \textbf{Modifie directement} l'état de la variable d'origine qui lui a été confiée.
+    \item \textbf{Exporte plusieurs résultats distincts} simultanément, outrepassant ainsi la limite naturelle de l'instruction unique \texttt{return}.
+\end{itemize}
+
+C'est pour répondre à ces deux besoins spécifiques de manipulation de la mémoire que le langage C\# met à disposition les modificateurs de paramètres \textbf{\texttt{ref}} et \textbf{\texttt{out}}.
+
+\subsection{Le modificateur \texttt{ref} (Passage par référence)}
+
+\subsubsection{Introduction Théorique}
+Le mot-clé \texttt{ref} ordonne au compilateur de transmettre non pas la valeur de la variable, mais son \textbf{adresse mémoire} (un pointeur managé). La méthode accède ainsi directement à l'espace mémoire alloué par l'appelant. Une contrainte stricte s'applique : la variable cible doit obligatoirement être initialisée par l'appelant \emph{avant} d'être passée en paramètre, car la méthode appelée peut choisir de lire sa valeur initiale avant de la modifier.
+
+\subsubsection{Syntaxe et Règles}
+Le mot-clé \texttt{ref} doit être déclaré explicitement dans la signature de la méthode, ainsi qu'au moment de l'appel. Cette verbosité intentionnelle signale clairement au développeur lisant le code que la variable est susceptible de subir des mutations (effets de bord).
+
+\begin{lstlisting}[caption={Utilisation basique de ref}]
+// 1. Declaration de la methode avec le modificateur 'ref'
+void IncrementerCompteur(ref int compteur)
+{
+    compteur += 10; // Modification directe de l'adresse memoire cible
+}
+
+// 2. Initialisation prealable obligatoire
+int tentatives = 5;
+
+// 3. Appel avec le modificateur 'ref' explicite
+IncrementerCompteur(ref tentatives);
+
+Console.WriteLine(tentatives); // Affiche : 15
+\end{lstlisting}
+
+\subsubsection{Exemple d'Ingénierie : Algorithme de Permutation (Swap)}
+Le passage par référence est l'unique solution permettant d'écrire un algorithme d'échange de variables (\emph{Swap}) opérant directement sur l'état externe.
+
+\begin{lstlisting}[caption={Algorithme d'échange via passage par référence}]
+void EchangerAdresses(ref string adresseA, ref string adresseB)
+{
+    // Utilisation d'un tampon local pour la permutation
+    string tampon = adresseA;
+    adresseA = adresseB;
+    adresseB = tampon;
+}
+
+string serveurPrimaire = "192.168.1.10";
+string serveurSecondaire = "10.0.0.5";
+
+EchangerAdresses(ref serveurPrimaire, ref serveurSecondaire);
+
+Console.WriteLine($"Primaire : {serveurPrimaire} | Secondaire : {serveurSecondaire}");
+// Le routage est inverse en memoire de maniere permanente
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges courants : Oubli d'initialisation}]
+    Le compilateur Roslyn émettra l'erreur stricte \texttt{CS0165 : Use of unassigned local variable} si vous tentez de passer une variable non initialisée avec \texttt{ref}. Le CLR exige une adresse mémoire contenant une donnée typée valide.
+\end{tcolorbox}
+
+\subsection{Le modificateur \texttt{out} (Paramètre de sortie)}
+
+\subsubsection{Introduction Théorique}
+Le modificateur \texttt{out} permet également le passage par référence, mais impose un contrat sémantique inversé : son but exclusif est \textbf{d'exporter des données} hors de la méthode. Contrairement à \texttt{ref}, la variable passée via \texttt{out} n'a pas besoin d'être initialisée par l'appelant. En contrepartie, le compilateur force contractuellement la méthode appelée à y assigner une valeur avant toute instruction de retour (\texttt{return} ou fin de bloc d'exécution).
+
+\subsubsection{Syntaxe et Cas d'Usage : Le Pattern Try-Parse}
+L'usage le plus incontournable du modificateur \texttt{out} réside dans les méthodes de conversion sécurisées, nommées \emph{TryParse}. Ces méthodes utilisent leur type de retour classique (\texttt{bool}) pour signaler le succès ou l'échec de l'opération, tout en injectant le résultat du calcul dans la variable \texttt{out}.
+
+\begin{lstlisting}[caption={Pattern Try-Parse avec déclaration inline}]
+string chargeUtileReseau = "1024";
+
+// C# 7+ : Declaration "inline" de la variable 'out' directement lors de l'appel
+bool conversionReussie = int.TryParse(chargeUtileReseau, out int portServeur);
+
+if (conversionReussie)
+{
+    Console.WriteLine($"Connexion etablie sur le port : {portServeur}");
+}
+else
+{
+    Console.WriteLine("Erreur de parsing : La donnee reseau est corrompue.");
+}
+\end{lstlisting}
+
+\paragraph{Analyse de l'implémentation :}
+\begin{itemize}
+    \item L'appel à \texttt{int.TryParse} tente de parser la chaîne de caractères brute.
+    \item Si le contenu échoue à la conversion (ex: caractères non numériques), la méthode retourne \texttt{false} et la variable \texttt{portServeur} reçoit la valeur par défaut du type (\texttt{0}). Aucune exception n'est levée, économisant les ressources CPU.
+    \item Si le parsing réussit, la valeur convertie est affectée à l'adresse de \texttt{portServeur} et la méthode retourne \texttt{true}.
+\end{itemize}
+
+\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Pièges courants : Rupture du contrat out}]
+    L'erreur de compilation \texttt{CS0177 : The out parameter must be assigned to before control leaves the current method} survient inévitablement si le code de la méthode appelée omet d'affecter une valeur au paramètre \texttt{out}. Le compilateur garantit ainsi la sécurité mémoire et empêche de récupérer une valeur non allouée.
+\end{tcolorbox}
+
+\subsection{Évolution Architecturale : Tuples et Bonnes Pratiques}
+
+Bien que les paramètres \texttt{out} aient été historiquement employés pour retourner de multiples valeurs, l'architecture C\# moderne (depuis C\# 7) préconise désormais l'utilisation des \textbf{Tuples} pour des raisons de syntaxe fonctionnelle et de lisibilité. 
+
+Par conséquent, l'usage des paramètres \texttt{out} doit être strictement restreint au pattern canonique \texttt{TryParse} (ou scénarios de validation similaires). De son côté, l'emploi de \texttt{ref} doit être réservé à l'optimisation des performances de bas niveau (ex: éviter de copier des structures très lourdes en mémoire, ou manipuler des buffers d'entrées/sorties natives). 
+
+\subsection{Synthèse du Chapitre}
+
+\begin{center}
+    \textbf{Tableau : Comparaison des modificateurs de paramètres} \\[0.3cm]
+    \begin{tabular}{@{}llp{7cm}@{}}
+        \toprule
+        \textbf{Modificateur} & \textbf{Initialisation par l'appelant} & \textbf{Contrat de la méthode} \\
+        \midrule
+        Aucun (par valeur) & Obligatoire & Travaille sur une copie isolée. \\
+        \textbf{\texttt{ref}} & Obligatoire & Modifie directement l'adresse mémoire source. \\
+        \textbf{\texttt{out}} & Optionnelle (déclaration \emph{inline} permise) & Obligation absolue d'assigner une valeur avant de retourner. \\
+        \bottomrule
+    \end{tabular}
+\end{center}

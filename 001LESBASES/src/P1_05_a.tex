@@ -1,0 +1,174 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_05_a.tex
+% Sujet   : Chapitre 5 : Les Opérateurs
+% ==============================================================================
+
+\newpage
+\section{Les Opérateurs et Expressions}
+\marginpar{\tiny\color{gray}P1\_05\_a.tex}
+
+En C\#, les opérateurs sont des symboles syntaxiques spécifiques qui indiquent au compilateur de réaliser des opérations mathématiques, logiques ou d'affectation sur des opérandes (variables ou valeurs). La maîtrise des opérateurs est indispensable pour manipuler les données et contrôler le flux d'exécution.
+
+\subsection{Opérateurs Arithmétiques}
+
+Les opérateurs arithmétiques effectuent des calculs mathématiques standard. Le comportement de la division dépend du type de ses opérandes : si les deux sont des entiers, le résultat est une division entière (tronquée).
+
+\begin{center}
+    \textbf{Tableau : Opérateurs Arithmétiques} \\[0.3cm]
+    \begin{tabular}{@{}cllp{5cm}@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Opération} & \textbf{Exemple} & \textbf{Résultat} \\
+        \midrule
+        \texttt{+} & Addition & \texttt{5 + 3} & \texttt{8} \\
+        \texttt{-} & Soustraction & \texttt{5 - 3} & \texttt{2} \\
+        \texttt{*} & Multiplication & \texttt{5 * 3} & \texttt{15} \\
+        \texttt{/} & Division entière & \texttt{10 / 3} & \texttt{3} \\
+        \texttt{\%} & Modulo (reste) & \texttt{10 \% 3} & \texttt{1} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{lstlisting}[caption={Division entière vs Division flottante}]
+int a = 10, b = 3;
+Console.WriteLine(a / b);         // Affiche : 3
+// Le transtypage (cast) explicite force une division à virgule flottante
+Console.WriteLine((double)a / b); // Affiche : 3.3333333333333335
+\end{lstlisting}
+
+\subsection{Opérateurs d'Affectation}
+
+L'opérateur d'affectation de base est le signe \texttt{=}. C\# propose également des opérateurs d'affectation composés, qui combinent une opération arithmétique ou binaire avec l'affectation, permettant d'alléger la syntaxe.
+
+\begin{center}
+    \textbf{Tableau : Opérateurs d'Affectation Composés} \\[0.3cm]
+    \begin{tabular}{@{}cll@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Syntaxe équivalente} & \textbf{Exemple} \\
+        \midrule
+        \texttt{+=} & \texttt{a = a + b} & \texttt{valeur += 3;} \\
+        \texttt{-=} & \texttt{a = a - b} & \texttt{valeur -= 3;} \\
+        \texttt{*=} & \texttt{a = a * b} & \texttt{valeur *= 3;} \\
+        \texttt{/=} & \texttt{a = a / b} & \texttt{valeur /= 3;} \\
+        \texttt{\%=} & \texttt{a = a \% b} & \texttt{valeur \%= 3;} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsection{Opérateurs d'Incrémentation et Décrémentation}
+
+Ces opérateurs unaires augmentent ou diminuent la valeur d'une variable numérique de \texttt{1}. L'emplacement de l'opérateur (préfixe ou suffixe) détermine le moment de l'évaluation par le CLR.
+
+\begin{itemize}
+    \item \textbf{Préfixé (\texttt{++a})} : La variable est incrémentée \textbf{avant} l'évaluation de l'expression.
+    \item \textbf{Suffixé (\texttt{a++})} : La variable est évaluée dans l'expression courante, puis incrémentée \textbf{après}.
+\end{itemize}
+
+\begin{lstlisting}[caption={Incrémentation préfixée et suffixée}]
+int index = 5;
+Console.WriteLine(index++);  // Affiche 5, puis index devient 6
+Console.WriteLine(++index);  // index devient 7, puis s'affiche (7)
+\end{lstlisting}
+
+\subsection{Opérateurs de Comparaison (Relationnels)}
+
+Ils évaluent la relation entre deux opérandes et retournent systématiquement une valeur de type \texttt{bool} (\texttt{true} ou \texttt{false}). Ils constituent la base des structures conditionnelles.
+
+\begin{center}
+    \textbf{Tableau : Opérateurs de Comparaison} \\[0.3cm]
+    \begin{tabular}{@{}cll@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Signification} & \textbf{Exemple} \\
+        \midrule
+        \texttt{==} & Égal à & \texttt{a == b} \\
+        \texttt{!=} & Différent de & \texttt{a != b} \\
+        \texttt{>} & Strictement supérieur & \texttt{a > b} \\
+        \texttt{<} & Strictement inférieur & \texttt{a < b} \\
+        \texttt{>=} & Supérieur ou égal & \texttt{a >= b} \\
+        \texttt{<=} & Inférieur ou égal & \texttt{a <= b} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Erreur Courante : Affectation vs Égalité}]
+    Une erreur classique d'ingénierie consiste à utiliser l'opérateur d'affectation \texttt{=} (un seul signe égal) au lieu de l'opérateur de comparaison \texttt{==} dans une condition. Le compilateur C\# bloquera cette erreur (\texttt{Cannot implicitly convert type...}) si le résultat n'est pas un booléen.
+\end{tcolorbox}
+
+\subsection{Opérateurs Logiques}
+
+Les opérateurs logiques permettent de combiner plusieurs expressions booléennes. C\# implémente l'évaluation "court-circuit" : si le premier opérande suffit à déterminer le résultat final, le second opérande n'est pas évalué.
+
+\begin{center}
+    \textbf{Tableau : Opérateurs Logiques} \\[0.3cm]
+    \begin{tabular}{@{}clp{9cm}@{}}
+        \toprule
+        \textbf{Opérateur} & \textbf{Nom} & \textbf{Comportement Court-Circuit} \\
+        \midrule
+        \texttt{\&\&} & ET Logique (\emph{AND}) & Si l'opérande gauche est \texttt{false}, l'opérande droit est ignoré (le résultat sera \texttt{false}). \\
+        \texttt{||} & OU Logique (\emph{OR}) & Si l'opérande gauche est \texttt{true}, l'opérande droit est ignoré (le résultat sera \texttt{true}). \\
+        \texttt{!} & NON Logique (\emph{NOT}) & Inverse la valeur booléenne (opérateur unaire). \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{lstlisting}[caption={Évaluation logique conditionnelle}]
+bool accesBdd = true;
+bool compteVerrouille = false;
+
+// Vérifie si l'accès est disponible ET que le compte n'est PAS verrouillé
+if (accesBdd && !compteVerrouille)
+{
+    Console.WriteLine("Autorisation accordée.");
+}
+\end{lstlisting}
+
+\subsection{Opérateurs Avancés et Bit à Bit (\emph{Bitwise})}
+
+Les opérateurs de bits manipulent directement la représentation binaire (les bits) d'une donnée en mémoire. Bien qu'essentiels en cryptographie, programmation réseau ou systèmes embarqués, ils sont rarement utilisés dans des applications de gestion standard.
+
+\begin{itemize}
+    \item \textbf{ET bit à bit (\texttt{\&})} : \texttt{1} si les deux bits sont à \texttt{1}.
+    \item \textbf{OU bit à bit (\texttt{|})} : \texttt{1} si au moins un des bits est à \texttt{1}.
+    \item \textbf{OU exclusif (\texttt{\textasciicircum})} : \texttt{1} si les bits sont différents.
+    \item \textbf{Décalage (\texttt{<<} / \texttt{>>})} : Décale les bits à gauche (multiplie par 2) ou à droite (divise par 2).
+\end{itemize}
+
+\subsection{Opérateurs Spécifiques au Typage et Contrôle}
+
+C\# intègre des opérateurs haut niveau pour gérer les types et l'état \texttt{null}.
+
+\begin{itemize}
+    \item \textbf{Opérateur ternaire (\texttt{?:})} : Raccourci syntaxique pour une condition \texttt{if...else} sur une seule ligne. Syntaxe : \texttt{condition ? valeur\_si\_vrai : valeur\_si\_faux}.
+    \item \textbf{Opérateur de coalescence (\texttt{??})} : Retourne l'opérande de gauche s'il n'est pas \texttt{null}, sinon retourne l'opérande de droite.
+    \item \textbf{\texttt{is}} : Évalue si un objet est compatible avec un type donné, au moment de l'exécution (Runtime).
+    \item \textbf{\texttt{as}} : Tente un transtypage (cast) en toute sécurité. Si l'opération échoue, retourne \texttt{null} au lieu de lever une exception.
+\end{itemize}
+
+\begin{lstlisting}[caption={Utilisation de l'opérateur is et as}]
+object donneeInconnue = 42;
+
+// Vérification de type (Pattern matching)
+if (donneeInconnue is int nombre) 
+{
+    Console.WriteLine($"C'est un entier de valeur {nombre}");
+}
+
+// Transtypage sécurisé (fonctionne uniquement avec les types référence ou nullable)
+string? texteConnu = donneeInconnue as string; 
+// texteConnu vaut null car donneeInconnue est un entier
+\end{lstlisting}
+
+\subsection{Synthèse du Chapitre}
+
+\begin{center}
+    \textbf{Tableau : Récapitulatif des opérateurs critiques} \\[0.3cm]
+    \begin{tabular}{@{}lp{10cm}@{}}
+        \toprule
+        \textbf{Concept} & \textbf{Règle de l'Ingénierie} \\
+        \midrule
+        \textbf{Division entière} & \texttt{10 / 3} donne toujours \texttt{3}. Transtyper en \texttt{double} pour une précision flottante. \\
+        \textbf{Court-circuit (\texttt{\&\&}, \texttt{||})} & Optimise les performances CPU en annulant l'évaluation de la partie droite si le résultat final est déjà connu. \\
+        \textbf{\texttt{is} et \texttt{as}} & Outils indispensables pour la vérification dynamique et le transtypage sécurisé sans levée d'exceptions bloquantes. \\
+        \bottomrule
+    \end{tabular}
+\end{center}

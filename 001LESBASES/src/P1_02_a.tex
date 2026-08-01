@@ -1,0 +1,206 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_02_a.tex
+% Sujet   : Chapitre 2 : Les Variables en C#
+% ==============================================================================
+
+\newpage
+\section{Variables et Types de Données}
+\marginpar{\tiny\color{gray}P1\_02\_a.tex}
+
+Les variables constituent le fondement de la programmation impérative. Elles permettent d'allouer de l'espace mémoire pour stocker, lire et manipuler des données tout au long de l'exécution d'un programme. En C\#, langage à typage statique fort, chaque variable doit être déclarée avec un type précis, garantissant la sûreté du code dès la compilation.
+
+\subsection{Déclaration et Initialisation}
+
+La déclaration d'une variable exige de spécifier son \textbf{type} suivi de son \textbf{identifiant} (nom). L'initialisation consiste à lui attribuer une valeur en mémoire via l'opérateur d'affectation \texttt{=}.
+
+\begin{lstlisting}[caption={Déclaration et initialisation standard}]
+// 1. Déclaration (allocation mémoire statique)
+int age;
+string identifiantSysteme;
+
+// 2. Initialisation (affectation de valeur)
+age = 30;
+identifiantSysteme = "SYS_4099";
+
+// 3. Déclaration et initialisation combinées (Recommandé)
+double latenceReseau = 19.99;
+\end{lstlisting}
+
+\subsection{Les Types de Données Primitifs}
+
+Le système unifié des types (CTS - Common Type System) de .NET propose de multiples types adaptés aux différents besoins de précision, d'espace mémoire et de logique métier.
+
+\subsubsection{Types Fondamentaux}
+
+\begin{center}
+    \textbf{Tableau : Les types de données les plus courants} \\[0.3cm]
+    \begin{tabular}{@{}llp{6cm}@{}}
+        \toprule
+        \textbf{Type} & \textbf{Nature} & \textbf{Exemple d'utilisation} \\
+        \midrule
+        \texttt{int} & Entier signé 32-bit & \texttt{int compteurRequetes = 42;} \\
+        \texttt{string} & Chaîne de caractères (UTF-16) & \texttt{string nomClient = "Alice";} \\
+        \texttt{bool} & Booléen (logique) & \texttt{bool accesAutorise = true;} \\
+        \texttt{double} & Décimal (64-bit IEEE 754) & \texttt{double ratio = 3.14159;} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsubsection{Types Spécifiques et Précision}
+
+Pour des besoins d'ingénierie particuliers, C\# propose des types avec des capacités mémoire étendues ou des gestions d'arrondis spécifiques. Le suffixe de type (\texttt{m}, \texttt{f}, \texttt{L}) est obligatoire lors de l'affectation littérale.
+
+\begin{center}
+    \textbf{Tableau : Types avancés et suffixes} \\[0.3cm]
+    \begin{tabular}{@{}llp{6cm}@{}}
+        \toprule
+        \textbf{Type} & \textbf{Spécificité} & \textbf{Exemple} \\
+        \midrule
+        \texttt{decimal} & Haute précision & \texttt{decimal prix = 19.99m;} \\
+        \texttt{float} & Simple précision (32-bit) & \texttt{float delta = 9.81f;} \\
+        \texttt{long} & Grand entier (64-bit) & \texttt{long idBaseDonnees = 9876543210L;} \\
+        \texttt{char} & Caractère unique & \texttt{char separateur = ';';} \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Critères de choix : float, double et decimal}]
+    \begin{itemize}
+        \item \textbf{\texttt{float}} : Utilisé principalement pour la 3D, le rendu graphique ou le traitement du signal (la vitesse de calcul CPU/GPU prime sur l'exactitude extrême).
+        \item \textbf{\texttt{double}} : Type décimal par défaut en C\#, idéal pour les calculs mathématiques et la trigonométrie.
+        \item \textbf{\texttt{decimal}} : Implémente une arithmétique en base 10. Strictement indispensable pour les calculs monétaires et financiers afin d'éviter les pertes de précision liées au format flottant binaire.
+    \end{itemize}
+\end{tcolorbox}
+
+\subsection{Inférence de Type avec \texttt{var}}
+
+L'instruction \texttt{var} demande au compilateur de déduire automatiquement le type de la variable en analysant l'expression à droite de l'opérateur d'affectation. Cela allège l'écriture sans sacrifier la sécurité.
+
+\begin{lstlisting}[caption={Typage statique implicite avec var}]
+// Le compilateur (Roslyn) déduit 'int'
+var compteur = 0; 
+
+// Le compilateur déduit 'string'
+var identifiantSession = "USER_902"; 
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Avertissement Architectural : \texttt{var} n'est pas dynamique}]
+    Le mot-clé \texttt{var} maintient un typage \textbf{statique fort}. Lors de la compilation, l'instruction \texttt{var x = 10;} est transformée en \texttt{int x = 10;}. Il sera donc impossible d'affecter une chaîne de caractères à \texttt{x} ultérieurement.
+\end{tcolorbox}
+
+\subsection{Les Constantes (\texttt{const})}
+
+Une constante alloue un espace mémoire immuable. Sa valeur est résolue et scellée lors de la compilation. Elle ne pourra jamais être modifiée durant l'exécution, garantissant ainsi l'intégrité de la donnée.
+
+\begin{lstlisting}[caption={Déclaration de constantes}]
+const double Pi = 3.14159;
+const int MaxRequetesParSeconde = 500;
+\end{lstlisting}
+
+\subsection{Manipulation des Chaînes de Caractères}
+
+En C\#, les chaînes (\texttt{string}) peuvent être combinées (concaténation) à l'aide de l'opérateur \texttt{+}. Notez que l'API de base permet également de lire les entrées de l'utilisateur.
+
+\begin{lstlisting}[caption={Concaténation et récupération d'entrées}]
+string prenom = "Alan";
+string nom = "Turing";
+
+// Concaténation standard
+string nomComplet = prenom + " " + nom;
+Console.WriteLine("Utilisateur : " + nomComplet);
+
+// Récupération d'une saisie dans le flux Standard Input (stdin)
+Console.WriteLine("Entrez votre code d'accès :");
+string? codeSaisi = Console.ReadLine(); // 'string?' autorise explicitement la valeur null
+\end{lstlisting}
+
+\subsection{La Portée des Variables (Scope)}
+
+La portée d'une variable définit son accessibilité et sa durée de vie en mémoire. C\# définit des périmètres d'accès très stricts, indispensables à l'encapsulation.
+
+\begin{center}
+    \textbf{Tableau : Les niveaux de portée en C\#} \\[0.3cm]
+    \begin{tabular}{@{}lp{5cm}p{5.5cm}@{}}
+        \toprule
+        \textbf{Type de portée} & \textbf{Zone de déclaration} & \textbf{Durée de vie} \\
+        \midrule
+        \textbf{Locale} & Dans une méthode ou un bloc \texttt{\{\}} & Détruite à la fin du bloc d'exécution. \\
+        \textbf{Champ d'instance} & Dans la classe (hors méthode) & Détruite avec l'instance de l'objet (via le GC). \\
+        \textbf{Statique} & Dans la classe (avec \texttt{static}) & Réside en mémoire jusqu'à la fermeture du processus. \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsubsection{Démonstration des Portées et du Masquage (Shadowing)}
+
+\begin{lstlisting}[caption={Gestion de la portée, variables statiques et masquage}]
+using System;
+
+class ServeurWeb
+{
+    // 1. Champ statique : Partagé par toutes les instances de ServeurWeb en mémoire
+    private static int _requetesGlobales = 0;
+
+    // 2. Champ d'instance : Propre à une instance spécifique du serveur
+    private string _adresseIp;
+
+    public ServeurWeb(string adresseIp)
+    {
+        _adresseIp = adresseIp;
+    }
+
+    public void TraiterRequete(string _adresseIp)
+    {
+        // 3. Masquage (Shadowing) : Le paramètre masque le champ d'instance
+        
+        // Incrémentation de la variable statique partagée
+        _requetesGlobales++; 
+        
+        // 4. Variable locale : Isolée dans le bloc de cette méthode
+        int taillePayload = 1024;
+        
+        // Pour accéder au champ d'instance masqué, l'usage de 'this' est obligatoire
+        Console.WriteLine($"Connexion de {_adresseIp} sur l'hôte {this._adresseIp}");
+    }
+}
+\end{lstlisting}
+
+\subsection{Le Type \texttt{dynamic}}
+
+Contrairement à \texttt{var}, le mot-clé \texttt{dynamic} désactive intégralement la vérification statique du compilateur. Le type n'est résolu qu'au moment de l'exécution (Runtime).
+
+\begin{lstlisting}[caption={Désactivation du typage avec dynamic}]
+dynamic variableDynamique = 10;
+variableDynamique = "Transformation en chaîne de caractères"; // Aucune erreur de compilation
+\end{lstlisting}
+
+\textit{L'usage de \texttt{dynamic} doit être rigoureusement limité à des cas d'ingénierie spécifiques (interopérabilité COM, réflexion, traitement de structures JSON non typées) car il annule toute la sécurité offerte par le langage.}
+
+\subsection{Conversion de Types (Casting)}
+
+La conversion de types est une opération courante, notamment lors de l'intégration de flux de données externes.
+
+\begin{lstlisting}[caption={Mécanismes de conversion en C\#}]
+// 1. Conversion Implicite (Sûre - Garantie sans perte d'information)
+int entier = 10;
+double reel = entier; // L'entier (32-bit) s'intègre sans perte dans le décimal (64-bit)
+
+// 2. Conversion Explicite ou Cast (Avertissement : risque de troncature)
+double valeurMesuree = 9.7;
+int valeurTronquee = (int)valeurMesuree; // Vaut 9 (la fraction décimale est détruite)
+
+// 3. Conversion par Analyse (Parsing : Chaîne vers Numérique)
+string donneesReseau = "1024";
+int portServeur = int.Parse(donneesReseau); 
+\end{lstlisting}
+
+\subsection{Bonnes Pratiques de Codage}
+
+\begin{tcolorbox}[colback=white,colframe=stringcolor,title=\textbf{Règles strictes de développement C\#}]
+    \begin{itemize}
+        \item \textbf{Variables non initialisées} : Le compilateur C\# refuse catégoriquement l'utilisation d'une variable locale non assignée (\texttt{Use of unassigned local variable}). Les champs de classe, eux, prennent par défaut la valeur \texttt{0} ou \texttt{null}.
+        \item \textbf{Confusion Affectation / Comparaison} : Ne jamais confondre l'opérateur d'affectation \texttt{=} avec l'opérateur d'égalité logique \texttt{==}.
+        \item \textbf{Déclarations en ligne} : L'écriture \texttt{int a = 1, b = 2;} est permise par le compilateur mais prohibée par les conventions de Clean Code. L'architecture logicielle exige une déclaration par ligne pour préserver la lisibilité de l'historique de versionnage (Git).
+    \end{itemize}
+\end{tcolorbox}
