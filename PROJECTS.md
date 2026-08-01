@@ -15,10 +15,6 @@
 > - MAUI →
 > - MAUI + ASP.NET
 >
-> **Légende :**
-> - 🔵 `ESSENTIEL` — Concept nouveau et fondamental, à faire obligatoirement.
-> - 🟢 `BONUS` — Renforcement ou approfondissement, à piocher selon le rythme.
-> - 🔴 `FIL ROUGE` — Projet long, repris et enrichi sur plusieurs semaines.
 >
 > **Philosophie :**
 > Les Phases 1 à 4 forment le **tronc commun obligatoire** (C#, SQL, ASP.NET Core).
