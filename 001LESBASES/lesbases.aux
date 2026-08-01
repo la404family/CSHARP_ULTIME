@@ -1,11 +1,14 @@
 \relax 
 \providecommand \babel@aux [2]{\global \let \babel@toc \@gobbletwo }
 \@nameuse{bbl@beforestart}
+\catcode `:\active 
+\catcode `;\active 
+\catcode `!\active 
+\catcode `?\active 
 \providecommand\hyper@newdestlabel[2]{}
-\providecommand*\HyPL@Entry[1]{}
-\HyPL@Entry{0<</S/D>>}
+\providecommand\HyField@AuxAddToFields[1]{}
+\providecommand\HyField@AuxAddToCoFields[2]{}
 \babel@aux{french}{}
-\HyPL@Entry{1<</S/D>>}
 \@writefile{toc}{\contentsline {section}{\numberline {1}Environnement et Premier Programme}{1}{section.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {1.1}Installation de l'Environnement de Développement}{1}{subsection.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {1.1.1}Visual Studio (Environnement Complet)}{1}{subsubsection.1.1.1}\protected@file@percent }
@@ -45,7 +48,7 @@
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {9}Mécanismes de conversion en C\#}{9}{lstlisting.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.9}Bonnes Pratiques de Codage}{9}{subsection.2.9}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {3}Conventions de Nommage, Formatage et Clean Code}{9}{section.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Conventions de Nommage Officielles}{9}{subsection.3.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.1}Conventions de Nommage Officielles}{10}{subsection.3.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.1}Les Styles de Casse en C\#}{10}{subsubsection.3.1.1}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.1.2}Exemples de Conformité Syntaxique}{10}{subsubsection.3.1.2}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {10}Conventions de nommage recommandées en C\#}{10}{lstlisting.10}\protected@file@percent }
@@ -55,15 +58,15 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.3}Organisation Interne d'une Classe C\#}{11}{subsection.3.3}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {12}Exemple de structure canonique d'un service C\#}{12}{lstlisting.12}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.4}Inférence de Type (\texttt  {var}) vs Type Explicite}{12}{subsection.3.4}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {13}Usage correct et incorrect de var}{12}{lstlisting.13}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {13}Usage correct et incorrect de var}{13}{lstlisting.13}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.5}Contrôle de Flux et Retours Anticipés (\emph  {Early Return})}{13}{subsection.3.5}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {14}Réfractorisation d'une méthode complexe par Early Return}{13}{lstlisting.14}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Gestion Rigoureuse des Exceptions}{13}{subsection.3.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {3.6}Gestion Rigoureuse des Exceptions}{14}{subsection.3.6}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {15}Bonnes pratiques de re-lancement d'exceptions}{14}{lstlisting.15}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.7}Outillage Automatisé (\texttt  {.editorconfig} \& Roslyn)}{14}{subsection.3.7}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.1}Fichier de Configuration \texttt  {.editorconfig}}{14}{subsubsection.3.7.1}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {16}Exemple de fichier .editorconfig standard pour projet C\#}{14}{lstlisting.16}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.2}Commande de Formatage CLI}{14}{subsubsection.3.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {3.7.2}Commande de Formatage CLI}{15}{subsubsection.3.7.2}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {17}Commandes dotnet format}{15}{lstlisting.17}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {3.8}Synthèse des Conventions}{15}{subsection.3.8}\protected@file@percent }
 \@writefile{toc}{\contentsline {section}{\numberline {4}Architecture des Types de Variables et Mémoire}{16}{section.4}\protected@file@percent }
@@ -82,71 +85,71 @@
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Conversions Stratégiques : Le Parsing}{18}{subsection.4.4}\protected@file@percent }
 \@writefile{lol}{\contentsline {lstlisting}{\numberline {22}Conversion sécurisée via TryParse}{18}{lstlisting.22}\protected@file@percent }
 \@writefile{toc}{\contentsline {subsection}{\numberline {4.5}Synthèse du Chapitre}{18}{subsection.4.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {5}Les Opérateurs et Expressions}{19}{section.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Opérateurs Arithmétiques}{19}{subsection.5.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {23}Division entière vs Division flottante}{19}{lstlisting.23}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Opérateurs d'Affectation}{19}{subsection.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Opérateurs d'Incrémentation et Décrémentation}{19}{subsection.5.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {24}Incrémentation préfixée et suffixée}{20}{lstlisting.24}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Opérateurs de Comparaison (Relationnels)}{20}{subsection.5.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Opérateurs Logiques}{20}{subsection.5.5}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {25}Évaluation logique conditionnelle}{20}{lstlisting.25}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Opérateurs Avancés et Bit à Bit (\emph  {Bitwise})}{21}{subsection.5.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Opérateurs Spécifiques au Typage et Contrôle}{21}{subsection.5.7}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {26}Utilisation de l'opérateur is et as}{21}{lstlisting.26}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Synthèse du Chapitre}{21}{subsection.5.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {6}Structures Conditionnelles}{22}{section.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}L'instruction \texttt  {if} / \texttt  {else}}{22}{subsection.6.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {27}Logique décisionnelle en cascade}{22}{lstlisting.27}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}L'instruction \texttt  {switch}}{22}{subsection.6.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Syntaxe classique}{22}{subsubsection.6.2.1}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {28}Routage par instruction switch}{22}{lstlisting.28}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Les Expressions \texttt  {switch} (C\# 8.0+)}{23}{subsubsection.6.2.2}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {29}Affectation via expression switch moderne}{23}{lstlisting.29}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}L'opérateur Ternaire Conditionnel (\texttt  {?:})}{23}{subsection.6.3}\protected@file@percent }
-\@writefile{lol}{\contentsline {lstlisting}{\numberline {30}Optimisation par opérateur ternaire}{23}{lstlisting.30}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Synthèse du Chapitre}{24}{subsection.6.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {7}Les Boucles (Structures Itératives)}{25}{section.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}La boucle \texttt  {for}}{25}{subsection.7.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}La boucle \texttt  {while}}{25}{subsection.7.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}La boucle \texttt  {do...while}}{25}{subsection.7.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}La boucle \texttt  {foreach}}{26}{subsection.7.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Contrôle de Flux : \texttt  {break} et \texttt  {continue}}{26}{subsection.7.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Synthèse}{26}{subsection.7.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {8}Tableaux et Collections de base}{27}{section.8}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Les Tableaux (\texttt  {Array})}{27}{subsection.8.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Les Listes (\texttt  {List<T>})}{27}{subsection.8.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Les Dictionnaires (\texttt  {Dictionary<TKey, TValue>})}{28}{subsection.8.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Les Énumérations (\texttt  {enum})}{28}{subsection.8.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Fonctions de Manipulation Avancées}{29}{subsection.8.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.1}Utilitaires pour Tableaux et Listes}{29}{subsubsection.8.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.2}Utilitaires pour Dictionnaires}{29}{subsubsection.8.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}Synthèse}{29}{subsection.8.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {9}Fonctions et Méthodes}{30}{section.9}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Déclaration, Paramètres et Valeur de Retour}{30}{subsection.9.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Paramètres Optionnels et Surcharge}{30}{subsection.9.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.1}Valeurs par défaut (Paramètres Optionnels)}{30}{subsubsection.9.2.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.2}Surcharge de Méthodes (\textit  {Overloading})}{30}{subsubsection.9.2.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Nombre Variable d'Arguments (\texttt  {params})}{31}{subsection.9.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Passage de Paramètres : \texttt  {ref} et \texttt  {out}}{31}{subsection.9.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.5}Méthodes Statiques vs d'Instance}{32}{subsection.9.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {9.6}Synthèse}{32}{subsection.9.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {10}Manipulation des Types de Base (Chaînes et Nombres)}{33}{section.10}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}Propriétés et Méthodes de Base}{33}{subsection.10.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.2}Recherche et Vérification}{33}{subsection.10.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.3}Découpage, Concaténation et Remplacement}{33}{subsection.10.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.4}Insertion et Suppression}{34}{subsection.10.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.5}Interpolation et Optimisation (\texttt  {StringBuilder})}{34}{subsection.10.5}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {10.5.1}Interpolation de chaînes (\texttt  {\$""})}{34}{subsubsection.10.5.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {10.5.2}Optimisation avec \texttt  {StringBuilder}}{34}{subsubsection.10.5.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.6}Manipulation des Nombres et Mathématiques}{35}{subsection.10.6}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {10.6.1}Conversion et Parsing}{35}{subsubsection.10.6.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {10.7}Synthèse}{35}{subsection.10.7}\protected@file@percent }
-\@writefile{toc}{\contentsline {section}{\numberline {11}Gestion des Erreurs et Exceptions}{36}{section.11}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Le Bloc \texttt  {try / catch / finally}}{36}{subsection.11.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsubsection}{\numberline {11.1.1}Exceptions courantes du Framework}{36}{subsubsection.11.1.1}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}Le Mot-Clé \texttt  {throw} et la Propagation}{36}{subsection.11.2}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.3}Création d'Exceptions Personnalisées}{37}{subsection.11.3}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.4}Gestion des Ressources : Le Bloc \texttt  {using}}{37}{subsection.11.4}\protected@file@percent }
-\@writefile{toc}{\contentsline {subsection}{\numberline {11.5}Synthèse}{37}{subsection.11.5}\protected@file@percent }
-\gdef \@abspage@last{39}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Les Opérateurs et Expressions}{20}{section.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Opérateurs Arithmétiques}{20}{subsection.5.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {23}Division entière vs Division flottante}{20}{lstlisting.23}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Opérateurs d'Affectation}{20}{subsection.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Opérateurs d'Incrémentation et Décrémentation}{20}{subsection.5.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {24}Incrémentation préfixée et suffixée}{21}{lstlisting.24}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Opérateurs de Comparaison (Relationnels)}{21}{subsection.5.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Opérateurs Logiques}{21}{subsection.5.5}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {25}Évaluation logique conditionnelle}{21}{lstlisting.25}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Opérateurs Avancés et Bit à Bit (\emph  {Bitwise})}{22}{subsection.5.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Opérateurs Spécifiques au Typage et Contrôle}{22}{subsection.5.7}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {26}Utilisation de l'opérateur is et as}{22}{lstlisting.26}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Synthèse du Chapitre}{22}{subsection.5.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {6}Structures Conditionnelles}{23}{section.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}L'instruction \texttt  {if} / \texttt  {else}}{23}{subsection.6.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {27}Logique décisionnelle en cascade}{23}{lstlisting.27}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}L'instruction \texttt  {switch}}{23}{subsection.6.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.1}Syntaxe classique}{23}{subsubsection.6.2.1}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {28}Routage par instruction switch}{23}{lstlisting.28}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {6.2.2}Les Expressions \texttt  {switch} (C\# 8.0+)}{24}{subsubsection.6.2.2}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {29}Affectation via expression switch moderne}{24}{lstlisting.29}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}L'opérateur Ternaire Conditionnel (\texttt  {?:})}{24}{subsection.6.3}\protected@file@percent }
+\@writefile{lol}{\contentsline {lstlisting}{\numberline {30}Optimisation par opérateur ternaire}{24}{lstlisting.30}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Synthèse du Chapitre}{25}{subsection.6.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {7}Les Boucles (Structures Itératives)}{26}{section.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.1}La boucle \texttt  {for}}{26}{subsection.7.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.2}La boucle \texttt  {while}}{26}{subsection.7.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.3}La boucle \texttt  {do...while}}{26}{subsection.7.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.4}La boucle \texttt  {foreach}}{27}{subsection.7.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.5}Contrôle de Flux : \texttt  {break} et \texttt  {continue}}{27}{subsection.7.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {7.6}Synthèse}{27}{subsection.7.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {8}Tableaux et Collections de base}{28}{section.8}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.1}Les Tableaux (\texttt  {Array})}{28}{subsection.8.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.2}Les Listes (\texttt  {List<T>})}{28}{subsection.8.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.3}Les Dictionnaires (\texttt  {Dictionary<TKey, TValue>})}{29}{subsection.8.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.4}Les Énumérations (\texttt  {enum})}{29}{subsection.8.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.5}Fonctions de Manipulation Avancées}{30}{subsection.8.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.1}Utilitaires pour Tableaux et Listes}{30}{subsubsection.8.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {8.5.2}Utilitaires pour Dictionnaires}{30}{subsubsection.8.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {8.6}Synthèse}{31}{subsection.8.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {9}Fonctions et Méthodes}{32}{section.9}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.1}Déclaration, Paramètres et Valeur de Retour}{32}{subsection.9.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.2}Paramètres Optionnels et Surcharge}{32}{subsection.9.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.1}Valeurs par défaut (Paramètres Optionnels)}{32}{subsubsection.9.2.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {9.2.2}Surcharge de Méthodes (\textit  {Overloading})}{32}{subsubsection.9.2.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.3}Nombre Variable d'Arguments (\texttt  {params})}{33}{subsection.9.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.4}Passage de Paramètres : \texttt  {ref} et \texttt  {out}}{33}{subsection.9.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.5}Méthodes Statiques vs d'Instance}{34}{subsection.9.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {9.6}Synthèse}{34}{subsection.9.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {10}Manipulation des Types de Base (Chaînes et Nombres)}{35}{section.10}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.1}Propriétés et Méthodes de Base}{35}{subsection.10.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.2}Recherche et Vérification}{35}{subsection.10.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.3}Découpage, Concaténation et Remplacement}{35}{subsection.10.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.4}Insertion et Suppression}{36}{subsection.10.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.5}Interpolation et Optimisation (\texttt  {StringBuilder})}{36}{subsection.10.5}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {10.5.1}Interpolation de chaînes (\texttt  {\$""})}{36}{subsubsection.10.5.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {10.5.2}Optimisation avec \texttt  {StringBuilder}}{36}{subsubsection.10.5.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.6}Manipulation des Nombres et Mathématiques}{37}{subsection.10.6}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {10.6.1}Conversion et Parsing}{37}{subsubsection.10.6.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {10.7}Synthèse}{37}{subsection.10.7}\protected@file@percent }
+\@writefile{toc}{\contentsline {section}{\numberline {11}Gestion des Erreurs et Exceptions}{39}{section.11}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.1}Le Bloc \texttt  {try / catch / finally}}{39}{subsection.11.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsubsection}{\numberline {11.1.1}Exceptions courantes du Framework}{39}{subsubsection.11.1.1}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.2}Le Mot-Clé \texttt  {throw} et la Propagation}{39}{subsection.11.2}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.3}Création d'Exceptions Personnalisées}{40}{subsection.11.3}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.4}Gestion des Ressources : Le Bloc \texttt  {using}}{40}{subsection.11.4}\protected@file@percent }
+\@writefile{toc}{\contentsline {subsection}{\numberline {11.5}Synthèse}{41}{subsection.11.5}\protected@file@percent }
+\gdef \@abspage@last{42}
