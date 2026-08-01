@@ -1,0 +1,15 @@
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\bin\Debug\net10.0\002CALCULATRICE.exe
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\bin\Debug\net10.0\002CALCULATRICE.deps.json
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\bin\Debug\net10.0\002CALCULATRICE.runtimeconfig.json
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\bin\Debug\net10.0\002CALCULATRICE.dll
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\bin\Debug\net10.0\002CALCULATRICE.pdb
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.GeneratedMSBuildEditorConfig.editorconfig
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.AssemblyInfoInputs.cache
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.AssemblyInfo.cs
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.csproj.CoreCompileInputs.cache
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.sourcelink.json
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.dll
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\refint\002CALCULATRICE.dll
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.pdb
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\002CALCULATRICE.genruntimeconfig.cache
+D:\Documents perso\0000Site internet\DEV\C-Sharp\002CALCULATRICE\obj\Debug\net10.0\ref\002CALCULATRICE.dll
