@@ -67,6 +67,8 @@ Le contenu théorique est rédigé en **LaTeX** sous la forme d'un livre complet
 - ✅ Style scientifique et professionnel
 - ✅ Coloration syntaxique claire (thème *light*) pour les blocs de code
 
+🔴 Lien : [document en format pdf](001LESBASES/lesbases.pdf)
+
 ---
 
 ## 📁 Fichiers du projet
@@ -74,5 +76,5 @@ Le contenu théorique est rédigé en **LaTeX** sous la forme d'un livre complet
 | Fichier | Description |
 |---|---|
 | [`README.md`](./README.md) | Présentation et objectifs de la formation |
-| [`PROJECTS.md`](./PROJECTS.md) | Liste des 72 projets pratiques organisés en 10 phases avec badges 🔵 Essentiel / 🟢 Bonus / 🔴 Fil Rouge |
+| [`PROJECTS.md`](./PROJECTS.md) | Liste des 72 projets pratiques organisés en 10 phases |
 | [`PROMPT.md`](./PROMPT.md) | Instructions système pour le formateur IA |
