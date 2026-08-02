@@ -1,0 +1,134 @@
+\section{POO — Héritage et Polymorphisme}
+
+\subsection{L'Héritage et le Partage de Comportement}
+
+L'héritage permet de créer une hiérarchie de classes en factorisant la logique technique commune dans une classe de base (\textit{Base Class}) et en spécialisant cette logique dans des classes dérivées (\textit{Derived Classes}). En C\#, l'héritage d'implémentation est \textbf{simple} (une classe ne peut hériter que d'une seule classe mère) et s'indique au niveau de la déclaration avec le symbole deux-points (\texttt{:}).
+
+Cette architecture réduit la duplication de code et facilite la maintenance des systèmes à large échelle (comme un système de routage HTTP où tous les routeurs héritent d'une base commune).
+
+\subsection{Méthodes Abstraites, Virtuelles et Scellement}
+
+Le comportement de l'héritage est rigoureusement contrôlé par des modificateurs spécifiques :
+\begin{itemize}
+    \item \textbf{\texttt{abstract}} : Une classe abstraite est incomplète et ne peut pas être instanciée (l'appel à \texttt{new} est interdit). Elle sert de fondation contractuelle. Une méthode \texttt{abstract} n'a pas de corps et \textbf{doit impérativement} être implémentée par l'enfant.
+    \item \textbf{\texttt{virtual}} : Une méthode virtuelle possède une implémentation par défaut exploitable dans la classe mère, mais \textbf{peut} être redéfinie (surchargée) de manière optionnelle par l'enfant via le mot-clé \texttt{override}.
+    \item \textbf{\texttt{base}} : Permet à une classe enfant d'appeler explicitement l'implémentation de sa classe mère. Très utilisé dans les constructeurs ou pour enrichir une méthode \texttt{virtual} existante plutôt que de l'écraser complètement.
+    \item \textbf{\texttt{sealed}} : Appliqué à une classe, il bloque définitivement l'héritage (aucune autre classe ne peut en dériver). Appliqué à une méthode \texttt{override}, il empêche les enfants sous-jacents de la redéfinir à nouveau. Utilisé pour des raisons de sécurité ou de micro-optimisation de compilation.
+\end{itemize}
+
+\subsection{Le Polymorphisme et le Transtypage (\textit{Casting})}
+
+Le \textbf{polymorphisme} est la capacité d'une instance dérivée à être manipulée via une variable typée comme son parent, tout en garantissant que c'est bien le code spécifique à son type réel qui sera exécuté à l'exécution (résolution dynamique). 
+
+Pour vérifier dynamiquement la nature d'un objet en mémoire, le C\# offre des opérateurs de transtypage :
+\begin{itemize}
+    \item \textbf{\texttt{is}} : Vérifie si un objet est compatible avec un type donné (Pattern Matching).
+    \item \textbf{\texttt{as}} : Tente une conversion sécurisée vers un type de référence. Retourne \texttt{null} si la conversion échoue, évitant ainsi un crash applicatif.
+\end{itemize}
+
+\subsection{Exemple de Code Commenté}
+
+L'exemple suivant modélise un pipeline de traitement de documents (PDF, XML) démontrant l'héritage et l'exécution polymorphe.
+
+\begin{lstlisting}[caption={Système de traitement documentaire avec polymorphisme}]
+// 1. Classe de base abstraite
+public abstract class DocumentProcessor
+{
+    protected string ParserVersion = "1.0";
+
+    // 2. Méthode virtuelle : comportement par défaut surchargeable
+    public virtual void Validate(byte[] data)
+    {
+        if (data == null || data.Length == 0)
+            throw new ArgumentNullException(nameof(data), "Le flux binaire est vide.");
+    }
+
+    // 3. Méthode abstraite : contrat strict sans corps
+    public abstract void Process(byte[] data);
+}
+
+// 4. Héritage via le symbole ':'
+public class PdfProcessor : DocumentProcessor
+{
+    // 5. Redéfinition obligatoire de la méthode abstraite
+    // 6. 'sealed' bloque la redéfinition pour de futurs enfants
+    public sealed override void Process(byte[] data)
+    {
+        // 7. Appel à l'implémentation parent de validation avec 'base'
+        base.Validate(data); 
+        Console.WriteLine($"Analyse du flux PDF (Moteur v{ParserVersion}).");
+    }
+}
+
+public class XmlProcessor : DocumentProcessor
+{
+    // Redéfinition optionnelle de la méthode virtuelle
+    public override void Validate(byte[] data)
+    {
+        base.Validate(data);
+        Console.WriteLine("Vérification approfondie du schéma XSD.");
+    }
+
+    public override void Process(byte[] data)
+    {
+        Console.WriteLine("Désérialisation des noeuds XML.");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // 8. Polymorphisme : Un tableau parent stockant des enfants hétérogènes
+        DocumentProcessor[] processors = {
+            new PdfProcessor(),
+            new XmlProcessor()
+        };
+
+        byte[] fakePayload = new byte[256];
+
+        foreach (var proc in processors)
+        {
+            // Résolution dynamique de la bonne méthode Process() au runtime
+            proc.Process(fakePayload);
+            
+            // 9. Transtypage avec 'is' (Pattern Matching moderne)
+            if (proc is XmlProcessor xmlProc)
+            {
+                Console.WriteLine("-> Type XML détecté, routage vers l'API externe.");
+            }
+            
+            // Alternative historique avec 'as'
+            PdfProcessor pdfProc = proc as PdfProcessor;
+            if (pdfProc != null)
+            {
+                Console.WriteLine("-> Type PDF détecté, génération des vignettes.");
+            }
+        }
+    }
+}
+\end{lstlisting}
+
+\textbf{Explications ligne par ligne :}
+\begin{itemize}
+    \item \textbf{Ligne 14} : Définition d'un comportement abstrait. Tout \texttt{DocumentProcessor} doit savoir se traiter (\texttt{Process}), mais l'algorithme exact dépend intimement du format concret.
+    \item \textbf{Ligne 22} : \texttt{PdfProcessor} satisfait le contrat en redéfinissant \texttt{Process} avec \texttt{override}. Le mot-clé \texttt{sealed} garantit la fin de la chaîne d'héritage pour ce comportement.
+    \item \textbf{Ligne 25} : \texttt{base.Validate()} déclenche la vérification de nullité implémentée en ligne 7, évitant de dupliquer ce code de sécurité métier.
+    \item \textbf{Ligne 51} : Le tableau est typé \texttt{DocumentProcessor}, mais il contient en mémoire des instances réelles \texttt{PdfProcessor} et \texttt{XmlProcessor}. C'est la force du couplage lâche.
+    \item \textbf{Ligne 60} : L'opérateur \texttt{is} effectue un test de type et affecte directement la variable typée \texttt{xmlProc} si le test réussit, évitant un \textit{cast} manuel redondant.
+\end{itemize}
+
+\begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Pièges courants \& Erreurs de compilation}]
+    \begin{itemize}
+        \item \textbf{\texttt{InvalidCastException}} : Tenter de forcer un transtypage de manière brutale avec des parenthèses (ex: \texttt{(PdfProcessor)proc}) lèvera une exception violente si \texttt{proc} est en réalité un \texttt{XmlProcessor}. Il faut \textbf{toujours} privilégier les opérateurs \texttt{is} ou \texttt{as}.
+        \item \textbf{Masquage accidentel (\textit{Hiding})} : Si l'enfant déclare une méthode avec la même signature que le parent sans utiliser \texttt{override} (mais avec \texttt{new}), la liaison polymorphique est brisée. Le compilateur déclenchera l'avertissement \texttt{CS0114}.
+    \end{itemize}
+\end{tcolorbox}
+
+\subsection{Synthèse / À retenir}
+
+\begin{itemize}
+    \item \textbf{Factorisation} : Poussez le code commun vers le haut (dans la classe de base) pour respecter le principe DRY (\textit{Don't Repeat Yourself}).
+    \item \textbf{Abstract vs Virtual} : Utilisez \texttt{abstract} pour forcer le développeur enfant à écrire du code. Utilisez \texttt{virtual} pour proposer une implémentation par défaut optionnellement modifiable.
+    \item \textbf{Couplage Faible} : Typisez vos variables, vos paramètres de méthodes et vos collections avec le type de la classe de base, pas avec le type des enfants, afin de concevoir une architecture ouverte à l'ajout futur de nouveaux comportements.
+\end{itemize}

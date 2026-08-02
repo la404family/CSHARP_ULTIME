@@ -1,0 +1,134 @@
+\section{POO — Interfaces}
+
+\subsection{Contrat de Service : L'Interface}
+
+En ingénierie logicielle C\#, une \textbf{interface} définit un contrat strict composé exclusivement de signatures (méthodes, propriétés, événements) sans fournir, traditionnellement, de logique d'implémentation ou de gestion d'état mémoire. (Les interfaces C\# 8+ tolèrent des implémentations par défaut, mais ce mécanisme reste réservé à la rétrocompatibilité d'API).
+
+Toute classe (ou structure) qui déclare implémenter une interface s'engage formellement et contractuellement à fournir l'implémentation de \textbf{tous} les membres définis par ce contrat. Contrairement à l'héritage de classes qui est limité à un seul parent, le C\# autorise l'\textbf{implémentation multiple} d'interfaces, permettant à un même composant de revêtir de multiples capacités.
+
+\subsection{Interfaces Standards du Framework : \texttt{IComparable} et \texttt{IEquatable}}
+
+Le framework .NET repose massivement sur les interfaces pour connecter vos objets personnalisés aux algorithmes internes du système (tri, recherche en dictionnaire, etc.) :
+\begin{itemize}
+    \item \textbf{\texttt{IComparable<T>}} : Utilisée pour définir une logique de \textbf{tri naturel}. Dès qu'un type l'implémente, des méthodes génériques comme \texttt{List.Sort()} deviennent fonctionnelles. Impose l'implémentation de \texttt{CompareTo(T other)}.
+    \item \textbf{\texttt{IEquatable<T>}} : Utilisée pour définir l'égalité de \textbf{valeur métier} (par opposition à l'égalité d'adresse mémoire pointer-based). Elle est fortement recommandée pour les types \texttt{struct} pour éviter des pénalités de performance liées au boxing. Impose l'implémentation de \texttt{Equals(T other)}.
+\end{itemize}
+
+\subsection{Interface vs Classe Abstraite : Le choix architectural}
+
+La frontière peut sembler floue, mais leur intention d'ingénierie est radicalement différente :
+\begin{itemize}
+    \item \textbf{Classe Abstraite} : Modélise la nature intrinsèque d'un objet (Une \textit{TransactionHttp} \textbf{est} une \textit{Transaction}). Elle permet de partager du code métier commun et de maintenir un état interne (champs de classe). Limité à l'héritage simple.
+    \item \textbf{Interface} : Modélise une capacité, une compétence ou un comportement transversal (Une \textit{TransactionHttp} \textbf{est capable} d'être observée, donc implémente \texttt{IObservable}). Elle est totalement dépourvue d'état interne. Permet l'implémentation multiple.
+\end{itemize}
+
+\subsection{Exemple de Code Commenté}
+
+L'exemple suivant définit un composant de cache en mémoire illustrant l'implémentation multiple, ainsi qu'une entité métier implémentant \texttt{IComparable<T>} pour activer le tri algorithmique automatisé.
+
+\begin{lstlisting}[caption={Implémentation multiple et interfaces de tri natives}]
+// 1. Déclaration d'interfaces (Convention .NET : préfixe 'I' majuscule)
+public interface ICacheStorage
+{
+    // Signature stricte, pas d'implémentation
+    void Save(string key, object data);
+    object Load(string key);
+}
+
+public interface IMonitorable
+{
+    // 2. Une interface peut contracter la présence de propriétés
+    long MemoryUsageBytes { get; }
+    void PingHealthCheck();
+}
+
+// 3. Implémentation multiple (séparée par des virgules)
+public class RedisCacheService : ICacheStorage, IMonitorable
+{
+    // L'implémentation de IMonitorable.MemoryUsageBytes
+    public long MemoryUsageBytes { get; private set; }
+
+    // Implémentation obligatoire des méthodes ICacheStorage
+    public void Save(string key, object data)
+    {
+        Console.WriteLine($"[Redis] Sauvegarde du payload sur la clé : {key}");
+        MemoryUsageBytes += 1024; // Simulation d'allocation
+    }
+
+    public object Load(string key) { return null; }
+
+    // Implémentation obligatoire de IMonitorable.PingHealthCheck
+    public void PingHealthCheck()
+    {
+        Console.WriteLine("Redis Cluster: Healthy. Latency: 4ms");
+    }
+}
+
+// 4. Couplage avec le moteur de tri .NET via IComparable<T>
+public struct FinancialTransaction : IComparable<FinancialTransaction>
+{
+    public string TransactionId { get; init; }
+    public decimal Amount { get; init; }
+
+    // 5. Contrat de tri : doit retourner 0 (égal), < 0 (avant) ou > 0 (après)
+    public int CompareTo(FinancialTransaction other)
+    {
+        if (other == null) return 1;
+        
+        // Délégation logique du tri directement au type décimal sous-jacent
+        return this.Amount.CompareTo(other.Amount);
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // 6. Polymorphisme d'interface : Couplage faible
+        ICacheStorage cache = new RedisCacheService();
+        cache.Save("session_usr42", "{ auth: true }");
+        
+        // ERREUR DE COMPILATION : 'PingHealthCheck' n'appartient pas au contrat ICacheStorage
+        // cache.PingHealthCheck(); 
+
+        // 7. Test de tri algorithmique sur type personnalisé
+        List<FinancialTransaction> transactions = new List<FinancialTransaction>
+        {
+            new FinancialTransaction { TransactionId = "TXN_01", Amount = 500.00m },
+            new FinancialTransaction { TransactionId = "TXN_02", Amount = 15.50m },
+            new FinancialTransaction { TransactionId = "TXN_03", Amount = 1200.00m }
+        };
+
+        // 8. Sort() inspecte la classe, trouve IComparable<T> et déclenche CompareTo()
+        transactions.Sort(); 
+        
+        Console.WriteLine("Historique trié par montant croissant :");
+        foreach(var t in transactions)
+            Console.WriteLine($"TXN {t.TransactionId} : {t.Amount}$");
+        // Affiche : TXN_02 (15.50), TXN_01 (500), TXN_03 (1200)
+    }
+}
+\end{lstlisting}
+
+\textbf{Explications ligne par ligne :}
+\begin{itemize}
+    \item \textbf{Ligne 2} : Convention universelle C\# : toute interface doit commencer par la lettre \texttt{I} (pour \textit{Interface}).
+    \item \textbf{Ligne 17} : \texttt{RedisCacheService} s'engage contractuellement à respecter l'ensemble complet des signatures exigées par \texttt{ICacheStorage} ET par \texttt{IMonitorable}. S'il en manque une, la compilation échoue immédiatement.
+    \item \textbf{Ligne 39} : \texttt{FinancialTransaction} implémente l'interface générique \texttt{IComparable<T>}. La généricité évite les opérations coûteuses de boxing/unboxing par rapport à la vieille interface non générique \texttt{IComparable}.
+    \item \textbf{Ligne 60} : Le principe de couplage faible ou principe d'inversion des dépendances (le 'D' de SOLID) : le point d'entrée interagit avec l'abstraction (\texttt{ICacheStorage}) sans connaître ni se soucier de l'implémentation concrète (\texttt{RedisCacheService}).
+\end{itemize}
+
+\begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Pièges courants \& Erreurs de compilation}]
+    \begin{itemize}
+        \item \textbf{Membre non implémenté (\texttt{CS0535})} : Si vous ajoutez une nouvelle signature dans l'interface \texttt{ICacheStorage}, la classe \texttt{RedisCacheService} cessera instantanément de compiler tant qu'elle ne fournira pas le code de cette nouvelle méthode.
+        \item \textbf{Erreur de visibilité des membres} : Les méthodes implémentant une interface doivent impérativement être déclarées en \texttt{public} dans la classe (ou faire l'objet d'une implémentation d'interface explicite, une notion architecturale avancée).
+    \end{itemize}
+\end{tcolorbox}
+
+\subsection{Synthèse / À retenir}
+
+\begin{itemize}
+    \item \textbf{Séparation des préoccupations} : Programmez orienté \textit{Interface} et non orienté \textit{Implémentation}. Les paramètres de vos méthodes de service doivent attendre des interfaces (ex: \texttt{ISmtpClient}) plutôt que des classes figées.
+    \item Les classes modélisent ce qu'une donnée \textbf{EST}, les interfaces modélisent ce dont un objet \textbf{EST CAPABLE}.
+    \item Capitalisez massivement sur \texttt{IEquatable<T>} pour redéfinir la notion d'égalité métier et sur \texttt{IComparable<T>} pour les algorithmes de tri .NET natifs.
+\end{itemize}

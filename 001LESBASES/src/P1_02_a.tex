@@ -153,6 +153,8 @@ class ServeurWeb
     public void TraiterRequete(string _adresseIp)
     {
         // 3. Masquage (Shadowing) : Le paramètre masque le champ d'instance
+        // (Note pédagogique : l'usage d'un '_' pour un paramètre est un anti-pattern,
+        // utilisé ici EXCLUSIVEMENT pour démontrer le masquage).
         
         // Incrémentation de la variable statique partagée
         _requetesGlobales++; 

@@ -71,6 +71,7 @@
 
 ### 10. Programmation Orientée Objet — Bases
 - Classes et objets
+- `struct` vs `class` (types valeur vs types référence)
 - Constructeurs
 - Propriétés (`get`, `set`, `init`)
 - Encapsulation et modificateurs d'accès (`public`, `private`, `protected`, `internal`)
@@ -95,20 +96,22 @@
 - Classes génériques
 - Contraintes (`where T : class`, `where T : new()`, `where T : IComparable`)
 
-### 14. Delegates, lambdas et événements
+### 14. Collections avancées
+- `Stack<T>` (pile)
+- `Queue<T>` (file)
+- `HashSet<T>` (ensemble sans doublons)
+- `SortedList<TKey, TValue>` (rappel sur `IComparer<T>`)
+- Choisir la bonne collection selon le besoin
+
+### 15. Delegates, lambdas, événements et méthodes d'extension
 - `delegate` : déclaration et invocation
 - `Action` et `Func` (delegates prédéfinis)
 - Expressions lambda (`=>`)
 - Événements (`event`, `EventHandler`)
-
-### 15. Collections avancées
-- `Stack<T>` (pile)
-- `Queue<T>` (file)
-- `HashSet<T>` (ensemble sans doublons)
-- `SortedList<TKey, TValue>`
-- Choisir la bonne collection selon le besoin
+- Méthodes d'extension (`static` + `this` en premier paramètre)
 
 ### 16. LINQ
+- `IEnumerable<T>` et exécution différée (Deferred Execution)
 - Syntaxe méthode (`Where`, `Select`, `OrderBy`, `GroupBy`)
 - Syntaxe requête (`from ... where ... select`)
 - Agrégations (`Sum`, `Average`, `Count`, `Min`, `Max`)
@@ -121,27 +124,30 @@
 - `Task` et `Task<T>`
 - `Task.WhenAll` (parallélisme)
 
-### 18. Types modernes et Clean Code
+### 18. Types modernes et Pattern Matching
 - `record` (types immuables)
-- `init` (propriétés en écriture seule à l'initialisation)
-- Expression `with` (copie modifiée)
+- `init` et expression `with`
 - `Nullable reference types` (`string?`)
-- `using` et libération de ressources (introduction)
-- `Stopwatch` (mesure de performance)
+- Pattern matching avancé (property / tuple patterns)
+- `using` declaration (`using var ...;` sans accolades)
+
+### 19. Entrées/Sorties, Fichiers et Sérialisation
+- Manipulation de fichiers (`System.IO`, `File.ReadAllText`, `StreamReader` / `StreamWriter`)
 - Sérialisation JSON (`System.Text.Json`)
+- `Stopwatch` (mesure de performance)
 
 ---
 
 ## Partie 2 — SQL : Les Bases de Données
 
-### 19. Introduction aux bases de données relationnelles
+### 20. Introduction aux bases de données relationnelles
 - Qu'est-ce qu'une base de données relationnelle
 - Tables, lignes, colonnes
 - Clés primaires et clés étrangères
 - Relations : 1-1, 1-N, N-N (tables de liaison)
 - Installation et utilisation de SQL Server / SSMS
 
-### 20. Création de tables et types de données
+### 21. Création de tables et types de données
 - `CREATE TABLE`
 - Types de données SQL (`INT`, `VARCHAR`, `NVARCHAR`, `DATETIME`, `DECIMAL`, `BIT`)
 - Contraintes : `PRIMARY KEY`, `FOREIGN KEY`, `NOT NULL`, `UNIQUE`, `CHECK`, `DEFAULT`
@@ -149,13 +155,13 @@
 - `ALTER TABLE` (modifier une table existante)
 - `DROP TABLE`
 
-### 21. Insertion de données
+### 22. Insertion de données
 - `INSERT INTO ... VALUES`
 - Insertion de plusieurs lignes
 - Insertion depuis une autre table (`INSERT INTO ... SELECT`)
 - Valeurs par défaut et colonnes nullable
 
-### 22. Requêtes de lecture
+### 23. Requêtes de lecture
 - `SELECT` : colonnes, alias (`AS`), `DISTINCT`
 - `WHERE` : filtres simples et combinés
 - `ORDER BY` : tri ascendant / descendant
@@ -163,13 +169,13 @@
 - `IN`, `BETWEEN`, `IS NULL`
 - `TOP` / `OFFSET ... FETCH`
 
-### 23. Mise à jour et suppression
+### 24. Mise à jour et suppression
 - `UPDATE ... SET ... WHERE`
 - `DELETE FROM ... WHERE`
 - `TRUNCATE TABLE`
 - Importance du `WHERE` (éviter les suppressions massives)
 
-### 24. Jointures
+### 25. Jointures
 - `INNER JOIN` (intersection)
 - `LEFT JOIN` (tout à gauche + correspondances)
 - `RIGHT JOIN`
@@ -177,26 +183,26 @@
 - Jointures sur plusieurs tables
 - Auto-jointure (table jointe à elle-même)
 
-### 25. Agrégations et groupements
+### 26. Agrégations et groupements
 - Fonctions d'agrégation : `COUNT`, `SUM`, `AVG`, `MIN`, `MAX`
 - `GROUP BY`
 - `HAVING` (filtre après agrégation)
 - Sous-requêtes (dans `WHERE`, dans `FROM`)
 
-### 26. Procédures stockées
+### 27. Procédures stockées
 - `CREATE PROCEDURE`
 - Paramètres d'entrée et de sortie
 - `EXEC` / `EXECUTE`
 - Cas d'usage (validation de commande, calculs métier)
 
-### 27. Transactions
+### 28. Transactions
 - `BEGIN TRANSACTION`
 - `COMMIT` et `ROLLBACK`
 - Atomicité : tout réussit ou rien ne s'applique
 - `TRY...CATCH` en SQL
 - Niveaux d'isolation (introduction)
 
-### 28. Vues et index
+### 29. Vues et index
 - `CREATE VIEW` : requêtes pré-enregistrées
 - Cas d'usage des vues (simplifier les requêtes complexes)
 - `CREATE INDEX` : accélérer les recherches

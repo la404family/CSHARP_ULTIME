@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.7.25)  1 AUG 2026 21:49
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.5) (preloaded format=pdflatex 2026.7.25)  2 AUG 2026 13:48
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -742,7 +742,7 @@ File: l3backend-pdftex.def 2026-02-18 L3 backend support: PDF output (pdfTeX)
 )
 (lesbases.aux
 Package babel Info: 'french' activates 'french' shorthands.
-(babel)             Reported on input line 7.
+(babel)             Reported on input line 11.
 )
 \openout1 = `lesbases.aux'.
 
@@ -890,20 +890,40 @@ Overfull \hbox (35.59114pt too wide) in paragraph at lines 23--34
 (src/P1_03_a.tex [19] [20] [21]) (src/P1_04_a.tex [22] [23] [24])
 (src/P1_05_a.tex [25] [26]) (src/P1_06_a.tex [27] [28] [29] [30])
 (src/P1_07_a.tex [31] [32] [33]) (src/P1_08_a.tex [34] [35] [36] [37])
-(src/P1_09_a.tex [38] [39] [40]) [41] (lesbases.aux)
+(src/P1_09_a.tex [38] [39] [40]) (src/P1_10_a.tex [41] [42]
+Underfull \hbox (badness 10000) in paragraph at lines 105--106
+[]\T1/cmtt/m/n/10.95 NullReferenceException \T1/cmr/m/n/10.95 : Omettre d'uti-l
+i-ser l'opé-ra-teur \T1/cmtt/m/n/10.95 new\T1/cmr/m/n/10.95 . Dé-cla-rer
+ []
+
+
+Underfull \hbox (badness 1178) in paragraph at lines 105--106
+\T1/cmtt/m/n/10.95 NetworkConnection conn; \T1/cmr/m/n/10.95 crée uni-que-ment 
+une ré-fé-rence vide poin-tant vers
+ []
+
+[43]) (src/P1_11_a.tex [44] [45] [46]) (src/P1_12_a.tex [47] [48] [49])
+[50] (lesbases.aux)
  ***********
 LaTeX2e <2026-06-01>
 L3 programming layer <2026-06-18>
  ***********
-Package rerunfilecheck Info: File `lesbases.out' has not changed.
-(rerunfilecheck)             Checksum: 9B7EB16FD1077C4075BD1B3A72B80315;26096.
+
+
+Package rerunfilecheck Warning: File `lesbases.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `lesbases.out':
+(rerunfilecheck)             Before: 9B7EB16FD1077C4075BD1B3A72B80315;26096
+(rerunfilecheck)             After:  D48E540EAEFC29747E94F019DCEE5B2B;31230.
  ) 
 Here is how much of TeX's memory you used:
- 29521 strings out of 467510
- 563834 string characters out of 5418903
- 1290618 words of memory out of 5000000
- 57381 multiletter control sequences out of 15000+600000
- 645728 words of font info for 78 fonts, out of 8000000 for 9000
+ 29776 strings out of 467510
+ 567800 string characters out of 5418903
+ 1299618 words of memory out of 5000000
+ 57388 multiletter control sequences out of 15000+600000
+ 644960 words of font info for 77 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  98i,7n,108p,684b,2066s stack positions out of 10000i,1000n,20000p,200000b,200000s
  <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbi
@@ -915,22 +935,21 @@ pen/ec/dpi600\ecit1095.pk> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour
 ljfour/jknappen/ec/dpi600\ectt1000.pk> <C:\Users\kevin\AppData\Local\MiKTeX\fon
 ts/pk/ljfour/jknappen/ec/dpi600\ectt1095.pk> <C:\Users\kevin\AppData\Local\MiKT
 eX\fonts/pk/ljfour/jknappen/ec/dpi600\ecti1095.pk> <C:\Users\kevin\AppData\Loca
-l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm0700.pk> <C:\Users\kevin\AppDat
-a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\kevin\
-AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\
-kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\
-Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk
-> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1
-440.pk> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600
-\ecrm2074.pk> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/
-dpi600\ecbx2488.pk> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknapp
-en/ec/dpi600\ecrm0600.pk><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/c
-m/cmmi10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb>
-<C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Fi
-les/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
-Output written on lesbases.pdf (42 pages, 592520 bytes).
+l\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1000.pk> <C:\Users\kevin\AppDat
+a\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1200.pk> <C:\Users\kevin\
+AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm1095.pk> <C:\Users\
+kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1095.pk> <C:\
+Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecbx1440.pk
+> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600\ecrm2
+074.pk> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/dpi600
+\ecbx2488.pk> <C:\Users\kevin\AppData\Local\MiKTeX\fonts/pk/ljfour/jknappen/ec/
+dpi600\ecrm0600.pk><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi
+10.pfb><C:/Program Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Pr
+ogram Files/MiKTeX/fonts/type1/public/amsfonts/cm/cmr8.pfb><C:/Program Files/Mi
+KTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb>
+Output written on lesbases.pdf (51 pages, 666104 bytes).
 PDF statistics:
- 2396 PDF objects out of 2487 (max. 8388607)
- 917 named destinations out of 1000 (max. 500000)
+ 2727 PDF objects out of 2984 (max. 8388607)
+ 1157 named destinations out of 1200 (max. 500000)
  909 words of extra memory for PDF output out of 10000 (max. 10000000)
 

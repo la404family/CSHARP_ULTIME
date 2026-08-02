@@ -1,0 +1,128 @@
+\section{Programmation Orientée Objet — Bases}
+
+\subsection{Introduction Théorique}
+
+La Programmation Orientée Objet (POO) est un paradigme d'ingénierie logicielle structurant l'architecture d'une application autour d'entités cohésives appelées \textbf{objets}. Contrairement à la programmation procédurale qui sépare chronologiquement la donnée de la logique de traitement, la POO encapsule l'état (les champs ou propriétés) et le comportement (les méthodes) au sein d'une même structure mémoire.
+
+Cette approche permet de concevoir des systèmes complexes en favorisant la modularité, la réutilisabilité du code et le masquage de l'implémentation interne (encapsulation). En C\#, tout le framework .NET repose intrinsèquement sur ce paradigme, depuis les types primitifs jusqu'aux composants de haut niveau.
+
+\subsection{Syntaxe et Règles : Classes, Objets et Types}
+
+Une \textbf{classe} définit le contrat, la structure mémoire et le comportement d'un type. Elle agit comme un modèle d'allocation. Un \textbf{objet} est une instance de cette classe, allouée dynamiquement en mémoire lors de l'exécution, via l'opérateur \texttt{new}.
+
+\subsubsection{Types Valeur (\texttt{struct}) vs Types Référence (\texttt{class})}
+
+Le C\# distingue deux grandes familles d'allocation mémoire pour les structures de données personnalisées :
+\begin{itemize}
+    \item \textbf{\texttt{class} (Type référence)} : Les instances sont allouées sur le \textbf{tas} (Heap). La variable contient uniquement un pointeur (une référence) vers l'adresse mémoire de l'objet. Adapté pour les entités métier complexes, les services et le partage d'état.
+    \item \textbf{\texttt{struct} (Type valeur)} : Les instances sont allouées directement sur la \textbf{pile} (Stack) ou encapsulées en ligne (inline) dans un autre type. La variable contient directement les données. Idéal pour les petites structures de données immuables (comme des coordonnées géospatiales ou des vecteurs mathématiques) pour limiter la pression sur le Garbage Collector (GC).
+\end{itemize}
+
+\subsubsection{Encapsulation et Modificateurs d'Accès}
+
+L'encapsulation restreint la visibilité de l'état interne d'un composant. Le C\# utilise des modificateurs d'accès pour définir ce contrat d'interface :
+\begin{itemize}
+    \item \texttt{public} : Accessible par n'importe quel code appelant.
+    \item \texttt{private} : Accessible uniquement à l'intérieur du bloc de la classe (visibilité par défaut).
+    \item \texttt{protected} : Accessible dans la classe et dans ses futures classes dérivées (héritage).
+    \item \texttt{internal} : Accessible uniquement au sein du même assemblage (le même projet ou la même DLL).
+\end{itemize}
+
+\subsubsection{Constructeurs et le mot-clé \texttt{this}}
+
+Le constructeur est la méthode d'initialisation appelée automatiquement lors de l'allocation d'un objet. Le mot-clé \texttt{this} fait référence à l'instance courante de l'objet en cours de traitement, permettant de lever les ambiguïtés de nommage (masquage/shadowing) entre les paramètres du constructeur et les champs propres à la classe.
+
+\subsubsection{Propriétés (\texttt{get}, \texttt{set}, \texttt{init})}
+
+Les propriétés exposent des méthodes d'accès (accesseurs) dissimulées derrière une syntaxe d'affectation de variable, offrant un contrôle strict sur la lecture et l'écriture des données encapsulées. Le modificateur \texttt{init} (introduit avec C\# 9) restreint l'écriture de la propriété exclusivement à la phase d'initialisation de l'objet, garantissant par la suite l'immuabilité absolue de la donnée.
+
+\subsection{Exemple de Code Commenté}
+
+L'exemple suivant illustre la création d'un composant de gestion de connexion réseau, démontrant l'encapsulation, la validation des données et l'initialisation sécurisée.
+
+\begin{lstlisting}[caption={Implémentation d'un composant de connexion réseau}]
+public class NetworkConnection
+{
+    // 1. Champ privé (état interne encapsulé)
+    private int _timeoutMs;
+
+    // 2. Propriété en lecture publique, écriture limitée à l'initialisation
+    public string HostIp { get; init; }
+
+    // 3. Propriété avec logique métier dans le mutateur (set)
+    public int Timeout
+    {
+        get { return _timeoutMs; }
+        set 
+        { 
+            if (value < 0)
+                throw new ArgumentOutOfRangeException(nameof(value), "Le timeout doit être positif.");
+            
+            _timeoutMs = value;
+        }
+    }
+
+    // 4. Constructeur avec utilisation de 'this' pour lever l'ambiguïté
+    public NetworkConnection(string hostIp, int timeoutMs)
+    {
+        this.HostIp = hostIp;
+        this.Timeout = timeoutMs; // Appelle le 'set' de la propriété (qui valide la donnée)
+    }
+
+    // 5. Méthode d'instance
+    public void OpenConnection()
+    {
+        Console.WriteLine($"Connexion à {HostIp} avec un délai de {Timeout}ms...");
+    }
+}
+
+class Program
+{
+    static void Main()
+    {
+        // 6. Instanciation via l'opérateur 'new'
+        NetworkConnection conn = new NetworkConnection("192.168.1.10", 5000);
+        
+        conn.Timeout = 2000; // Modification valide via la propriété
+        // conn.HostIp = "10.0.0.1"; // ERREUR DE COMPILATION : La propriété 'init' est immuable
+        
+        conn.OpenConnection();
+    }
+}
+\end{lstlisting}
+
+\textbf{Explications ligne par ligne :}
+\begin{itemize}
+    \item \textbf{Ligne 4} : Déclaration d'un champ privé \texttt{\_timeoutMs}. La convention standard de l'écosystème C\# stipule de préfixer les champs d'instance privés par un \textit{underscore} (\texttt{\_}).
+    \item \textbf{Ligne 7} : La propriété \texttt{HostIp} utilise \texttt{init}. Sa valeur ne peut être définie que dans le constructeur ou lors de l'initialisation de l'objet, empêchant toute mutation involontaire de l'adresse cible par la suite.
+    \item \textbf{Lignes 10-20} : La propriété \texttt{Timeout} agit comme une façade sécurisée pour le champ interne \texttt{\_timeoutMs}, en y injectant une règle de validation (le rejet immédiat des valeurs temporelles négatives).
+    \item \textbf{Ligne 25} : Le mot-clé \texttt{this} spécifie explicitement que l'on assigne la valeur à la propriété \texttt{HostIp} de l'instance courante, et non au paramètre homonyme si celui-ci existait.
+    \item \textbf{Ligne 41} : L'opérateur \texttt{new} alloue la mémoire requise sur le tas (Heap) pour une nouvelle instance de \texttt{NetworkConnection} et déclenche son constructeur.
+\end{itemize}
+
+\begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Pièges courants \& Erreurs de compilation}]
+    \begin{itemize}
+        \item \textbf{\texttt{NullReferenceException}} : Omettre d'utiliser l'opérateur \texttt{new}. Déclarer \texttt{NetworkConnection conn;} crée uniquement une référence vide pointant vers \texttt{null}. Tenter d'appeler \texttt{conn.OpenConnection()} dans cet état lèvera une exception fatale à l'exécution.
+        \item \textbf{Erreur de visibilité (\texttt{CS0122})} : Tenter d'accéder à un membre \texttt{private} (comme \texttt{\_timeoutMs}) depuis l'extérieur de la classe (par exemple depuis \texttt{Program.Main}). L'état interne doit exclusivement être manipulé via des \texttt{public} propriétés ou méthodes.
+    \end{itemize}
+\end{tcolorbox}
+
+\begin{tcolorbox}[colback=white,colframe=stringcolor,title=\textbf{Le Piège Silencieux des Exceptions d'Arguments}]
+    Il existe une \textbf{incohérence historique et asymétrique} dans l'API .NET :
+    \begin{itemize}
+        \item \texttt{new ArgumentException("Mon message")} attend le \textbf{message} en paramètre unique.
+        \item \texttt{new ArgumentNullException("Mon message")} attend le \textbf{nom du paramètre} (\texttt{paramName}) en paramètre unique !
+    \end{itemize}
+    Si vous passez uniquement un message à \texttt{ArgumentNullException} ou \texttt{ArgumentOutOfRangeException}, le compilateur l'accepte, mais à l'exécution le texte sera assigné au nom du paramètre. Le vrai message affiché sera un message système absurde du type : \textit{Value cannot be null. (Parameter 'Le flux est vide.')}.
+    \textbf{Règle d'or} : Utilisez toujours la surcharge à deux paramètres \texttt{(nameof(param), "Message")} pour ces exceptions spécifiques.
+\end{tcolorbox}
+
+\subsection{Synthèse / À retenir}
+
+\begin{itemize}
+    \item \textbf{Classe vs Objet} : La classe est le plan d'architecture abstrait, l'objet est l'instance mémoire concrète.
+    \item \textbf{\texttt{class} vs \texttt{struct}} : Les classes (\texttt{class}) sont passées par référence (Heap), les structures (\texttt{struct}) sont passées par valeur (Stack).
+    \item \textbf{Encapsulation} : Protégez systématiquement l'état interne d'un objet avec \texttt{private} et exposez des accès contrôlés via des \textbf{propriétés}.
+    \item \textbf{Immuabilité} : Privilégiez l'utilisation de \texttt{init} (plutôt que \texttt{set}) pour les données de configuration qui ne doivent pas être altérées après la phase d'instanciation.
+    \item L'opérateur \texttt{new} est impératif pour allouer dynamiquement un objet de type référence avant d'utiliser ses méthodes.
+\end{itemize}
