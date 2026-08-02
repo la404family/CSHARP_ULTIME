@@ -142,7 +142,7 @@ C\# intègre des opérateurs haut niveau pour gérer les types et l'état \textt
     \item \textbf{Opérateur ternaire (\texttt{?:})} : Raccourci syntaxique pour une condition \texttt{if...else} sur une seule ligne. Syntaxe : \texttt{condition ? valeur\_si\_vrai : valeur\_si\_faux}.
     \item \textbf{Opérateur de coalescence (\texttt{??})} : Retourne l'opérande de gauche s'il n'est pas \texttt{null}, sinon retourne l'opérande de droite.
     \item \textbf{\texttt{is}} : Évalue si un objet est compatible avec un type donné, au moment de l'exécution (Runtime).
-    \item \textbf{\texttt{as}} : Tente un transtypage (cast) en toute sécurité. Si l'opération échoue, retourne \texttt{null} au lieu de lever une exception.
+    \item \textbf{\texttt{as}} : Tente un transtypage (cast) en toute sécurité. Si l'opération échoue, retourne \texttt{null} au lieu de lever une exception. Fonctionne avec les types référence et les types valeur nullable (\texttt{T?}).
 \end{itemize}
 
 \begin{lstlisting}[caption={Utilisation de l'opérateur is et as}]
@@ -159,6 +159,34 @@ string? texteConnu = donneeInconnue as string;
 // texteConnu vaut null car donneeInconnue est un entier
 \end{lstlisting}
 
+\subsection{Priorité des Opérateurs}
+
+Lorsqu'une expression combine plusieurs opérateurs, le compilateur applique un ordre de priorité (\\textit{precedence}) strict. Il est impératif de connaître cet ordre pour éviter les erreurs logiques silencieuses.
+
+\begin{center}
+    \textbf{Tableau : Ordre de priorité des opérateurs (du plus prioritaire au moins prioritaire)} \\[0.3cm]
+    \begin{tabular}{@{}clp{7cm}@{}}
+        \toprule
+        \textbf{Priorité} & \textbf{Opérateurs} & \textbf{Description} \\
+        \midrule
+        1 & \texttt{()}, \texttt{.}, \texttt{[]} & Parenthèses, accès membre, indexeur \\
+        2 & \texttt{!}, \texttt{++}, \texttt{-{}-}, \texttt{(cast)} & Opérateurs unaires, négation, cast \\
+        3 & \texttt{*}, \texttt{/}, \texttt{\%} & Multiplication, division, modulo \\
+        4 & \texttt{+}, \texttt{-} & Addition, soustraction \\
+        5 & \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}, \texttt{is}, \texttt{as} & Comparaison et vérification de type \\
+        6 & \texttt{==}, \texttt{!=} & Égalité \\
+        7 & \texttt{\&\&} & ET logique \\
+        8 & \texttt{||} & OU logique \\
+        9 & \texttt{?:} & Ternaire conditionnel \\
+        10 & \texttt{=}, \texttt{+=}, \texttt{-=}, etc. & Affectation \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Règle d'ingénierie : Utilisez les parenthèses}]
+    Même si vous connaissez l'ordre de priorité, l'ajout de parenthèses explicites dans les expressions complexes est une pratique obligatoire en Clean Code. Elles rendent l'intention du développeur immédiatement lisible et préviennent les erreurs lors de la maintenance par un autre ingénieur.
+\end{tcolorbox}
+
 \subsection{Synthèse du Chapitre}
 
 \begin{center}
@@ -170,6 +198,7 @@ string? texteConnu = donneeInconnue as string;
         \textbf{Division entière} & \texttt{10 / 3} donne toujours \texttt{3}. Transtyper en \texttt{double} pour une précision flottante. \\
         \textbf{Court-circuit (\texttt{\&\&}, \texttt{||})} & Optimise les performances CPU en annulant l'évaluation de la partie droite si le résultat final est déjà connu. \\
         \textbf{\texttt{is} et \texttt{as}} & Outils indispensables pour la vérification dynamique et le transtypage sécurisé sans levée d'exceptions bloquantes. \\
+        \textbf{Priorité} & En cas de doute, encadrez avec des parenthèses explicites pour garantir l'intention. \\
         \bottomrule
     \end{tabular}
 \end{center}

@@ -73,8 +73,7 @@ public struct FinancialTransaction : IComparable<FinancialTransaction>
     // 5. Contrat de tri : doit retourner 0 (égal), < 0 (avant) ou > 0 (après)
     public int CompareTo(FinancialTransaction other)
     {
-        if (other == null) return 1;
-        
+        // Pas de vérification de nullité : un struct (type valeur) ne peut jamais être null
         // Délégation logique du tri directement au type décimal sous-jacent
         return this.Amount.CompareTo(other.Amount);
     }

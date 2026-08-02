@@ -125,15 +125,14 @@ Voici le squelette standard d'une application C\# console :
 \begin{lstlisting}[caption={Structure classique d'un fichier C\# (Program.cs)}]
 using System;
 
-namespace LesBases.Chapitre1
+namespace LesBases.Chapitre1; // C# 10 : File-scoped namespace (pas d'accolades)
+
+internal class Program
 {
-    internal class Program
+    static void Main(string[] args)
     {
-        static void Main(string[] args)
-        {
-            // Point d'entree principal de l'application
-            Console.WriteLine("Bienvenue dans la formation C# !");
-        }
+        // Point d'entree principal de l'application
+        Console.WriteLine("Bienvenue dans la formation C# !");
     }
 }
 \end{lstlisting}
@@ -183,7 +182,7 @@ Le processus complet de transformation du code source C\# en exécution système
     \item \textbf{Phase 2 : Exécution Dynamique (CLR / JIT)}
     \begin{itemize}
         \item Chargement de l'assemblage par le CLR.
-        \item Le compilateur **JIT** traduit les blocs IL nécessaires en instructions machines natives.
+        \item Le compilateur \textbf{JIT} traduit les blocs IL nécessaires en instructions machines natives.
         \item Le processeur exécute le code natif.
     \end{itemize}
 \end{enumerate}
@@ -199,7 +198,7 @@ Le processus complet de transformation du code source C\# en exécution système
         \textbf{Roslyn} & Compilateur C\# qui transforme le code \texttt{.cs} en \textbf{IL}. \\
         \textbf{Code IL} & Langage intermédiaire universel de la plateforme .NET. \\
         \textbf{CLR} & Moteur d'exécution qui gère la mémoire (GC) et compile le code IL via le \textbf{JIT}. \\
-        \textbf{Main()} & Point d'entrée obligatoire de toute application console C\#. \\
+        \textbf{Main()} & Point d'entrée de toute application console, explicite ou généré automatiquement par le compilateur (Top-Level Statements). \\
         \bottomrule
     \end{tabular}
 \end{center}

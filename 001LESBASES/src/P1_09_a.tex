@@ -92,12 +92,11 @@ if (soldeCompte < prixPanier)
 La libération des ressources dites "non-managées" (fichiers système, connexions réseaux, flux de base de données) ne doit pas dépendre du Garbage Collector. Le bloc \texttt{using} garantit que la méthode \texttt{Dispose()} de la ressource sera appelée à la fin du bloc, \textbf{même si une exception est levée} à l'intérieur.
 
 \begin{lstlisting}[style=csharpstyle]
-// Le bloc using assure la fermeture du fichier système en toutes circonstances
-using (StreamReader reader = new StreamReader("C:\\data\\config.json"))
-{
-    string contenu = reader.ReadToEnd();
-    Console.WriteLine(contenu);
-} // reader.Dispose() est appelé implicitement et automatiquement ici
+// La "using declaration" (sans accolades) assure la fermeture à la fin de la méthode
+using var reader = new StreamReader("C:\\data\\config.json");
+string contenu = reader.ReadToEnd();
+Console.WriteLine(contenu);
+// reader.Dispose() est appelé implicitement à la sortie de la méthode courante
 \end{lstlisting}
 
 \begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges Courants \& Anti-Patterns}]

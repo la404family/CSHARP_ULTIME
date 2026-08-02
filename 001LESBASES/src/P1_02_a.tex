@@ -89,14 +89,33 @@ var identifiantSession = "USER_902";
     Le mot-clé \texttt{var} maintient un typage \textbf{statique fort}. Lors de la compilation, l'instruction \texttt{var x = 10;} est transformée en \texttt{int x = 10;}. Il sera donc impossible d'affecter une chaîne de caractères à \texttt{x} ultérieurement.
 \end{tcolorbox}
 
-\subsection{Les Constantes (\texttt{const})}
+\subsection{Constantes (\texttt{const}) et Champs Immuables (\texttt{readonly})}
 
-Une constante alloue un espace mémoire immuable. Sa valeur est résolue et scellée lors de la compilation. Elle ne pourra jamais être modifiée durant l'exécution, garantissant ainsi l'intégrité de la donnée.
+Le C\# propose deux mécanismes distincts pour déclarer des valeurs non modifiables, chacun avec un comportement fondamentalement différent.
 
-\begin{lstlisting}[caption={Déclaration de constantes}]
+\begin{lstlisting}[caption={Déclaration de constantes et champs readonly}]
+// 'const' : Valeur résolue et scellée à la COMPILATION
+// Doit être initialisée immédiatement avec un littéral (pas de 'new', pas d'appel de méthode)
 const double Pi = 3.14159;
 const int MaxRequetesParSeconde = 500;
+
+// 'readonly' : Valeur scellée à l'EXÉCUTION (après le constructeur)
+// Peut être initialisée avec le résultat d'un calcul ou d'un appel de méthode
+readonly DateTime _dateCreation = DateTime.UtcNow;
+readonly string _identifiantMachine;
+
+public ServiceMonitoring(string machineId)
+{
+    _identifiantMachine = machineId; // Autorisé uniquement dans le constructeur
+}
 \end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Règle : \texttt{const} vs \texttt{readonly}}]
+    \begin{itemize}
+        \item \textbf{\texttt{const}} : Pour les valeurs universelles connues avant l'exécution (Pi, nombre maximal, codes d'erreur HTTP). Implicitement \texttt{static}.
+        \item \textbf{\texttt{readonly}} : Pour les valeurs calculées au démarrage ou injectées par le constructeur (identifiant de session, horodatage de création, configuration chargée depuis un fichier). Non statique par défaut.
+    \end{itemize}
+\end{tcolorbox}
 
 \subsection{Manipulation des Chaînes de Caractères}
 
@@ -114,6 +133,14 @@ Console.WriteLine("Utilisateur : " + nomComplet);
 Console.WriteLine("Entrez votre code d'accès :");
 string? codeSaisi = Console.ReadLine(); // 'string?' autorise explicitement la valeur null
 \end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Note sur \texttt{string?} et les \textit{Nullable Reference Types}}]
+Depuis C\# 8 (et par défaut depuis .NET 6), les types références (comme \texttt{string}) ne peuvent plus valoir \texttt{null} par défaut, afin d'éradiquer la fameuse \texttt{NullReferenceException} en production.
+\begin{itemize}
+    \item \texttt{string code = Console.ReadLine();} générera un avertissement du compilateur, car la console peut renvoyer du vide.
+    \item \texttt{string? codeSaisi} avec le \textbf{point d'interrogation} indique explicitement : \textit{"J'accepte que cette variable puisse être nulle"}. Le compilateur vous obligera ensuite à la vérifier avant de l'utiliser. (Ce mécanisme très puissant sera approfondi au chapitre 18).
+\end{itemize}
+\end{tcolorbox}
 
 \subsection{La Portée des Variables (Scope)}
 
@@ -192,7 +219,10 @@ double reel = entier; // L'entier (32-bit) s'intègre sans perte dans le décima
 double valeurMesuree = 9.7;
 int valeurTronquee = (int)valeurMesuree; // Vaut 9 (la fraction décimale est détruite)
 
-// 3. Conversion par Analyse (Parsing : Chaîne vers Numérique)
+// 3. Conversion par la classe utilitaire Convert (arrondit au lieu de tronquer)
+int valeurArrondie = Convert.ToInt32(valeurMesuree); // Vaut 10 (arrondi bancaire)
+
+// 4. Conversion par Analyse (Parsing : Chaîne vers Numérique)
 string donneesReseau = "1024";
 int portServeur = int.Parse(donneesReseau); 
 \end{lstlisting}

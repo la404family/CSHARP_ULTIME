@@ -1,0 +1,158 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_13_a.tex
+% Sujet   : Chapitre 13 : Les Génériques
+% ==============================================================================
+
+\newpage
+\section{Les Génériques}
+\marginpar{\tiny\color{gray}P1\_13\_a.tex}
+
+\subsection{Introduction Théorique}
+
+Les génériques (\textit{Generics}) constituent un mécanisme fondamental du système de types C\# permettant de définir des classes, des structures, des interfaces et des méthodes dont un ou plusieurs types sont \textbf{paramétrés}. Au lieu de figer un type concret dans le code, le développeur déclare un espace réservé (conventionnellement noté \texttt{T}) qui sera substitué par un type réel lors de l'utilisation.
+
+Ce mécanisme élimine deux problèmes majeurs de l'ingénierie logicielle :
+\begin{itemize}
+    \item \textbf{La duplication de code} : Sans génériques, il faudrait écrire une version de chaque algorithme pour chaque type de données (une méthode de tri pour \texttt{int}, une autre pour \texttt{string}, une autre pour \texttt{decimal}).
+    \item \textbf{Le boxing/unboxing} : Avant les génériques (C\# 1.0), les collections comme \texttt{ArrayList} stockaient des \texttt{object}, forçant des conversions coûteuses en performance CPU entre types valeur et types référence.
+\end{itemize}
+
+Les collections que vous avez déjà utilisées (\texttt{List<T>}, \texttt{Dictionary<TKey, TValue>}) sont elles-mêmes des classes génériques fournies par le framework .NET.
+
+\subsection{Syntaxe et Règles}
+
+\subsubsection{Méthodes Génériques}
+
+Une méthode générique déclare un paramètre de type entre chevrons (\texttt{<T>}) juste après son nom. Ce paramètre devient un type utilisable dans la signature et le corps de la méthode. Le compilateur infère automatiquement le type concret à partir des arguments passés à l'appel.
+
+\subsubsection{Classes et Structures Génériques}
+
+Une classe générique déclare ses paramètres de type au niveau de la classe elle-même. Toutes les méthodes et propriétés internes peuvent alors exploiter ces paramètres de type sans les redéclarer.
+
+\subsubsection{Contraintes de Type (\texttt{where})}
+
+Par défaut, un paramètre de type \texttt{T} peut être substitué par n'importe quel type existant, ce qui limite les opérations possibles sur \texttt{T} (on ne peut appeler que les méthodes de \texttt{object}). Les \textbf{contraintes} restreignent les types autorisés et débloquent des fonctionnalités supplémentaires :
+
+\begin{center}
+    \textbf{Tableau : Contraintes de type les plus courantes} \\[0.3cm]
+    \begin{tabular}{@{}lp{9cm}@{}}
+        \toprule
+        \textbf{Contrainte} & \textbf{Effet} \\
+        \midrule
+        \texttt{where T : class} & \texttt{T} doit être un type référence (classe, interface, delegate). \\
+        \texttt{where T : struct} & \texttt{T} doit être un type valeur non nullable. \\
+        \texttt{where T : new()} & \texttt{T} doit posséder un constructeur public sans paramètre. Permet d'écrire \texttt{new T()} dans le code. \\
+        \texttt{where T : IComparable<T>} & \texttt{T} doit implémenter l'interface spécifiée, donnant accès à ses méthodes. \\
+        \texttt{where T : BaseClass} & \texttt{T} doit hériter de la classe de base spécifiée. \\
+        \texttt{where T : notnull} & \texttt{T} ne peut pas être \texttt{null} (type valeur ou type référence non nullable). \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\subsection{Exemple de Code Commenté}
+
+L'exemple suivant implémente un composant de cache générique en mémoire avec politique d'expiration, démontrant les méthodes génériques, les classes génériques et les contraintes de type.
+
+\begin{lstlisting}[caption={Méthode générique et classe générique avec contraintes}]
+// 1. Méthode générique simple : Recherche du maximum dans un tableau
+// Contrainte : T doit implémenter IComparable<T> pour pouvoir être comparé
+public static T TrouverMaximum<T>(T[] valeurs) where T : IComparable<T>
+{
+    if (valeurs.Length == 0)
+        throw new ArgumentException(nameof(valeurs), "Le tableau ne peut pas être vide.");
+
+    T max = valeurs[0];
+    for (int i = 1; i < valeurs.Length; i++)
+    {
+        // CompareTo() est accessible grâce à la contrainte IComparable<T>
+        if (valeurs[i].CompareTo(max) > 0)
+            max = valeurs[i];
+    }
+    return max;
+}
+
+// Appel : le compilateur infère T = int automatiquement
+int[] mesures = { 42, 17, 93, 8, 65 };
+int plusGrand = TrouverMaximum(mesures); // 93
+
+// Appel explicite avec un autre type
+string[] serveurs = { "alpha", "zulu", "bravo" };
+string dernier = TrouverMaximum<string>(serveurs); // "zulu" (ordre lexicographique)
+\end{lstlisting}
+
+\begin{lstlisting}[caption={Classe générique : Cache en mémoire avec expiration}]
+// 2. Classe générique avec deux paramètres de type
+// Contrainte : TKey doit être non null (clé de cache), TValue doit avoir un constructeur
+public class MemoryCache<TKey, TValue> 
+    where TKey : notnull 
+    where TValue : new()
+{
+    // Le dictionnaire interne utilise les paramètres de type de la classe
+    private readonly Dictionary<TKey, (TValue Data, DateTime Expiration)> _store = new();
+
+    // 3. Méthode utilisant les paramètres de type de la classe
+    public void Set(TKey key, TValue value, TimeSpan ttl)
+    {
+        _store[key] = (value, DateTime.UtcNow.Add(ttl));
+    }
+
+    // 4. Retourne la valeur ou une nouvelle instance par défaut (grâce à new())
+    public TValue GetOrDefault(TKey key)
+    {
+        if (_store.TryGetValue(key, out var entry) && entry.Expiration > DateTime.UtcNow)
+        {
+            return entry.Data;
+        }
+        return new TValue(); // Possible uniquement grâce à la contrainte 'where TValue : new()'
+    }
+
+    public int Count => _store.Count;
+}
+
+class Program
+{
+    static void Main()
+    {
+        // 5. Instanciation : substitution de TKey par string, TValue par List<string>
+        var cache = new MemoryCache<string, List<string>>();
+
+        var permissions = new List<string> { "READ", "WRITE", "ADMIN" };
+        cache.Set("user_42_perms", permissions, TimeSpan.FromMinutes(30));
+
+        List<string> perms = cache.GetOrDefault("user_42_perms");
+        Console.WriteLine($"Permissions en cache : {string.Join(", ", perms)}");
+
+        // 6. Tentative avec une clé expirée ou inexistante
+        List<string> inconnu = cache.GetOrDefault("user_99_perms");
+        Console.WriteLine($"Résultat par défaut : {inconnu.Count} éléments"); // 0 (new List<string>())
+    }
+}
+\end{lstlisting}
+
+\textbf{Explications ligne par ligne :}
+\begin{itemize}
+    \item \textbf{Ligne 3} : La méthode \texttt{TrouverMaximum<T>} déclare un paramètre de type \texttt{T} contraint par \texttt{IComparable<T>}. Sans cette contrainte, l'appel à \texttt{CompareTo()} provoquerait une erreur de compilation car le compilateur ne saurait pas que \texttt{T} possède cette méthode.
+    \item \textbf{Ligne 19} : Le compilateur C\# infère automatiquement \texttt{T = int} à partir du type du tableau passé en argument. L'écriture explicite \texttt{TrouverMaximum<int>(mesures)} est équivalente mais redondante.
+    \item \textbf{Lignes 28-30} : La classe \texttt{MemoryCache} déclare deux paramètres de type avec des contraintes distinctes. \texttt{notnull} garantit que la clé de cache ne sera jamais nulle. \texttt{new()} autorise l'instanciation d'un \texttt{TValue} par défaut.
+    \item \textbf{Ligne 35} : Le dictionnaire interne utilise un tuple nommé \texttt{(TValue Data, DateTime Expiration)} pour stocker la valeur et sa date d'expiration. Les paramètres de type \texttt{TKey} et \texttt{TValue} de la classe sont directement exploitables dans ses membres.
+    \item \textbf{Ligne 43} : L'instruction \texttt{new TValue()} est uniquement possible grâce à la contrainte \texttt{where TValue : new()}. Sans cette contrainte, le compilateur refuserait l'instanciation car il ne peut pas garantir que \texttt{TValue} possède un constructeur sans paramètre.
+\end{itemize}
+
+\begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Pièges courants \& Erreurs de compilation}]
+    \begin{itemize}
+        \item \textbf{\texttt{CS0314} — Contrainte manquante} : Tenter d'appeler \texttt{CompareTo()}, \texttt{Equals()} ou toute méthode spécifique à une interface sur un \texttt{T} non contraint. Le compilateur ne voit que les méthodes de \texttt{object} (\texttt{ToString()}, \texttt{GetHashCode()}).
+        \item \textbf{\texttt{CS0310} — \texttt{new()} impossible} : Écrire \texttt{new T()} sans avoir déclaré la contrainte \texttt{where T : new()} dans la signature.
+        \item \textbf{Confusion \texttt{class} vs \texttt{struct}} : Appliquer \texttt{where T : class} empêche l'utilisation de types valeur (\texttt{int}, \texttt{decimal}, \texttt{struct} personnalisées). Inversement, \texttt{where T : struct} interdit les types référence. Choisissez la contrainte en fonction de votre besoin d'allocation mémoire.
+    \end{itemize}
+\end{tcolorbox}
+
+\subsection{Synthèse / À retenir}
+
+\begin{itemize}
+    \item \textbf{Réutilisabilité} : Les génériques permettent d'écrire un algorithme ou une structure de données \textbf{une seule fois} pour un nombre illimité de types.
+    \item \textbf{Sécurité à la compilation} : Contrairement à l'ancienne approche \texttt{object} + cast, les erreurs de type sont détectées par le compilateur et non à l'exécution.
+    \item \textbf{Performance} : Les génériques éliminent le boxing/unboxing pour les types valeur, évitant des allocations mémoire superflues sur le tas.
+    \item \textbf{Contraintes} : Utilisez \texttt{where} pour restreindre les types autorisés et débloquer l'accès aux méthodes d'interfaces ou de classes de base.
+    \item \textbf{Inférence} : Le compilateur déduit automatiquement le type \texttt{T} à partir des arguments. L'écriture explicite n'est nécessaire que lorsqu'il y a ambiguïté.
+\end{itemize}

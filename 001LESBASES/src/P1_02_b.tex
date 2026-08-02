@@ -135,42 +135,41 @@ Une classe lisible regroupe ses membres selon un ordre standardisé reconnu par 
 \end{center}
 
 \begin{lstlisting}[caption={Exemple de structure canonique d'un service C\#}]
-namespace LesBases.Services
+namespace LesBases.Services;
+
+public class ServiceCompteBancaire
 {
-    public class ServiceCompteBancaire
+    // 1. Constantes
+    private const decimal SoldeMinimumAutorise = -500.00m;
+
+    // 2. Champs privés
+    private readonly string _numeroCompte;
+    private decimal _solde;
+
+    // 3. Constructeurs
+    public ServiceCompteBancaire(string numeroCompte, decimal soldeInitial)
     {
-        // 1. Constantes
-        private const decimal SoldeMinimumAutorise = -500.00m;
+        _numeroCompte = numeroCompte;
+        _solde = soldeInitial;
+    }
 
-        // 2. Champs privés
-        private readonly string _numeroCompte;
-        private decimal _solde;
+    // 4. Proprietes publiques
+    public string NumeroCompte => _numeroCompte;
+    public decimal Solde => _solde;
 
-        // 3. Constructeurs
-        public ServiceCompteBancaire(string numeroCompte, decimal soldeInitial)
+    // 5. Methodes publiques
+    public void Deposer(decimal montant)
+    {
+        ValiderMontantPositif(montant);
+        _solde += montant;
+    }
+
+    // 6. Methodes privees d'assistance
+    private static void ValiderMontantPositif(decimal montant)
+    {
+        if (montant <= 0)
         {
-            _numeroCompte = numeroCompte;
-            _solde = soldeInitial;
-        }
-
-        // 4. Proprietes publiques
-        public string NumeroCompte => _numeroCompte;
-        public decimal Solde => _solde;
-
-        // 5. Methodes publiques
-        public void Deposer(decimal montant)
-        {
-            ValiderMontantPositif(montant);
-            _solde += montant;
-        }
-
-        // 6. Methodes privees d'assistance
-        private static void ValiderMontantPositif(decimal montant)
-        {
-            if (montant <= 0)
-            {
-                throw new ArgumentOutOfRangeException(nameof(montant), "Le montant doit etre positif.");
-            }
+            throw new ArgumentOutOfRangeException(nameof(montant), "Le montant doit etre positif.");
         }
     }
 }

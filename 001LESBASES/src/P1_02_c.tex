@@ -15,7 +15,7 @@ En programmation C\#, chaque variable possède un \textbf{type} statique fondame
 Le CLR divise la mémoire de l'application en deux zones distinctes : la \textbf{Pile d'exécution} (\emph{Stack}) et le \textbf{Tas managé} (\emph{Managed Heap}). La classification d'un type détermine la zone d'allocation de la donnée.
 
 \subsubsection{Les Types Valeur (\emph{Value Types})}
-Les types valeur stockent directement leur contenu (la donnée brute) dans la zone mémoire qui leur est allouée sur la \textbf{pile} (\emph{Stack}).
+Les variables locales de type valeur sont généralement stockées directement sur la \textbf{pile} (\emph{Stack}), mais un type valeur peut également résider sur le \textbf{tas} lorsqu'il est contenu dans un objet (champ d'une classe) ou dans un tableau.
 Lorsqu'un type valeur est assigné à une nouvelle variable, le système effectue une \textbf{copie complète} de la valeur. Les deux variables opèrent alors sur des emplacements mémoire strictement indépendants.
 
 \begin{lstlisting}[caption={Comportement en mémoire des types valeur (pile)}]
@@ -93,6 +93,50 @@ int portReseau = 8080;
 string requeteLog = $"Connexion entrante sur le serveur {adresseServeur}:{portReseau}";
 
 Console.WriteLine(requeteLog);
+\end{lstlisting}
+\subsubsection{Les Types Temporels (\texttt{DateTime}, \texttt{DateOnly}, \texttt{TimeSpan})}
+
+La gestion du temps est omniprésente en ingénierie logicielle (horodatage de logs, expiration de tokens, calcul de durées de traitement). Le framework .NET fournit des structures spécialisées.
+
+\begin{lstlisting}[caption={Manipulation des types temporels}]
+// DateTime : Date ET heure (type valeur, struct)
+DateTime maintenant = DateTime.Now;          // Heure locale du serveur
+DateTime instantUtc = DateTime.UtcNow;       // Standard international (recommandé pour les APIs)
+DateTime datePersonnalisee = new DateTime(2026, 8, 2, 14, 30, 0);
+
+// DateOnly (C# 10 / .NET 6+) : Date pure sans composante horaire
+DateOnly dateNaissance = new DateOnly(1995, 3, 15);
+DateOnly aujourdHui = DateOnly.FromDateTime(DateTime.Now);
+
+// TimeSpan : Représente une durée (un intervalle de temps)
+TimeSpan dureeTraitement = TimeSpan.FromMilliseconds(1500);
+TimeSpan delaiMax = new TimeSpan(0, 5, 0); // 5 minutes
+
+// Arithmétique temporelle
+DateTime expiration = DateTime.UtcNow.AddHours(24);
+TimeSpan ecart = expiration - DateTime.UtcNow;
+Console.WriteLine($"Le token expire dans {ecart.TotalHours:F1} heures.");
+
+// Formatage pour affichage ou sérialisation
+string logTimestamp = instantUtc.ToString("yyyy-MM-dd HH:mm:ss");
+\end{lstlisting}
+
+\begin{tcolorbox}[colback=backcolour,colframe=stringcolor,title=\textbf{Piège : \texttt{DateTime.Now} vs \texttt{DateTime.UtcNow}}]
+    \texttt{DateTime.Now} retourne l'heure locale du serveur (dépend du fuseau horaire). Si votre application est déployée sur des serveurs répartis géographiquement (cloud Azure, AWS), les horodatages seront incohérents. \textbf{Règle d'or} : Utilisez systématiquement \texttt{DateTime.UtcNow} pour stocker et comparer des instants, et convertissez en heure locale uniquement lors de l'affichage à l'utilisateur final.
+\end{tcolorbox}
+
+\subsubsection{Génération de Nombres Aléatoires (\texttt{Random})}
+
+La classe \texttt{System.Random} fournit un générateur de nombres pseudo-aléatoires. En .NET 6+, la propriété statique \texttt{Random.Shared} offre une instance thread-safe partagée, éliminant le besoin de créer manuellement des instances.
+
+\begin{lstlisting}[caption={Génération de nombres aléatoires}]
+// .NET 6+ : Utiliser l'instance partagée (thread-safe)
+int identifiantTemporaire = Random.Shared.Next(1000, 10000); // Entier entre 1000 et 9999 inclus
+double facteurAleatoire = Random.Shared.NextDouble();         // Double entre 0.0 et 1.0
+
+// Cas d'usage : simuler un délai de retry aléatoire (jitter)
+int delaiRetryMs = Random.Shared.Next(100, 2000);
+Console.WriteLine($"Nouvelle tentative dans {delaiRetryMs}ms...");
 \end{lstlisting}
 
 \subsection{L'État Indéfini : Les Types Nullable}
