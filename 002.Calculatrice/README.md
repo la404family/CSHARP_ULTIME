@@ -7,7 +7,7 @@ Ce projet est une calculatrice console robuste écrite en C#. L'objectif princip
 Le code source a été découpé en plusieurs fichiers et dossiers (espaces de noms) afin d'isoler chaque responsabilité. Cette approche professionnelle facilite la maintenance, l'ajout de fonctionnalités, et permettrait d'écrire des tests unitaires très facilement.
 
 ```text
-002CALCULATRICE/
+002.Calculatrice/
 │
 ├── Program.cs
 │
@@ -58,7 +58,7 @@ Gère le retour sonore de l'application en exploitant `Console.Beep()`.
 
 ## Instructions d'exécution
 
-Pour lancer le projet, ouvrez un terminal dans ce dossier `002CALCULATRICE` et exécutez simplement la commande suivante :
+Pour lancer le projet, ouvrez un terminal dans ce dossier `002.Calculatrice` et exécutez simplement la commande suivante :
 ```bash
 dotnet run
 ```

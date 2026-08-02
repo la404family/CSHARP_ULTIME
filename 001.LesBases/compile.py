@@ -2,11 +2,11 @@
 # -*- coding: utf-8 -*-
 
 """
-Script de compilation pour la Formation C# & SQL (001LESBASES)
+Script de compilation pour la Formation C# & SQL (001.LesBases)
 --------------------------------------------------------------
 Ce script :
 1. Détecte tous les fichiers .tex situés dans le dossier 'src/'.
-2. Génère le fichier maître 'lesbases.tex' à la racine du projet.
+2. Génère le fichier maître 'LesBases.tex' à la racine du projet.
 3. Optionnellement, lance le compilateur LaTeX (xelatex / lualatex / pdflatex) pour générer le PDF final.
 4. Nettoie les fichiers temporaires de compilation.
 """
@@ -20,10 +20,10 @@ import argparse
 # Configuration des chemins
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 SRC_DIR = os.path.join(SCRIPT_DIR, "src")
-OUTPUT_TEX = os.path.join(SCRIPT_DIR, "lesbases.tex")
-OUTPUT_PDF = os.path.join(SCRIPT_DIR, "lesbases.pdf")
+OUTPUT_TEX = os.path.join(SCRIPT_DIR, "LesBases.tex")
+OUTPUT_PDF = os.path.join(SCRIPT_DIR, "LesBases.pdf")
 
-# En-tête du document maître lesbases.tex
+# En-tête du document maître LesBases.tex
 MASTER_TEX_HEADER = r"""% ==============================================================================
 % Document Maître Assemblé : Les Bases C# et SQL
 % Généré automatiquement par compile.py
@@ -150,7 +150,7 @@ def get_tex_files():
     return files
 
 def generate_master_tex(tex_files):
-    """Génère le fichier lesbases.tex en assemblant les inputs vers chaque sous-fichier .tex."""
+    """Génère le fichier LesBases.tex en assemblant les inputs vers chaque sous-fichier .tex."""
     print(f"[*] Assemblage de {len(tex_files)} fichier(s) .tex dans '{OUTPUT_TEX}'...")
     
     with open(OUTPUT_TEX, "w", encoding="utf-8") as f:
@@ -167,7 +167,7 @@ def generate_master_tex(tex_files):
     print(f"[OK] Fichier '{OUTPUT_TEX}' généré avec succès.")
 
 def compile_pdf(compiler="xelatex"):
-    """Compile lesbases.tex en PDF à l'aide de l'outil LaTeX spécifié."""
+    """Compile LesBases.tex en PDF à l'aide de l'outil LaTeX spécifié."""
     if not os.path.exists(OUTPUT_TEX):
         print(f"[ERREUR] Le fichier maître '{OUTPUT_TEX}' n'existe pas.")
         return False
@@ -175,14 +175,14 @@ def compile_pdf(compiler="xelatex"):
     print(f"[*] Lancement de la compilation avec '{compiler}'...")
     try:
         # Première passe
-        subprocess.run([compiler, "-interaction=nonstopmode", "lesbases.tex"], check=True, cwd=SCRIPT_DIR)
+        subprocess.run([compiler, "-interaction=nonstopmode", "LesBases.tex"], check=True, cwd=SCRIPT_DIR)
         # Deuxième passe (pour la table des matières et les références)
-        subprocess.run([compiler, "-interaction=nonstopmode", "lesbases.tex"], check=True, cwd=SCRIPT_DIR)
+        subprocess.run([compiler, "-interaction=nonstopmode", "LesBases.tex"], check=True, cwd=SCRIPT_DIR)
         print(f"[OK] PDF généré : '{OUTPUT_PDF}'")
         return True
     except FileNotFoundError:
         print(f"[AVERTISSEMENT] Compilateur '{compiler}' introuvable dans le PATH système.")
-        print("    Vous pouvez ouvrir et compiler 'lesbases.tex' avec votre éditeur LaTeX préféré (Overleaf, TeXstudio, VS Code...).")
+        print("    Vous pouvez ouvrir et compiler 'LesBases.tex' avec votre éditeur LaTeX préféré (Overleaf, TeXstudio, VS Code...).")
         return False
     except subprocess.CalledProcessError as e:
         print(f"[ERREUR] La compilation a échoué avec le code de retour {e.returncode}.")
@@ -203,8 +203,8 @@ def clean_temp_files():
     print(f"[OK] Nettoyage terminé ({count} fichier(s) temporaire(s) supprimé(s)).")
 
 def main():
-    parser = argparse.ArgumentParser(description="Compilateur et assembleur de cours LaTeX (001LESBASES).")
-    parser.add_argument("--compile", action="store_true", help="Compile le fichier lesbases.tex en PDF.")
+    parser = argparse.ArgumentParser(description="Compilateur et assembleur de cours LaTeX (001.LesBases).")
+    parser.add_argument("--compile", action="store_true", help="Compile le fichier LesBases.tex en PDF.")
     parser.add_argument("--compiler", default="xelatex", choices=["xelatex", "pdflatex", "lualatex"], help="Moteur LaTeX à utiliser (par défaut : xelatex).")
     parser.add_argument("--clean", action="store_true", help="Nettoie les fichiers temporaires après assemblage.")
     

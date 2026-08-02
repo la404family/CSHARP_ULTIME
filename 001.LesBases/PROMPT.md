@@ -1,6 +1,6 @@
 # Instructions pour la Génération des Cours LaTeX (.tex) & Script d'Assemblage
 
-Ce document définit les règles et directives d'écriture pour générer le contenu théorique de **`001LESBASES`** sous forme de modules LaTeX (`.tex`) individuels, ainsi que les spécifications pour le script Python d'assemblage et de compilation.
+Ce document définit les règles et directives d'écriture pour générer le contenu théorique de **`001.LesBases`** sous forme de modules LaTeX (`.tex`) individuels, ainsi que les spécifications pour le script Python d'assemblage et de compilation.
 
 ---
 
@@ -87,7 +87,7 @@ Chaque chapitre `.tex` individuel doit suivre une structure rigoureuse :
 
 ## 4. Script Python de Compilation (`compile.py`)
 
-Un script Python à la racine du projet `001LESBASES/` gère l'assemblage et la compilation automatique.
+Un script Python à la racine du projet `001.LesBases/` gère l'assemblage et la compilation automatique.
 
 ### Spécifications du script (`compile.py`) :
 1. **Scan et Ordre** : Lit le dossier `src/` pour identifier tous les fichiers `.tex` dans l'ordre numérique défini dans le `README.md`.

@@ -1,5 +1,5 @@
 // 💡 Note sur l'architecture et les noms :
-// Le dossier du projet s'appelle "002CALCULATRICE". Cependant, en C#, un espace de noms 
+// Le dossier du projet s'appelle "002.Calculatrice". Cependant, en C#, un espace de noms 
 // (namespace) n'a pas le droit de commencer par un chiffre.
 // J'ai donc choisi le nom "Calculatrice" et je l'ai inscrit explicitement tout en haut 
 // des 3 autres fichiers que nous avons créés :

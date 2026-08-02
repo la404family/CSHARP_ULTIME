@@ -1,5 +1,7 @@
 // L'espace de noms (namespace) permet d'organiser le code.
-// Ici, on regroupe tous les services (logique métier) de la calculatrice.
+// Bien que ce ne soit pas strictement obligatoire pour le compilateur, la convention standard et incontournable en C#
+// est de faire correspondre le namespace à l'arborescence : NomDuProjet.NomDuDossier (ici Calculatrice.Services).
+// Cela facilite grandement le repérage du code, le travail en équipe, et c'est utilisé par les outils (comme Visual Studio).
 namespace Calculatrice.Services;
 
 // 'public' : La classe est accessible depuis d'autres fichiers (comme Program.cs).
