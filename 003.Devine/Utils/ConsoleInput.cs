@@ -4,72 +4,63 @@ namespace Devine.Utils;
 /// Boîte à outils statique pour gérer les interactions avec l'utilisateur.
 /// Le choix technique de faire une classe 'static' signifie qu'on n'a pas 
 /// besoin de faire un 'new ConsoleInput()' pour l'utiliser.
+/// 
+/// COMPARAISON avec le projet 002 (Calculatrice) :
+/// - On retrouve le même pattern 'while (true)' + 'return' qui refuse de rendre la main
+///   tant que la saisie n'est pas strictement valide.
+/// - On ajoute ici la validation de la plage (1-100), spécifique au jeu "Devine le nombre".
 /// </summary>
 public static class ConsoleInput
 {
     /// <summary>
-    /// Demande un nombre à l'utilisateur de manière sécurisée (Programmations Défensive).
+    /// Demande un nombre au joueur de manière sécurisée (Programmation Défensive).
+    /// La saisie est validée sur 3 critères : non-vide, entier valide, et dans la plage 1-100.
     /// </summary>
-    public static int AskForNumber(string message)
+    public static int AskForGuess(string message)
     {
-        int result = 0;
-        bool isValid = false;
-
-        // Boucle infinie "contrôlée" : on ne sort de la boucle que si la saisie est valide.
-        while (!isValid)
+        // 'while (true)' crée une boucle infinie contrôlée.
+        // On n'en sortira que lorsqu'un 'return' sera exécuté (saisie valide).
+        // C'est le même pattern que dans ConsoleInput.GetNumber du projet 002 (Calculatrice).
+        while (true)
         {
+            // 'Write' (sans "Line") affiche le texte sans passer à la ligne, 
+            // pour que le curseur reste juste après le message.
             Console.Write(message);
+
+            // 'string?' : Le '?' signifie que la variable peut être 'null' (vide ou annulée).
             string? input = Console.ReadLine();
 
-            // CHOIX TECHNIQUE : 'int.TryParse' au lieu de 'int.Parse'.
-            // - int.Parse("bonjour") fait planter le programme (Exception).
-            // - int.TryParse("bonjour", out result) renvoie juste 'false' sans planter.
-            // On vérifie aussi que l'entrée n'est pas vide (IsNullOrWhiteSpace).
-            if (!string.IsNullOrWhiteSpace(input) && int.TryParse(input, out result))
+            // 1. Gestion de l'interruption : Si l'utilisateur tue l'application (Ctrl+Z sous Windows),
+            // 'ReadLine()' renvoie null. Sans cette vérification, le programme planterait.
+            if (input is null)
             {
-                isValid = true;
+                Environment.Exit(0);
+            }
+
+            // 2. Validation du format : 'int.TryParse' essaie de convertir le texte en nombre entier.
+            // Contrairement à 'int.Parse' qui lèverait une exception (crash) sur une entrée invalide,
+            // 'TryParse' renvoie simplement 'false' et laisse le programme continuer.
+            // 'out int result' : si la conversion réussit, le résultat est rangé directement dans 'result'.
+            if (int.TryParse(input, out int result))
+            {
+                // 3. Validation de la plage : le nombre secret est entre 1 et 100,
+                // donc on refuse toute proposition en dehors de cette plage.
+                if (result >= 1 && result <= 100)
+                {
+                    ConsoleSound.PlaySuccess();
+                    return result; // Sort de la boucle et renvoie la valeur validée.
+                }
+
+                // Le nombre est un entier valide, mais hors de la plage autorisée.
+                ConsoleSound.PlayError();
+                ConsoleTheme.WriteError("Erreur : Le nombre doit être compris entre 1 et 100.");
             }
             else
             {
-                // Si la saisie n'est pas un nombre, on affiche une erreur et la boucle recommence
-                PrintColoredMessage("Erreur : Saisie invalide. Veuillez entrer un nombre entier (ex: 42).", "erreur");
+                // La saisie n'est pas un nombre entier (lettres, symboles, chaîne vide...).
+                ConsoleSound.PlayError();
+                ConsoleTheme.WriteError("Erreur : Saisie invalide. Veuillez entrer un nombre entier (ex: 42).");
             }
         }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Affiche un texte avec une couleur différente selon le statut.
-    /// </summary>
-    public static void PrintColoredMessage(string message, string status = "base")
-    {
-        // CHOIX TECHNIQUE : 'switch' plutôt que plein de 'if / else if'.
-        // C'est beaucoup plus lisible quand on a de multiples conditions 
-        // basées sur la valeur d'une seule variable.
-        switch (status.ToLower())
-        {
-            case "trop grand":
-                Console.ForegroundColor = ConsoleColor.Green;
-                break;
-            case "trop petit":
-                Console.ForegroundColor = ConsoleColor.Cyan;
-                break;
-            case "erreur":
-                Console.ForegroundColor = ConsoleColor.Red;
-                break;
-            case "gagné":
-                Console.ForegroundColor = ConsoleColor.Magenta;
-                break;
-            case "base":
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                break;
-            default:
-                Console.ForegroundColor = ConsoleColor.White;
-                break;
-        }
-
-        Console.WriteLine(message);
-        Console.ResetColor(); // Important : remettre la couleur par défaut après !
     }
 }
