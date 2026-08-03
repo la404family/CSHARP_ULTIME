@@ -3,23 +3,22 @@
 > `001` = Formation théorique au format papier (Bases de C# et SQL)
 > Les projets pratiques sont numérotés à partir de `002`.
 >
-> **Progression des phases :**
-> - Console →
-> - SQL & Bases de données →
-> - Console + ASP.NET →
-> - Console + ASP.NET avancé →
-> - Angular →
-> - Angular + ASP.NET →
-> - WPF →
-> - WPF + ASP.NET →
-> - MAUI →
-> - MAUI + ASP.NET
->
+> **Progression des phases (toutes obligatoires, dans l'ordre) :**
+> 1. Console (Bases du langage C#)
+> 2. SQL & Bases de données
+> 3. Console + ASP.NET (Introduction au Web)
+> 4. Console + ASP.NET (Niveau Avancé)
+> 5. Angular (Frontend seul)
+> 6. Angular + ASP.NET (Frontend connecté)
+> 7. WPF (Desktop seul)
+> 8. WPF + ASP.NET (Desktop connecté)
+> 9. MAUI (Mobile seul)
+> 10. MAUI + ASP.NET (Mobile connecté)
 >
 > **Philosophie :**
-> Les Phases 1 à 4 forment le **tronc commun obligatoire** (C#, SQL, ASP.NET Core).
-> À partir de la Phase 5, l'apprenant **choisit 1 ou 2 spécialisations** à approfondir
-> (Web avec Angular, Desktop avec WPF, ou Mobile avec MAUI) plutôt que de tout suivre linéairement.
+> L'ensemble des 10 phases est suivi **linéairement et intégralement**.
+> L'objectif est de maîtriser **toutes les facettes** de l'écosystème .NET :
+> Web (Angular), Desktop (WPF) et Mobile (MAUI), chacun d'abord en local puis connecté au backend ASP.NET Core.
 
 ---
 
@@ -89,21 +88,6 @@
 | `032` | **Clean Architecture et CQRS** — Refactorisation du Blog `024` en couches distinctes avec commandes et queries séparées. | Domain / Application / Infrastructure / Presentation, `MediatR`, CQRS |
 | `033` | **Background Jobs** — Tâches planifiées exécutées en arrière-plan. | `IHostedService`, `BackgroundService` (nettoyage quotidien, envoi d'emails simulé) |
 | `034` | 🔴 **E-commerce API complète (Fil rouge Backend)** — Refaire entièrement le Catalogue e-commerce avec toutes les bonnes pratiques accumulées : Clean Architecture, JWT, pagination, tests, concurrence, logging. | Synthèse de toute la Phase 4 : architecture, sécurité, performance, tests, API versioning |
-
----
-
-> ### 🔀 Point de spécialisation
->
-> À partir d'ici, vous maîtrisez le **tronc commun** (C#, SQL, ASP.NET Core).
-> Choisissez **1 ou 2 spécialisations** à approfondir selon votre orientation professionnelle :
->
-> | Orientation | Phases à suivre | Débouché |
-> |-------------|----------------|----------|
-> | **Développeur Web Full-Stack** | Phase 5 + 6 (Angular) | Applications web SPA |
-> | **Développeur Desktop** | Phase 7 + 8 (WPF) | Applications métier Windows |
-> | **Développeur Mobile** | Phase 9 + 10 (MAUI) | Applications cross-platform |
->
-> *Vous pouvez aussi explorer les phases bonus pour élargir vos compétences.*
 
 ---
 
@@ -200,6 +184,6 @@
 
 ---
 
-> **Tronc commun (Phases 1–4) :** 33 projets — Le socle obligatoire.
-> **Spécialisation (Phases 5–10) :** 39 projets à répartir selon votre orientation (≈20 par spécialisation choisie).
-> **Fil rouge :** 5 projets longs simulant l'expérience réelle d'un développeur en entreprise.
+> **Total : 72 projets** répartis sur 10 phases, tous obligatoires et suivis dans l'ordre.
+> **Fil rouge :** 5 projets longs (🔴) simulant l'expérience réelle d'un développeur en entreprise.
+> **Couverture complète :** C#, SQL, ASP.NET Core, Angular, WPF et MAUI.
