@@ -24,11 +24,10 @@ Le nommage d'un élément logiciel doit rendre le code auto-documenté. Microsof
         \toprule
         \textbf{Style} & \textbf{Format} & \textbf{Exemple} & \textbf{Cas d'utilisation} \\
         \midrule
-        \textbf{PascalCase} & Majuscule à chaque mot & \texttt{CalculerPrixTotal} & Classes, structures, enums, méthodes, propriétés, événements. \\
+        \textbf{PascalCase} & Majuscule à chaque mot & \texttt{CalculerPrixTotal} & Classes, structures, enums, méthodes, propriétés, événements, constantes (\texttt{const} / \texttt{readonly}). \\
         \textbf{camelCase} & 1\textsuperscript{er} mot en minuscule & \texttt{prixUnitaire} & Variables locales, paramètres de méthodes. \\
         \textbf{\_camelCase} & camelCase précédé de \texttt{\_} & \texttt{\_compteurClient} & Champs privés d'une classe (\emph{private fields}). \\
         \textbf{IPascalCase} & PascalCase avec préfixe \texttt{I} & \texttt{IDisposable} & Interfaces. \\
-        \textbf{PascalCase} & Majuscule à chaque mot & \texttt{NombreMaxEssais} & Constantes (\texttt{const} et \texttt{readonly}). \\
         \bottomrule
     \end{tabular}
 \end{center}
@@ -202,7 +201,7 @@ decimal indiceForme = CalculerIndiceForme();
 
 \subsection{Contrôle de Flux et Retours Anticipés (\emph{Early Return})}
 
-Pour éviter l'empilement excessif de conditions imbriquées (syndrome de la pyramide d'indentation), C\# préconise la technique des **retours anticipés**.
+Pour éviter l'empilement excessif de conditions imbriquées (syndrome de la pyramide d'indentation), C\# préconise la technique des \textbf{retours anticipés}.
 
 \begin{lstlisting}[caption={Réfractorisation d'une méthode complexe par Early Return}]
 // [MAUVAIS] Imbrication profonde et illisible
@@ -261,7 +260,7 @@ catch (TimeoutException ex)
     Logger.LogError(ex, "Timeout reseau detecte");
     throw; 
 }
-catch (Exception ex)
+catch (Exception)
 {
     // [INCORRECT] Ecraser la stack trace originale
     // throw ex; <-- NE JAMAIS FAIRE CELA

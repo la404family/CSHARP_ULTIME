@@ -45,7 +45,7 @@ Le \texttt{switch} est utilisé pour évaluer une unique expression par rapport 
 
 \subsubsection{Syntaxe classique}
 
-Dans sa forme traditionnelle, chaque cas (\texttt{case}) doit se terminer obligatoirement par l'instruction \texttt{break} pour empêcher le compilateur de continuer l'exécution sur le cas suivant (erreur \texttt{CS0163}).
+Dans sa forme traditionnelle, chaque section \texttt{case} non vide doit obligatoirement se terminer par une instruction de saut (\texttt{break}, \texttt{return}, \texttt{goto} ou \texttt{throw}). Contrairement à d'autres langages comme le C ou Java, C\# interdit la chute implicite (\emph{fall-through}) d'un cas exécutable vers le suivant : omettre \texttt{break} à la fin d'un cas contenant du code déclenche une erreur de compilation bloquante (\texttt{CS0163: Control cannot fall through from one case label to another}).
 
 \begin{lstlisting}[caption={Routage par instruction switch}]
 int codeErreurHttp = 404;
@@ -56,7 +56,7 @@ switch (codeErreurHttp)
         Console.WriteLine("Succès : La requête a abouti.");
         break;
     case 401:
-    case 403: // Regroupement de cas (Fall-through explicite)
+    case 403: // Regroupement d'étiquettes (cases vides consécutifs partageant le même bloc)
         Console.WriteLine("Erreur de sécurité : Accès refusé.");
         break;
     case 404:

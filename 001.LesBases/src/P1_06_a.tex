@@ -34,8 +34,6 @@ L'accès à un élément par son index s'effectue en temps constant $O(1)$. Cepe
 Pour pallier la rigidité des tableaux, le framework .NET fournit la collection générique \texttt{List<T>}. Elle encapsule un tableau sous-jacent et gère automatiquement et silencieusement son redimensionnement lors de l'ajout ou de la suppression d'éléments.
 
 \begin{lstlisting}[style=csharpstyle]
-using System.Collections.Generic;
-
 List<int> liste = new List<int>();
 
 // Ajout dynamique à la fin de la collection
@@ -56,8 +54,6 @@ La \texttt{List<T>} est la structure par défaut recommandée en C\# pour stocke
 Le dictionnaire implémente une table de hachage (\textit{Hash Table}). Il stocke des données sous forme de paires "Clé/Valeur". La recherche d'une valeur à partir de sa clé s'effectue via un calcul de hachage, garantissant un temps de recherche proche de $O(1)$.
 
 \begin{lstlisting}[style=csharpstyle]
-using System.Collections.Generic;
-
 // Déclaration : Clés de type string, Valeurs de type int
 Dictionary<string, int> ages = new Dictionary<string, int>();
 

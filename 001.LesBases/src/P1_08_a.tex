@@ -13,10 +13,10 @@ En C\#, le type \texttt{string} (alias de la classe \texttt{System.String}) repr
 \subsection{Propriétés et Méthodes de Base}
 
 \begin{lstlisting}[style=csharpstyle]
-string texte = "   Connexion au serveur...   ";
+string texte = " Connexion au serveur... ";
 
 // Propriété Length : Obtient la longueur totale (incluant les espaces)
-int longueur = texte.Length; // 29
+int longueur = texte.Length; // 25
 
 // Trim() : Supprime les espaces blancs (espaces, tabulations, sauts de ligne) aux extrémités
 string clean = texte.Trim(); // "Connexion au serveur..."
@@ -136,16 +136,17 @@ La conversion d'une chaîne de caractères vers un entier est une opération ris
 string saisie = "42";
 
 // Parse : Lève une exception (FormatException) si la chaîne est invalide
-int nombre = int.Parse(saisie);
+// Toujours passer CultureInfo.InvariantCulture pour un parsing numérique déconnecté de la locale du système
+int nombre = int.Parse(saisie, System.Globalization.CultureInfo.InvariantCulture);
 
-// TryParse : Approche sécurisée (ne lève pas d'exception, retourne un booléen)
-if (int.TryParse("texte_invalide", out int resultatSecurise))
+// TryParse : Approche sécurisée recommandé en prod (ne lève pas d'exception, retourne un booléen)
+if (int.TryParse("500.00", System.Globalization.NumberStyles.Any, System.Globalization.CultureInfo.InvariantCulture, out int resultatSecurise))
 {
     Console.WriteLine($"Conversion réussie : {resultatSecurise}");
 }
 else
 {
-    Console.WriteLine("Échec de la conversion.");
+    Console.WriteLine("Échec de la conversion (format ou culture non conforme).");
 }
 \end{lstlisting}
 

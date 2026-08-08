@@ -91,7 +91,8 @@ Ils évaluent la relation entre deux opérandes et retournent systématiquement 
 \end{center}
 
 \begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Erreur Courante : Affectation vs Égalité}]
-    Une erreur classique d'ingénierie consiste à utiliser l'opérateur d'affectation \texttt{=} (un seul signe égal) au lieu de l'opérateur de comparaison \texttt{==} dans une condition. Le compilateur C\# bloquera cette erreur (\texttt{Cannot implicitly convert type...}) si le résultat n'est pas un booléen.
+    Une erreur classique consiste à utiliser l'opérateur d'affectation \texttt{=} au lieu de la comparaison \texttt{==} dans une condition. Le compilateur C\# bloquera systématiquement cette erreur (\texttt{CS0029: Cannot implicitly convert type...}) si les opérandes ne sont pas de type booléen (ex: \texttt{if (x = 5)}). \\
+    \textbf{Attention piège :} Si la variable est de type \texttt{bool} (ex: \texttt{if (flag = true)}), l'affectation retourne une valeur booléenne valide (\texttt{true}). Le compilateur l'accepte alors sans aucune erreur, ce qui crée un bug logique redoutable où la variable est réassignée et la condition toujours vérifiée !
 \end{tcolorbox}
 
 \subsection{Opérateurs Logiques}
@@ -161,7 +162,7 @@ string? texteConnu = donneeInconnue as string;
 
 \subsection{Priorité des Opérateurs}
 
-Lorsqu'une expression combine plusieurs opérateurs, le compilateur applique un ordre de priorité (\\textit{precedence}) strict. Il est impératif de connaître cet ordre pour éviter les erreurs logiques silencieuses.
+Lorsqu'une expression combine plusieurs opérateurs, le compilateur applique un ordre de priorité (\textit{precedence}) strict. Il est impératif de connaître cet ordre pour éviter les erreurs logiques silencieuses.
 
 \begin{center}
     \textbf{Tableau : Ordre de priorité des opérateurs (du plus prioritaire au moins prioritaire)} \\[0.3cm]
@@ -169,16 +170,21 @@ Lorsqu'une expression combine plusieurs opérateurs, le compilateur applique un 
         \toprule
         \textbf{Priorité} & \textbf{Opérateurs} & \textbf{Description} \\
         \midrule
-        1 & \texttt{()}, \texttt{.}, \texttt{[]} & Parenthèses, accès membre, indexeur \\
-        2 & \texttt{!}, \texttt{++}, \texttt{-{}-}, \texttt{(cast)} & Opérateurs unaires, négation, cast \\
+        1 & \texttt{()}, \texttt{.}, \texttt{[]}, \texttt{x++}, \texttt{x--} & Expressions primaires et incrémentation/décrémentation postfixée \\
+        2 & \texttt{!}, \texttt{\textasciitilde}, \texttt{+x}, \texttt{-x}, \texttt{++x}, \texttt{--x}, \texttt{(cast)} & Opérateurs unaires, complément, incrémentation/décrémentation préfixée, cast \\
         3 & \texttt{*}, \texttt{/}, \texttt{\%} & Multiplication, division, modulo \\
         4 & \texttt{+}, \texttt{-} & Addition, soustraction \\
-        5 & \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}, \texttt{is}, \texttt{as} & Comparaison et vérification de type \\
-        6 & \texttt{==}, \texttt{!=} & Égalité \\
-        7 & \texttt{\&\&} & ET logique \\
-        8 & \texttt{||} & OU logique \\
-        9 & \texttt{?:} & Ternaire conditionnel \\
-        10 & \texttt{=}, \texttt{+=}, \texttt{-=}, etc. & Affectation \\
+        5 & \texttt{<<}, \texttt{>>} & Décalage de bits à gauche et à droite \\
+        6 & \texttt{<}, \texttt{>}, \texttt{<=}, \texttt{>=}, \texttt{is}, \texttt{as} & Comparaison relationnelle et vérification/conversion de type \\
+        7 & \texttt{==}, \texttt{!=} & Égalité et inégalité \\
+        8 & \texttt{\&} & ET bit à bit / logique non court-circuité \\
+        9 & \texttt{\textasciicircum} & XOR bit à bit / logique exclusif \\
+        10 & \texttt{|} & OU bit à bit / logique non court-circuité \\
+        11 & \texttt{\&\&} & ET logique (court-circuit) \\
+        12 & \texttt{||} & OU logique (court-circuit) \\
+        13 & \texttt{??} & Coalescence nulle \\
+        14 & \texttt{?:} & Ternaire conditionnel \\
+        15 & \texttt{=}, \texttt{+=}, \texttt{-=}, \texttt{*=}, \texttt{/=}, \texttt{\&=}, etc. & Affectation et affectations composées \\
         \bottomrule
     \end{tabular}
 \end{center}

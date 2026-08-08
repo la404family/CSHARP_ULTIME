@@ -106,7 +106,7 @@ DateTime datePersonnalisee = new DateTime(2026, 8, 2, 14, 30, 0);
 
 // DateOnly (C# 10 / .NET 6+) : Date pure sans composante horaire
 DateOnly dateNaissance = new DateOnly(1995, 3, 15);
-DateOnly aujourdHui = DateOnly.FromDateTime(DateTime.Now);
+DateOnly aujourdHui = DateOnly.FromDateTime(DateTime.UtcNow); // Standard UTC recommandation backend
 
 // TimeSpan : Représente une durée (un intervalle de temps)
 TimeSpan dureeTraitement = TimeSpan.FromMilliseconds(1500);

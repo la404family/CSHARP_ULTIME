@@ -110,10 +110,11 @@ public ServiceMonitoring(string machineId)
 }
 \end{lstlisting}
 
-\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Règle : \texttt{const} vs \texttt{readonly}}]
+\begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Règle : \texttt{const} vs \texttt{static readonly}}]
     \begin{itemize}
-        \item \textbf{\texttt{const}} : Pour les valeurs universelles connues avant l'exécution (Pi, nombre maximal, codes d'erreur HTTP). Implicitement \texttt{static}.
-        \item \textbf{\texttt{readonly}} : Pour les valeurs calculées au démarrage ou injectées par le constructeur (identifiant de session, horodatage de création, configuration chargée depuis un fichier). Non statique par défaut.
+        \item \textbf{\texttt{const}} : Résolu à la compilation et substitué sous forme de littéral dans le bytecode IL à chaque point d'appel. Implicitement \texttt{static}. Privilégier pour les constantes mathématiques ou physiques inaltérables ($\pi$, vitesse de la lumière).
+        \item \textbf{\texttt{static readonly}} : Évalué dynamiquement à l'exécution lors du chargement du type. Privilégier pour les paramètres métier susceptibles d'évoluer (taux de TVA, timeouts) afin d'éviter de devoir recompiler l'intégralité des assemblies clientes lors d'une mise à jour de version.
+        \item \textbf{\texttt{readonly}} : Champ d'instance immuable après la phase d'initialisation du constructeur.
     \end{itemize}
 \end{tcolorbox}
 
@@ -137,7 +138,7 @@ string? codeSaisi = Console.ReadLine(); // 'string?' autorise explicitement la v
 \begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Note sur \texttt{string?} et les \textit{Nullable Reference Types}}]
 Depuis C\# 8 (et par défaut depuis .NET 6), les types références (comme \texttt{string}) ne peuvent plus valoir \texttt{null} par défaut, afin d'éradiquer la fameuse \texttt{NullReferenceException} en production.
 \begin{itemize}
-    \item \texttt{string code = Console.ReadLine();} générera un avertissement du compilateur, car la console peut renvoyer du vide.
+    \item \texttt{string code = Console.ReadLine();} générera un avertissement du compilateur, car \texttt{Console.ReadLine()} peut retourner \texttt{null} (par exemple en cas de fin de flux d'entrée / EOF).
     \item \texttt{string? codeSaisi} avec le \textbf{point d'interrogation} indique explicitement : \textit{"J'accepte que cette variable puisse être nulle"}. Le compilateur vous obligera ensuite à la vérifier avant de l'utiliser. (Ce mécanisme très puissant sera approfondi au chapitre 18).
 \end{itemize}
 \end{tcolorbox}
@@ -223,15 +224,22 @@ int valeurTronquee = (int)valeurMesuree; // Vaut 9 (la fraction décimale est d�
 int valeurArrondie = Convert.ToInt32(valeurMesuree); // Vaut 10 (arrondi bancaire)
 
 // 4. Conversion par Analyse (Parsing : Chaîne vers Numérique)
+// Pour les données numériques décimales/flottantes, TOUJOURS spécifier la culture
+// CultureInfo.InvariantCulture garantit que le point '.' est utilisé comme séparateur décimal,
+// évitant la FormatException sur les systèmes configurés en fr-FR (qui attendent une virgule).
 string donneesReseau = "1024";
-int portServeur = int.Parse(donneesReseau); 
+int portServeur = int.Parse(donneesReseau, System.Globalization.CultureInfo.InvariantCulture); 
+
+string montantTexte = "500.00";
+decimal montant = decimal.Parse(montantTexte, System.Globalization.CultureInfo.InvariantCulture);
 \end{lstlisting}
 
 \subsection{Bonnes Pratiques de Codage}
 
 \begin{tcolorbox}[colback=white,colframe=stringcolor,title=\textbf{Règles strictes de développement C\#}]
     \begin{itemize}
-        \item \textbf{Variables non initialisées} : Le compilateur C\# refuse catégoriquement l'utilisation d'une variable locale non assignée (\texttt{Use of unassigned local variable}). Les champs de classe, eux, prennent par défaut la valeur \texttt{0} ou \texttt{null}.
+        \item \textbf{Configuration du Projet (\texttt{<Nullable>enable</Nullable>})} : L'annotation de référence nullable (\texttt{string?}) nécessite l'activation de l'analyse statique dans le fichier de projet \texttt{.csproj} (\texttt{<Nullable>enable</Nullable>}). Sans cette directive, les annotations \texttt{?} sur les types référence sont ignorées par le compilateur.
+        \item \textbf{Variables non initialisées} : Le compilateur C\# refuse catégoriquement l'utilisation d'une variable locale non assignée (\texttt{Use of unassigned local variable}). Les champs de classe ou de structure non initialisés reçoivent automatiquement la valeur par défaut de leur type (\texttt{0} pour les types numériques, \texttt{false} pour \texttt{bool}, \texttt{'\textbackslash 0'} pour \texttt{char}, \texttt{null} pour les types référence et types nullable, et l'initialisation champ par champ pour les structures).
         \item \textbf{Confusion Affectation / Comparaison} : Ne jamais confondre l'opérateur d'affectation \texttt{=} avec l'opérateur d'égalité logique \texttt{==}.
         \item \textbf{Déclarations en ligne} : L'écriture \texttt{int a = 1, b = 2;} est permise par le compilateur mais prohibée par les conventions de Clean Code. L'architecture logicielle exige une déclaration par ligne pour préserver la lisibilité de l'historique de versionnage (Git).
     \end{itemize}

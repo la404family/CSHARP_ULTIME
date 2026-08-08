@@ -60,7 +60,7 @@ L'exemple suivant implémente un composant de cache générique en mémoire avec
 public static T TrouverMaximum<T>(T[] valeurs) where T : IComparable<T>
 {
     if (valeurs.Length == 0)
-        throw new ArgumentException(nameof(valeurs), "Le tableau ne peut pas être vide.");
+        throw new ArgumentException("Le tableau ne peut pas être vide.", nameof(valeurs));
 
     T max = valeurs[0];
     for (int i = 1; i < valeurs.Length; i++)

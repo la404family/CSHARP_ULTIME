@@ -1,4 +1,12 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_12_a.tex
+% Sujet   : Chapitre 12 : POO — Interfaces
+% ==============================================================================
+
+\newpage
 \section{POO — Interfaces}
+\marginpar{\tiny\color{gray}P1\_12\_a.tex}
 
 \subsection{Contrat de Service : L'Interface}
 
@@ -32,7 +40,7 @@ public interface ICacheStorage
 {
     // Signature stricte, pas d'implémentation
     void Save(string key, object data);
-    object Load(string key);
+    object? Load(string key);
 }
 
 public interface IMonitorable
@@ -43,6 +51,8 @@ public interface IMonitorable
 }
 
 // 3. Implémentation multiple (séparée par des virgules)
+// Note prod : En architecture réelle, un service d'E/S (Redis/Bdd) implémenterait IDisposable/IAsyncDisposable,
+// accepterait des CancellationToken et s'appuierait sur ConcurrentDictionary pour la sécurité multi-thread.
 public class RedisCacheService : ICacheStorage, IMonitorable
 {
     // L'implémentation de IMonitorable.MemoryUsageBytes
@@ -55,7 +65,7 @@ public class RedisCacheService : ICacheStorage, IMonitorable
         MemoryUsageBytes += 1024; // Simulation d'allocation
     }
 
-    public object Load(string key) { return null; }
+    public object? Load(string key) { return null; }
 
     // Implémentation obligatoire de IMonitorable.PingHealthCheck
     public void PingHealthCheck()
@@ -65,13 +75,14 @@ public class RedisCacheService : ICacheStorage, IMonitorable
 }
 
 // 4. Couplage avec le moteur de tri .NET via IComparable<T>
-public struct FinancialTransaction : IComparable<FinancialTransaction>
+// Règle C# moderne (.NET 8+) : Utiliser 'readonly struct' pour éliminer les copies défensives lors du tri
+public readonly struct FinancialTransaction : IComparable<FinancialTransaction>
 {
     public string TransactionId { get; init; }
     public decimal Amount { get; init; }
 
     // 5. Contrat de tri : doit retourner 0 (égal), < 0 (avant) ou > 0 (après)
-    public int CompareTo(FinancialTransaction other)
+    public readonly int CompareTo(FinancialTransaction other)
     {
         // Pas de vérification de nullité : un struct (type valeur) ne peut jamais être null
         // Délégation logique du tri directement au type décimal sous-jacent
@@ -85,6 +96,10 @@ class Program
     {
         // 6. Polymorphisme d'interface : Couplage faible
         ICacheStorage cache = new RedisCacheService();
+        
+        // Note sur le JSON et l'interpolation : Dans une chaîne interpolée $"...", 
+        // les accolades d'un JSON littéral doivent être doublées {{ "auth": true }},
+        // ou enveloppées dans un Raw String Literal C# 11+ ("""{ "auth": true }""")
         cache.Save("session_usr42", "{ auth: true }");
         
         // ERREUR DE COMPILATION : 'PingHealthCheck' n'appartient pas au contrat ICacheStorage
@@ -98,7 +113,7 @@ class Program
             new FinancialTransaction { TransactionId = "TXN_03", Amount = 1200.00m }
         };
 
-        // 8. Sort() inspecte la classe, trouve IComparable<T> et déclenche CompareTo()
+        // 8. Sort() inspecte la classe, trouve IComparable<T> et déclenche CompareTo() sans boxing grâce au readonly struct
         transactions.Sort(); 
         
         Console.WriteLine("Historique trié par montant croissant :");
@@ -113,7 +128,7 @@ class Program
 \begin{itemize}
     \item \textbf{Ligne 2} : Convention universelle C\# : toute interface doit commencer par la lettre \texttt{I} (pour \textit{Interface}).
     \item \textbf{Ligne 17} : \texttt{RedisCacheService} s'engage contractuellement à respecter l'ensemble complet des signatures exigées par \texttt{ICacheStorage} ET par \texttt{IMonitorable}. S'il en manque une, la compilation échoue immédiatement.
-    \item \textbf{Ligne 39} : \texttt{FinancialTransaction} implémente l'interface générique \texttt{IComparable<T>}. La généricité évite les opérations coûteuses de boxing/unboxing par rapport à la vieille interface non générique \texttt{IComparable}.
+    \item \textbf{Ligne 39} : \texttt{FinancialTransaction} est déclarée en \texttt{readonly struct} et implémente \texttt{IComparable<T>}. L'immuabilité garantit qu'aucune copie défensive inutile n'est effectuée par le runtime lors de l'exécution de \texttt{Sort()}.
     \item \textbf{Ligne 60} : Le principe de couplage faible ou principe d'inversion des dépendances (le 'D' de SOLID) : le point d'entrée interagit avec l'abstraction (\texttt{ICacheStorage}) sans connaître ni se soucier de l'implémentation concrète (\texttt{RedisCacheService}).
 \end{itemize}
 

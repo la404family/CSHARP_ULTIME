@@ -76,7 +76,7 @@ Au sein de toute structure itérative, il est possible d'altérer le flux standa
 \begin{itemize}
     \item \textbf{La boucle infinie} : Oublier d'incrémenter la variable d'arrêt ou de modifier la condition dans une boucle \texttt{while}, entraînant le blocage complet du thread (\textit{Thread Starvation}).
     \item \textbf{Modification de la collection} : Tenter d'ajouter ou de supprimer un élément d'une liste qui est actuellement en train d'être parcourue par un \texttt{foreach} déclenche immanquablement une \texttt{InvalidOperationException} à l'exécution.
-    \item \textbf{Erreur de borne (\textit{Off-by-one error})} : Utiliser \texttt{<=} au lieu de \texttt{<} lors du parcours d'un tableau classique avec une boucle \texttt{for}. Puisque les tableaux sont indexés à partir de 0, cela mène à une \texttt{IndexOutOfRangeException}.
+    \item \textbf{Erreur de borne (\textit{Off-by-one error})} : Écrire \texttt{for (int i = 0; i <= notes.Length; i++)} au lieu de \texttt{i < notes.Length}. Puisque les éléments d'un tableau de taille $N$ sont indexés de $0$ à $N-1$, accéder à l'index $N$ (\texttt{notes[notes.Length]}) lève systématiquement une \texttt{IndexOutOfRangeException} fatale.
 \end{itemize}
 \end{tcolorbox}
 

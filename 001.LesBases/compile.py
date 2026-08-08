@@ -48,23 +48,27 @@ MASTER_TEX_HEADER = r"""% ======================================================
 
 \ifXeTeX
   \usepackage{fontspec}
-  \setmonofont{JetBrains Mono}[
-      Path = ./fonts/,
-      Extension = .ttf,
-      UprightFont = *-Regular,
-      BoldFont = *-Bold,
-      ItalicFont = *-Italic,
-      BoldItalicFont = *-BoldItalic,
-      Scale = 0.88,
-      ErrorFilter = ignore
-  ]
+  \IfFileExists{./fonts/JetBrainsMono-Regular.ttf}{
+    \setmonofont{JetBrains Mono}[
+        Path = ./fonts/,
+        Extension = .ttf,
+        UprightFont = *-Regular,
+        BoldFont = *-Bold,
+        ItalicFont = *-Italic,
+        BoldItalicFont = *-BoldItalic,
+        Scale = 0.88
+    ]
+  }{
+    \setmonofont{Consolas}[Scale=0.88]
+  }
 \else
   \ifLuaTeX
     \usepackage{fontspec}
-    \setmonofont{JetBrainsMono-Regular}[Scale=0.88]
+    \setmonofont{Consolas}[Scale=0.88]
   \else
     \usepackage[utf8]{inputenc}
     \usepackage[T1]{fontenc}
+    \usepackage{textcomp}
   \fi
 \fi
 
@@ -97,6 +101,7 @@ MASTER_TEX_HEADER = r"""% ======================================================
     showtabs=false,
     tabsize=4,
     extendedchars=true,
+    inputencoding=utf8,
     literate=
         {é}{{\'e}}1
         {è}{{\`e}}1
@@ -117,6 +122,13 @@ MASTER_TEX_HEADER = r"""% ======================================================
         {ë}{{\"e}}1
         {ï}{{\"i}}1
         {ü}{{\"u}}1
+        {°}{{\textdegree}}1
+        {’}{{'}}1
+        {«}{{\guillemotleft}}1
+        {»}{{\guillemotright}}1
+        {…}{{\dots}}1
+        {–}{{-}}1
+        {—}{{-}}1
 }
 \lstset{style=csharpstyle}
 
@@ -126,7 +138,7 @@ MASTER_TEX_HEADER = r"""% ======================================================
     linkcolor=keywordcolor,
     filecolor=magenta,      
     urlcolor=keywordcolor,
-    pdftitle={001 - Les Bases : C\# et SQL},
+    pdftitle={001 - Les Bases : C-Sharp et SQL},
     pdfauthor={Formation .NET}
 }
 

@@ -1,4 +1,12 @@
+% ==============================================================================
+% Formation C# & SQL — Module 001 : Les Bases
+% Fichier : src/P1_11_a.tex
+% Sujet   : Chapitre 11 : POO — Héritage et Polymorphisme
+% ==============================================================================
+
+\newpage
 \section{POO — Héritage et Polymorphisme}
+\marginpar{\tiny\color{gray}P1\_11\_a.tex}
 
 \subsection{L'Héritage et le Partage de Comportement}
 
@@ -34,7 +42,7 @@ L'exemple suivant modélise un pipeline de traitement de documents (PDF, XML) d�
 // 1. Classe de base abstraite
 public abstract class DocumentProcessor
 {
-    protected string ParserVersion = "1.0";
+    protected readonly string ParserVersion = "1.0";
 
     // 2. Méthode virtuelle : comportement par défaut surchargeable
     public virtual void Validate(byte[] data)
@@ -98,8 +106,8 @@ class Program
                 Console.WriteLine("-> Type XML détecté, routage vers l'API externe.");
             }
             
-            // Alternative historique avec 'as'
-            PdfProcessor pdfProc = proc as PdfProcessor;
+            // Alternative historique avec 'as' (nécessite le type nullable '?' sous NRT <Nullable>enable</Nullable>)
+            PdfProcessor? pdfProc = proc as PdfProcessor;
             if (pdfProc != null)
             {
                 Console.WriteLine("-> Type PDF détecté, génération des vignettes.");

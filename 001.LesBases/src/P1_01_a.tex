@@ -36,6 +36,41 @@ VS Code est un éditeur de code extensible, idéal pour les environnements Linux
     \end{itemize}
 \end{enumerate}
 
+\subsubsection{Comparatif et Critères de Choix : Pourquoi utiliser l'un ou l'autre ?}
+
+Le choix entre Visual Studio (1.1.1) et Visual Studio Code (1.1.2) dépend principalement des exigences de l'architecture logicielle, du système d'exploitation et de la complexité de la solution.
+
+\begin{center}
+    \textbf{Tableau : Comparatif technique entre Visual Studio et Visual Studio Code} \\[0.3cm]
+    \begin{tabular}{@{}lp{6.2cm}p{6.2cm}@{}}
+        \toprule
+        \textbf{Critère} & \textbf{Visual Studio (1.1.1)} & \textbf{Visual Studio Code (1.1.2)} \\
+        \midrule
+        \textbf{Nature} & IDE complet tout-en-un & Éditeur de code extensible \\
+        \textbf{Systèmes d'exploitation} & Windows uniquement & Windows, macOS, Linux \\
+        \textbf{Outillage intégré} & Concepteurs graphiques (WPF, WinForms), profiler mémoire natif & CLI .NET (\texttt{dotnet}), suite d'extensions (C\# Dev Kit) \\
+        \textbf{Consommation système} & Empreinte mémoire et disque importante & Ultra-léger, démarrage rapide \\
+        \textbf{Projets préconisés} & Monolithes d'entreprise, applications desktop Windows & APIs REST ASP.NET Core, microservices, projets multiplateformes \\
+        \bottomrule
+    \end{tabular}
+\end{center}
+
+\paragraph{Pourquoi choisir Visual Studio (1.1.1) ?}
+Visual Studio est privilégié pour le développement de grandes solutions d'entreprise sous Windows. Il offre une intégration « tout-en-un » sans configuration complexe :
+\begin{itemize}
+    \item \textbf{Concepteurs visuels} : Édition WYSIWYG et concepteurs XAML natifs pour les applications bureau (WPF, Windows Forms).
+    \item \textbf{Diagnostic avancé} : Outils de profilage mémoire/CPU au runtime, analyse de couverture de code et débogage pas-à-pas multi-threads.
+    \item \textbf{Outillage de base de données} : Explorateur d'objets SQL Server (\emph{SSDT}) directement intégré dans l'IDE.
+\end{itemize}
+
+\paragraph{Pourquoi choisir Visual Studio Code (1.1.2) ?}
+Visual Studio Code est l'outil idéal pour le développement web moderne, les architectures distribuées et les environnements multiplateformes :
+\begin{itemize}
+    \item \textbf{Multiplateforme natif} : Environnement de travail identique sous macOS, Linux et Windows.
+    \item \textbf{Écosystème Web \& Microservices} : Parfaitement adapté au développement d'APIs REST ASP.NET Core associées à des applications Web single-page (Angular, React).
+    \item \textbf{Conteneurs et CLI} : Exploite la CLI .NET (\texttt{dotnet}) et s'intègre naturellement avec Docker et les \emph{Dev Containers}.
+\end{itemize}
+
 \subsection{Qu'est-ce que C\#, .NET, CLI et CLR ?}
 
 Pour programmer en C\# avec rigueur, il est essentiel d'assimiler l'architecture de la plateforme.
@@ -103,15 +138,18 @@ Le \textbf{CLR} est l'implémentation concrète de la spécification CLI par Mic
     \item \textbf{La Sécurité de Typage} : Vérification que le code n'accède pas à des zones mémoire non autorisées.
 \end{itemize}
 
-\subsubsection{Les 4 Piliers de l'Architecture .NET}
+\subsubsection{Les Composants Clés de la Chaîne d'Exécution .NET}
 
-Voici le rôle exact de chaque composant dans le cycle de vie de votre code :
+Voici le rôle exact de chaque composant principal dans le cycle de vie de votre code :
 
 \begin{itemize}
-    \item \textbf{La CLI (L'Infrastructure)} : C'est le cahier des charges. Elle dicte les règles que tout langage .NET doit respecter (les types de données, la structure du code). Elle garantit que le code C\# pourra cohabiter avec du code F\#.
-    \item \textbf{Roslyn (Le Compilateur)} : C'est l'outil qui lit votre code source C\# (\texttt{.cs}). Il vérifie qu'il n'y a pas d'erreurs de syntaxe, puis le traduit en \textbf{Code IL} (un code intermédiaire compréhensible par la machine virtuelle).
-    \item \textbf{Le CLR (Le Moteur d'Exécution)} : C'est le cœur de .NET. Il prend le Code IL généré par Roslyn et le fait tourner. Il s'occupe de gérer la mémoire (Garbage Collector) et d'assurer la sécurité du programme pendant qu'il tourne.
-    \item \textbf{Le JIT (Le Traducteur Final)} : C'est un composant interne au CLR. Juste avant l'exécution, il traduit le Code IL en instructions binaires ultra-rapides, spécifiquement optimisées pour le processeur de la machine sur laquelle le programme tourne (Intel, AMD, ARM).
+    \item \textbf{La CLI (L'Infrastructure)} : Le cahier des charges standardisé qui dicte les règles d'interopérabilité et de structure de code entre langages .NET.
+    \item \textbf{Roslyn (Le Compilateur C\#)} : L'outil de compilation statique qui analyse le code C\# (\texttt{.cs}) et le traduit en \textbf{Code IL} (bytecode intermédiaire).
+    \item \textbf{Le CLR (Le Moteur d'Exécution Runtime)} : L'environnement d'exécution principal qui orchestre le programme et intègre ses sous-composants essentiels :
+    \begin{itemize}
+        \item \textbf{Le JIT (Just-In-Time Compiler)} : Sous-composant du CLR qui traduit à la volée l'IL en instructions binaires natives optimisées pour le processeur hôte (Intel, AMD, ARM).
+        \item \textbf{Le Garbage Collector (GC)} : Sous-composant du CLR assurant la gestion et le recyclage automatique de la mémoire.
+    \end{itemize}
 \end{itemize}
 
 \subsection{Structure d'un Programme C\#}

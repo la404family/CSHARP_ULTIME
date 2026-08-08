@@ -101,7 +101,7 @@ Console.WriteLine(contenu);
 
 \begin{tcolorbox}[colback=backcolour,colframe=keywordcolor,title=\textbf{Pièges Courants \& Anti-Patterns}]
 \begin{itemize}
-    \item \textbf{Le Catch Vide (\textit{Swallowing})} : Écrire un \texttt{catch(Exception) \{ \}} sans logguer ou traiter l'erreur masque silencieusement les bugs critiques du programme.
+    \item \textbf{Le Catch Vide (\textit{Swallowing})} : Écrire un \texttt{catch (Exception) \{ \}} sans logguer ou traiter l'erreur masque silencieusement les bugs critiques du programme.
     \item \textbf{Mauvaise Propagation (\texttt{throw ex;})} : Écrire \texttt{throw ex;} dans un bloc \texttt{catch} écrase la trace d'appel (\textit{Stack Trace}) d'origine. Il faut utiliser le mot-clé \texttt{throw;} seul pour propager l'erreur sans la masquer.
     \item \textbf{Utiliser les exceptions pour le contrôle de flux} : Les exceptions coûtent extrêmement cher en temps de calcul CPU. Ne les utilisez jamais pour vérifier des conditions prévisibles (préférez \texttt{int.TryParse} plutôt qu'un \texttt{try/catch} sur \texttt{int.Parse}).
 \end{itemize}
