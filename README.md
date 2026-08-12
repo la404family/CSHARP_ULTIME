@@ -67,7 +67,7 @@ Le contenu théorique est rédigé en **LaTeX** sous la forme d'un livre complet
 - ✅ Style scientifique et professionnel
 - ✅ Coloration syntaxique claire (thème *light*) pour les blocs de code
 
-🔴 Lien : [document en format pdf](./001.LesBases/LesBases.pdf?raw=true)
+🔴 Lien : [document en format pdf](https://raw.githubusercontent.com/la404family/CSHARP_ULTIME/main/001.LesBases/LesBases.pdf)
 
 ---
 
