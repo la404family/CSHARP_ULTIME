@@ -141,7 +141,8 @@ class Program
 
 \begin{tcolorbox}[colback=white,colframe=keywordcolor,title=\textbf{Pièges courants \& Erreurs de compilation}]
     \begin{itemize}
-        \item \textbf{\texttt{CS0314} — Contrainte manquante} : Tenter d'appeler \texttt{CompareTo()}, \texttt{Equals()} ou toute méthode spécifique à une interface sur un \texttt{T} non contraint. Le compilateur ne voit que les méthodes de \texttt{object} (\texttt{ToString()}, \texttt{GetHashCode()}).
+        \item \textbf{\texttt{CS1061} — Membre inaccessible sur un type non contraint} : Tenter d'appeler \texttt{CompareTo()} ou toute méthode spécifique à une interface sur un \texttt{T} non contraint. Le compilateur restreint l'accès aux seuls membres hérités de \texttt{object} (\texttt{ToString()}, \texttt{Equals()}, \texttt{GetHashCode()}).
+        \item \textbf{\texttt{CS0314} — Violation de contrainte au site d'appel} : Transmettre un argument de type qui ne satisfait pas la contrainte requise par une classe ou méthode générique.
         \item \textbf{\texttt{CS0310} — \texttt{new()} impossible} : Écrire \texttt{new T()} sans avoir déclaré la contrainte \texttt{where T : new()} dans la signature.
         \item \textbf{Confusion \texttt{class} vs \texttt{struct}} : Appliquer \texttt{where T : class} empêche l'utilisation de types valeur (\texttt{int}, \texttt{decimal}, \texttt{struct} personnalisées). Inversement, \texttt{where T : struct} interdit les types référence. Choisissez la contrainte en fonction de votre besoin d'allocation mémoire.
     \end{itemize}
