@@ -44,4 +44,4 @@ Afin de structurer proprement ce projet et de commencer à respecter le principe
 * **Propreté et robustesse** : Avec l'asynchronisme, la gestion des exceptions devient cruciale. Pensez à gérer l'exception `OperationCanceledException` qui est levée lorsqu'une tâche est annulée.
 * Référez-vous à la documentation Microsoft sur [la programmation asynchrone avec async et await](https://learn.microsoft.com/fr-fr/dotnet/csharp/asynchronous-programming/).
 
-Bon courage pour ce défi !
+**Projet terminé avec succès !** Toutes les fonctionnalités (téléchargement asynchrone, annulation, et mesure du temps) ont été implémentées.

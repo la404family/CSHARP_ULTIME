@@ -51,3 +51,6 @@ using (var service = new DownloadService())
 
 Console.WriteLine("Vérifiez le dossier du projet, vous devriez pouvoir ouvrir la photo et lire le livre !");
 Console.WriteLine("Fin du programme.");
+
+Console.WriteLine("\nAppuyez sur Entrée pour quitter...");
+Console.ReadLine();

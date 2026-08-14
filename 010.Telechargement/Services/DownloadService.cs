@@ -14,7 +14,9 @@ public class DownloadService : IDisposable
 
     public async Task DownloadFileAsync(FileDownload file, CancellationToken cancellationToken)
     {
-        Console.WriteLine($"[Début] Connexion au serveur pour {file.Name}...");
+        var startTime = DateTime.Now;
+        var stopwatch = System.Diagnostics.Stopwatch.StartNew();
+        Console.WriteLine($"[Début] {startTime:HH:mm:ss.ff} - Connexion au serveur pour {file.Name}...");
 
         try
         {
@@ -53,11 +55,16 @@ public class DownloadService : IDisposable
                 await Task.Delay(10, cancellationToken);
             }
 
-            Console.WriteLine($"[Fin] Le téléchargement de {file.Name} est terminé ({file.DownloadedBytes} octets).");
+            stopwatch.Stop();
+            var endTime = DateTime.Now;
+            Console.WriteLine($"[Fin] {endTime:HH:mm:ss.ff} - Le téléchargement de {file.Name} est terminé ({file.DownloadedBytes} octets).");
+            Console.WriteLine($"[Durée] Temps de téléchargement pour {file.Name} : {stopwatch.Elapsed.TotalSeconds:F2} secondes.");
         }
         catch (OperationCanceledException)
         {
-            Console.WriteLine($"[Annulé] Le téléchargement de {file.Name} a été interrompu par l'utilisateur !");
+            stopwatch.Stop();
+            var endTime = DateTime.Now;
+            Console.WriteLine($"[Annulé] {endTime:HH:mm:ss.ff} - Le téléchargement de {file.Name} a été interrompu par l'utilisateur après {stopwatch.Elapsed.TotalSeconds:F2} secondes !");
             
             // Si c'est annulé, le fichier sur le disque est corrompu/incomplet, on pourrait le supprimer ici.
             if (File.Exists(file.Name))
@@ -65,7 +72,9 @@ public class DownloadService : IDisposable
         }
         catch (Exception ex)
         {
-            Console.WriteLine($"[Erreur] Problème avec {file.Name} : {ex.Message}");
+            stopwatch.Stop();
+            var endTime = DateTime.Now;
+            Console.WriteLine($"[Erreur] {endTime:HH:mm:ss.ff} - Problème avec {file.Name} après {stopwatch.Elapsed.TotalSeconds:F2} secondes : {ex.Message}");
         }
     }
 
