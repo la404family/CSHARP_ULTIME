@@ -1,0 +1,143 @@
+\section{Collections avancées}
+
+L'espace de noms \texttt{System.Collections.Generic} offre un riche ensemble de structures de données spécialisées. Alors que \texttt{List<T>} et \texttt{Dictionary<TKey, TValue>} couvrent la majorité des besoins standards, des algorithmes complexes ou des contraintes de performances strictes requièrent des collections dont la complexité temporelle ($\mathcal{O}(1)$, $\mathcal{O}(\log n)$) et spatiale est optimisée pour des opérations spécifiques (LIFO, FIFO, unicité absolue).
+
+\subsection{\texttt{Stack<T>} : La Pile (LIFO)}
+
+Une \texttt{Stack<T>} (pile) implémente une structure de données de type \textbf{LIFO} (\textit{Last-In, First-Out}). Le dernier élément inséré est le premier à être retiré.
+
+\paragraph{Cas d'usage :} Gestion de la pile d'appels d'exécution (Call Stack), algorithmes de retour arrière (Backtracking), analyseurs syntaxiques (Parsers) ou systèmes d'annulation (Undo/Redo).
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+
+public class StackExample
+{
+    public static void Run()
+    {
+        Stack<string> undoStack = new Stack<string>();
+        
+        // Push : Ajoute un element au sommet de la pile
+        undoStack.Push("Action_1");
+        undoStack.Push("Action_2");
+        
+        // Peek : Lit l'element au sommet sans le retirer
+        string lastAction = undoStack.Peek(); // Retourne "Action_2"
+        
+        // Pop : Retire et retourne l'element au sommet
+        string actionToUndo = undoStack.Pop(); // Retire "Action_2"
+    }
+}
+\end{lstlisting}
+
+\subsection{\texttt{Queue<T>} : La File (FIFO)}
+
+Une \texttt{Queue<T>} (file) implémente une structure de données de type \textbf{FIFO} (\textit{First-In, First-Out}). Le premier élément inséré est le premier à être traité.
+
+\paragraph{Cas d'usage :} Ordonnancement de tâches, buffers de traitement asynchrone (Producer/Consumer), gestion de requêtes réseau entrantes.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+
+public class QueueExample
+{
+    public static void Run()
+    {
+        Queue<int> requestQueue = new Queue<int>();
+        
+        // Enqueue : Ajoute un element a la fin de la file
+        requestQueue.Enqueue(1001);
+        requestQueue.Enqueue(1002);
+        
+        // Dequeue : Retire et retourne le premier element de la file
+        int requestToProcess = requestQueue.Dequeue(); // Retire 1001
+    }
+}
+\end{lstlisting}
+
+\subsection{\texttt{HashSet<T>} : L'Ensemble Unique}
+
+Le \texttt{HashSet<T>} est une collection non ordonnée qui ne tolère aucun doublon. Il repose sur des tables de hachage, garantissant ainsi une complexité de $\mathcal{O}(1)$ pour les opérations d'insertion, de suppression et de recherche (\texttt{Contains}).
+
+\paragraph{Cas d'usage :} Élimination de doublons dans un flux de données, tests d'appartenance à très haute performance, opérations ensemblistes (union, intersection).
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+
+public class HashSetExample
+{
+    public static void Run()
+    {
+        HashSet<string> activeSessions = new HashSet<string>();
+        
+        // Ajout : Retourne 'true' si l'element est nouveau, 'false' s'il existe deja
+        bool isAdded1 = activeSessions.Add("Session_ABC"); // true
+        bool isAdded2 = activeSessions.Add("Session_ABC"); // false (ignore)
+        
+        // Recherche performante (O(1))
+        if (activeSessions.Contains("Session_ABC"))
+        {
+            // Traitement
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection{\texttt{SortedList<TKey, TValue>}}
+
+Contrairement à un dictionnaire standard, une \texttt{SortedList<TKey, TValue>} maintient ses éléments triés selon la clé. Elle combine les caractéristiques d'un tableau (accès par index) et d'un dictionnaire (accès par clé). La recherche par clé utilise une recherche dichotomique (\textit{Binary Search}), offrant une complexité de $\mathcal{O}(\log n)$.
+La clé doit implémenter \texttt{IComparable<T>} pour définir l'ordre de tri.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+
+public class SortedListExample
+{
+    public static void Run()
+    {
+        // Tri automatique selon l'ordre naturel des entiers (IComparable<int>)
+        SortedList<int, string> priorities = new SortedList<int, string>();
+        
+        priorities.Add(3, "Basse");
+        priorities.Add(1, "Critique");
+        priorities.Add(2, "Normale");
+        
+        // L'enumeration garantit l'ordre des cles (1, puis 2, puis 3)
+        foreach (KeyValuePair<int, string> item in priorities)
+        {
+            Console.WriteLine($"Priorite : {item.Key} - {item.Value}");
+        }
+    }
+}
+\end{lstlisting}
+
+\vspace{0.5cm}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Pièges et Exceptions Courantes]
+\begin{itemize}
+    \item \textbf{\texttt{InvalidOperationException}} : Levée si vous tentez d'exécuter \texttt{Pop()} ou \texttt{Peek()} sur une \texttt{Stack<T>} vide, ou \texttt{Dequeue()} sur une \texttt{Queue<T>} vide. Il est recommandé de toujours vérifier la propriété \texttt{Count} ou d'utiliser les méthodes sécurisées \texttt{TryPop()} / \texttt{TryDequeue()} disponibles dans les versions modernes de .NET.
+    \item \textbf{Mauvaise implémentation du hachage} : Pour qu'un \texttt{HashSet<T>} fonctionne avec des objets personnalisés (classes), il est impératif de surcharger correctement \texttt{Equals()} et \texttt{GetHashCode()}, sans quoi l'unicité se basera sur l'adresse mémoire (référence) de l'objet et non sur les données de l'instance.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection{Synthèse : Choix de la Collection}
+
+\begin{table}[h]
+\centering
+\renewcommand{\arraystretch}{1.3}
+\begin{tabular}{|l|l|l|}
+\hline
+\textbf{Besoin architectural} & \textbf{Collection privilégiée} & \textbf{Caractéristique dominante} \\ \hline
+Accès aléatoire et ajout à la fin & \texttt{List<T>} & Polyvalence et indexation \\ \hline
+Traitement dans l'ordre d'arrivée & \texttt{Queue<T>} & FIFO, Buffer asynchrone \\ \hline
+Annulation ou Dépilement & \texttt{Stack<T>} & LIFO, Call Stack \\ \hline
+Unicité absolue et recherche fulgurante & \texttt{HashSet<T>} & Hachage en $\mathcal{O}(1)$ \\ \hline
+Recherche rapide clé/valeur & \texttt{Dictionary<TKey, TValue>} & Hachage en $\mathcal{O}(1)$ \\ \hline
+Tri permanent par clé & \texttt{SortedList<TKey, TValue>} & Recherche binaire en $\mathcal{O}(\log n)$ \\ \hline
+\end{tabular}
+\caption{Guide de sélection des collections C\# génériques}
+\end{table}

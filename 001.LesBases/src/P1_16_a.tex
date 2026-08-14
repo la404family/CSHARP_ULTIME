@@ -1,0 +1,121 @@
+\section{LINQ (Language Integrated Query)}
+
+LINQ (Language Integrated Query) est une fonctionnalité majeure du framework .NET qui intègre des capacités de requêtage de données directement dans la syntaxe C\#. Qu'il s'agisse de collections en mémoire, de bases de données SQL ou de documents XML, LINQ offre une interface unifiée, fortement typée et vérifiée à la compilation pour interroger et manipuler les données de manière déclarative.
+
+\subsection{\texttt{IEnumerable<T>} et l'exécution différée (Deferred Execution)}
+
+Le cœur de LINQ repose sur l'interface \texttt{IEnumerable<T>}. La caractéristique la plus critique de LINQ en ingénierie logicielle est son mécanisme d'\textbf{exécution différée} (\textit{Deferred Execution}). 
+Lorsqu'une requête LINQ est construite, elle n'est \textbf{pas exécutée immédiatement}. La requête est uniquement stockée en mémoire en tant qu'arbre d'expressions ou graphe d'itérateurs. L'exécution réelle sur les données source ne se produit que lorsque la collection est énumérée (par exemple via une boucle \texttt{foreach}, ou lors de l'appel à une méthode de matérialisation comme \texttt{ToList()}).
+
+\paragraph{Cas d'usage :} Construction dynamique et modulaire de requêtes complexes (ajout de filtres selon des conditions métier) sans coût processeur immédiat, et pagination optimisée côté base de données.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class DeferredExecutionExample
+{
+    public static void Run()
+    {
+        List<int> numbers = new List<int> { 1, 2, 3 };
+        
+        // La requete est definie mais PAS executee.
+        IEnumerable<int> query = numbers.Where(n => n > 1);
+        
+        // Modification de la source APRES la definition de la requete.
+        numbers.Add(4);
+        
+        // L'execution a lieu ici, au moment de l'enumeration. 
+        // Le resultat inclura donc la valeur '4'.
+        foreach (int num in query)
+        {
+            Console.WriteLine(num); // Affiche : 2, 3, 4
+        }
+    }
+}
+\end{lstlisting}
+
+\subsection{Syntaxe de méthode (Method Syntax)}
+
+La syntaxe de méthode repose sur les méthodes d'extension appliquées à \texttt{IEnumerable<T>} et couplées aux expressions lambda. C'est l'approche la plus courante dans le code C\# moderne car elle est compacte et facilement chaînable (\textit{Fluent API}).
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class MethodSyntaxExample
+{
+    public static void Run(List<Product> catalog)
+    {
+        // Chainage de methodes d'extension LINQ
+        var expensiveItems = catalog
+            .Where(p => p.Price > 1000)          // Filtrage (O(N))
+            .OrderByDescending(p => p.Price)     // Tri decroissant (O(N log N))
+            .Select(p => new { p.Name, p.Price })// Projection via Type Anonyme
+            .ToList();                           // Materialisation (Execution immediate)
+    }
+}
+\end{lstlisting}
+
+\subsection{Syntaxe de requête (Query Syntax)}
+
+La syntaxe de requête ressemble structurellement au langage SQL. En coulisse, elle est traduite par le compilateur C\# en appels de méthodes (syntaxe de méthode). Bien que plus verbeuse pour des requêtes simples, elle devient nettement plus lisible et maintenable lors de la réalisation de jointures complexes (\texttt{join}) ou de regroupements imbriqués.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class QuerySyntaxExample
+{
+    public static void Run(List<Product> catalog)
+    {
+        // Syntaxe declarative d'inspiration SQL
+        var expensiveItemsQuery = 
+            from p in catalog
+            where p.Price > 1000
+            orderby p.Price descending
+            select new { p.Name, p.Price };
+            
+        var results = expensiveItemsQuery.ToList();
+    }
+}
+\end{lstlisting}
+
+\subsection{Regroupements et Agrégations}
+
+LINQ permet d'effectuer des opérations mathématiques et des regroupements de données complexes. \textbf{Attention} : les méthodes d'agrégation déclenchent obligatoirement une exécution immédiate de la requête, puisqu'elles doivent traverser la collection pour calculer et retourner une valeur scalaire définitive.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+using System.Collections.Generic;
+using System.Linq;
+
+public class AggregationExample
+{
+    public static void Run(List<Product> catalog)
+    {
+        // Agregations immediates
+        int totalProducts = catalog.Count();
+        decimal averagePrice = catalog.Average(p => p.Price);
+        decimal maxPrice = catalog.Max(p => p.Price);
+        decimal totalInventoryValue = catalog.Sum(p => p.Price * p.Stock);
+
+        // Le regroupement (GroupBy) retourne un IEnumerable de IGrouping<TKey, TElement>
+        var productsByCategory = catalog.GroupBy(p => p.Category);
+        
+        foreach (var group in productsByCategory)
+        {
+            Console.WriteLine($"Categorie : {group.Key} ({group.Count()} articles)");
+        }
+    }
+}
+\end{lstlisting}
+
+\vspace{0.5cm}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Piège de performance : Les énumérations multiples]
+Puisque les requêtes LINQ (\texttt{IEnumerable<T>}) bénéficient d'une exécution différée, parcourir plusieurs fois la même instance de requête déclenche le recalcul complet des données à chaque itération. Si la source de données implique une requête SQL distante (via Entity Framework) ou une dé-sérialisation complexe, \textbf{l'énumération multiple provoque de très lourdes dégradations de performances} (multiplication des requêtes réseau). Pour pallier ce problème architectural, il est impératif de \textit{matérialiser} la requête en mémoire locale une seule fois (en invoquant \texttt{.ToList()} ou \texttt{.ToArray()}) avant d'effectuer des itérations répétées ou de multiples agrégations.
+\end{tcolorbox}

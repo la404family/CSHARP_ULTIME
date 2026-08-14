@@ -1,0 +1,158 @@
+\section{Delegates, lambdas, événements et méthodes d'extension}
+
+En C\#, les méthodes peuvent être traitées comme des entités de première classe (\textit{First-Class Citizens}). Cela signifie qu'il est possible de stocker une référence vers une méthode dans une variable, de la passer en paramètre ou de la retourner depuis une autre méthode. Cette capacité est le fondement de la programmation fonctionnelle et événementielle en .NET.
+
+\subsection{Les Delegates : Pointeurs de méthodes orientés objet}
+
+Un \texttt{delegate} (délégué) est un type qui définit la signature précise d'une méthode (son type de retour et ses paramètres). Il agit comme un pointeur de fonction \textit{type-safe}.
+
+\paragraph{Cas d'usage :} Découplage de la logique d'exécution (ex: injecter un algorithme de tri spécifique, définir une stratégie de journalisation au moment de l'exécution).
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+
+// 1. Declaration du type delegate
+public delegate void LogHandler(string message);
+
+public class Processor
+{
+    public static void Run()
+    {
+        // 2. Instanciation en pointant vers une methode correspondante
+        LogHandler handler = Console.WriteLine;
+        
+        // 3. Invocation
+        handler("Processus demarre.");
+    }
+}
+\end{lstlisting}
+
+\subsection{\texttt{Action} et \texttt{Func} : Delegates génériques prédéfinis}
+
+Pour éviter de déclarer manuellement des \texttt{delegate} personnalisés pour chaque signature, le framework .NET fournit des delegates génériques standards :
+\begin{itemize}
+    \item \textbf{\texttt{Action<T1, T2, \dots>}} : Représente une méthode qui ne retourne rien (\texttt{void}) et accepte jusqu'à 16 paramètres en entrée.
+    \item \textbf{\texttt{Func<T1, T2, \dots, TResult>}} : Représente une méthode qui retourne une valeur de type \texttt{TResult} (qui est toujours le dernier paramètre générique de la signature).
+\end{itemize}
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+
+public class GenericDelegates
+{
+    public static void Run()
+    {
+        // Action : procedure void prenant 1 parametre string
+        Action<string> printInfo = Console.WriteLine;
+        printInfo("Systeme operationnel");
+
+        // Func : fonction prenant un int, et retournant un bool
+        Func<int, bool> isEven = CheckEven;
+        bool result = isEven(4); // true
+    }
+
+    private static bool CheckEven(int number)
+    {
+        return number % 2 == 0;
+    }
+}
+\end{lstlisting}
+
+\subsection{Expressions Lambda (\texttt{=>})}
+
+Les expressions lambda offrent une syntaxe extrêmement concise pour écrire des méthodes anonymes. L'opérateur \texttt{=>} se lit "va vers". Elles sont omniprésentes lorsqu'on manipule \texttt{Action}, \texttt{Func} et le moteur de requêtes LINQ.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+
+public class LambdaExample
+{
+    public static void Run()
+    {
+        // Lambda a un parametre (les parentheses sont optionnelles)
+        Func<int, int> square = x => x * x;
+        
+        // Lambda a plusieurs parametres et un bloc d'instructions
+        Action<string, int> logError = (msg, code) => 
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"[Err {code}] : {msg}");
+            Console.ResetColor();
+        };
+
+        int s = square(5); // 25
+        logError("Erreur de segmentation", 500);
+    }
+}
+\end{lstlisting}
+
+\subsection{Événements (\texttt{event})}
+
+Le mot-clé \texttt{event} est l'implémentation native du patron de conception Observateur (\textit{Publisher/Subscriber}). Il encapsule un delegate (généralement \texttt{EventHandler} ou \texttt{EventHandler<T>}) en restreignant drastiquement son accès : seule la classe qui déclare l'événement est autorisée à le déclencher (\textit{Invoke}), les autres classes ne peuvent que s'y abonner (\texttt{+=}) ou s'en désabonner (\texttt{-=}).
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+
+public class Server
+{
+    // Declaration de l'evenement standard avec des donnees personnalisees (string)
+    public event EventHandler<string>? OnBootSequenceCompleted;
+
+    public void Start()
+    {
+        Console.WriteLine("Demarrage des services...");
+        
+        // Declenchement (Invoke) de l'evenement de maniere securisee (?.)
+        // 'this' indique que le Server est la source (sender) de l'evenement.
+        OnBootSequenceCompleted?.Invoke(this, "Port 80 ouvert");
+    }
+}
+
+public class AdminConsole
+{
+    public void Monitor(Server srv)
+    {
+        // Abonnement a l'evenement via une expression lambda
+        srv.OnBootSequenceCompleted += (sender, message) => 
+        {
+            Console.WriteLine($"Notification recue du serveur : {message}");
+        };
+    }
+}
+\end{lstlisting}
+
+\subsection{Méthodes d'extension}
+
+Les méthodes d'extension permettent d'ajouter de nouvelles méthodes à un type existant sans modifier son code source ni utiliser l'héritage. Elles doivent impérativement être définies comme des méthodes \texttt{static} à l'intérieur d'une classe \texttt{static}. Le premier paramètre de la méthode est précédé du mot-clé \texttt{this}, indiquant le type étendu.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System;
+
+// Classe obligatoirement statique
+public static class StringExtensions
+{
+    // 'this' indique le type que l'on etend (ici 'string')
+    public static string ToTitleCase(this string input)
+    {
+        if (string.IsNullOrEmpty(input)) return input;
+        return char.ToUpper(input[0]) + input.Substring(1).ToLower();
+    }
+}
+
+public class ExtensionExample
+{
+    public static void Run()
+    {
+        string raw = "mOtDePaSsE";
+        
+        // Appel naturel, comme si ToTitleCase etait native a la classe string
+        string formatted = raw.ToTitleCase(); // "Motdepasse"
+    }
+}
+\end{lstlisting}
+
+\vspace{0.5cm}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Piège architectural : Les fuites mémoire (Memory Leaks)]
+Une erreur extrêmement courante en ingénierie C\# concerne les fuites mémoire provoquées par des événements non désabonnés. Si un objet A s'abonne à un événement d'un objet B (via \texttt{B.Event += A.Method}), B conserve techniquement une référence forte vers A. Si A n'est plus utile mais que l'abonnement n'a pas été explicitement résilié via l'opérateur \texttt{-=}, le \textit{Garbage Collector} (ramasse-miettes) considérera que A est toujours "en vie" et ne pourra pas libérer la mémoire allouée, tant que B existera. Il est vital de prévoir un désabonnement (souvent dans la méthode \texttt{Dispose}) lors du cycle de vie des composants à forte volatilité.
+\end{tcolorbox}
