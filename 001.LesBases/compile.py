@@ -216,7 +216,7 @@ def clean_temp_files():
 
 def main():
     parser = argparse.ArgumentParser(description="Compilateur et assembleur de cours LaTeX (001.LesBases).")
-    parser.add_argument("--compile", action="store_true", help="Compile le fichier LesBases.tex en PDF.")
+    parser.add_argument("--no-compile", action="store_true", help="Ne compile pas le fichier en PDF.")
     parser.add_argument("--compiler", default="xelatex", choices=["xelatex", "pdflatex", "lualatex"], help="Moteur LaTeX à utiliser (par défaut : xelatex).")
     parser.add_argument("--clean", action="store_true", help="Nettoie les fichiers temporaires après assemblage.")
     
@@ -229,7 +229,7 @@ def main():
         
     generate_master_tex(tex_files)
     
-    if args.compile:
+    if not args.no_compile:
         compile_pdf(compiler=args.compiler)
         
     if args.clean:
