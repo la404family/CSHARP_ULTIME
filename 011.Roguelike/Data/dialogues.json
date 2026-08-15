@@ -1,0 +1,53 @@
+{
+  "AgentDescriptions": {
+    "Josiane": [
+      "Il faut que vous alliez voir la dame en tailleur Magenta... C'est dans la première salle en entrant.",
+      "Le prochain formulaire ? C'est une certaine J... Josiane ou Jacqueline, je ne sais plus. En tout cas, c'est la première salle.",
+      "Le prochain document ? Je crois que c'est pour une certaine J... ou peut-être B. Bonne chance pour la trouver, moi je prends ma pause.",
+      "C'est le bureau de Josiane. On la repère de loin avec ses vêtements Magenta criards.",
+      "Il vous faut la signature d'une femme dont le nom commence par J. Elle est vers l'entrée du bâtiment."
+    ],
+    "Bernadette": [
+      "Votre dossier doit passer par le bureau Vert. C'est Bernadette, dans la deuxième salle.",
+      "Allez voir la dame en tailleur émeraude. Son nom m'échappe... un truc qui commence par B, dans la deuxième salle.",
+      "Il faut voir l'agent B... ou peut-être G. Je n'ai aucune idée d'où elle est, ne me posez plus de questions.",
+      "Il faut trouver l'agent B. Elle est habillée tout en Vert, dans la deuxième salle.",
+      "Cherchez un bureau vert, pas très loin de l'entrée. C'est pour une certaine Bernadette."
+    ],
+    "Gertrude": [
+      "Vous devez trouver le bureau en cul-de-sac. C'est pour G... Gertrude.",
+      "Allez voir Gertrude. Elle est dans la seule salle avec une seule issue, habillée en Cyan.",
+      "C'est un dossier pour G... Débrouillez-vous avec ça, ça ne relève pas de mes compétences.",
+      "Il me semble que c'est la dame en Cyan. Allez la déranger dans son cul-de-sac.",
+      "Cherchez un tailleur couleur Cyan. C'est un bureau où on ne fait que passer... ou plutôt d'où on ne peut pas sortir !"
+    ],
+    "Jacqueline": [
+      "Allez voir Jacqueline, elle est tout au fond du bâtiment.",
+      "Le prochain formulaire est visé par une dame en J... Jacqueline ou Josiane. Elle est dans le bureau tout au fond.",
+      "Il vous faut l'accord de J. Je ne sais pas laquelle, il y en a plusieurs de toute façon. Allez la chercher.",
+      "Cherchez la couleur Grise. C'est tout au fond du complexe.",
+      "Allez trouver la femme en J qui est tout au fond. Ne la confondez pas avec l'autre J à l'entrée !"
+    ],
+    "Micheline": [
+      "Le prochain bureau est géré par Micheline. C'est un bureau coincé entre deux autres.",
+      "Trouvez la dame dont le prénom commence par M... ou J. À ce qu'il paraît, son bureau est entre deux autres.",
+      "C'est le tampon de M. Je n'ai pas la moindre idée d'où est son bureau aujourd'hui.",
+      "Allez voir Micheline ! Elle est coincée entre deux autres bureaux.",
+      "Il vous faut le tampon de M. Cherchez un bureau au milieu du couloir."
+    ],
+    "Francine": [
+      "Il vous faut l'Annexe de Francine. C'est la personne vêtue de Jaune.",
+      "Allez trouver la dame en Jaune... F... Francine, je crois. Elle adore les paperasses en triple exemplaire.",
+      "Le prochain guichet est tenu par Francine. Cherchez une lueur Jaune dans un recoin.",
+      "Il vous manque une annexe. Voyez avec F., la dame en Jaune. Bon courage.",
+      "C'est au tour de Francine de vous humilier. Repérez son tailleur Jaune."
+    ],
+    "Huguette": [
+      "Seule Huguette en Rouge peut valider cette étape.",
+      "Cherchez la dame habillée tout en Rouge, c'est H... Huguette. Elle demande des trucs impossibles.",
+      "Allez voir la couleur Rouge, c'est Huguette. Ne la fixez pas trop longtemps dans les yeux.",
+      "Il manque la signature de H., la préposée en Rouge.",
+      "Passez voir Huguette. Vous la reconnaîtrez à son horrible gilet Rouge."
+    ]
+  }
+}

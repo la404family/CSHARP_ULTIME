@@ -37,7 +37,7 @@
 | `008` | **Gestionnaire d'Employés (POO Avancée)** — Héritage, interfaces et principes SOLID pour calculer des salaires. | Héritage, `interface`, polymorphisme, SOLID, `IDisposable`, `record` |
 | `009` | **Structures de données & Algorithmes** — Implémenter Stack, Queue, Dictionary, HashSet, et algorithmes de tri/recherche. | Structures de données, tri fusion, recherche dichotomique, `Stopwatch` |
 | `010` | **Téléchargements simultanés (Async)** — Simuler des téléchargements de fichiers en parallèle. | `async/await`, `Task.WhenAll`, `CancellationToken`, `IDisposable`, `using` |
-| `011` | 🔴 **Gestionnaire de tâches avancé (Fil rouge Console)** — Application console complète avec priorités, dépendances entre tâches, et persistance JSON. Reprise et enrichissement sur plusieurs sessions. | POO complète, LINQ avancé, sérialisation JSON, architecture en couches, refactoring |
+| `011.Roguelike` | 🔴 **RPG (Fil rouge Console)** — Jeu console multi-fenêtré (deux vraies consoles synchronisées pour écran 1920x1080), système de combat, inventaire et sauvegarde JSON. | POO complète, APIs système (Win32), IPC (Communication inter-processus), LINQ avancé, sérialisation JSON, architecture |
 
 ---
 
