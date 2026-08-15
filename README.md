@@ -71,6 +71,20 @@ Le contenu théorique est rédigé en **LaTeX** sous la forme d'un livre complet
 
 ---
 
+## 🌟 Projets phares (Fil rouge)
+
+La formation est rythmée par plusieurs projets "fil rouge" qui simulent l'expérience réelle d'un développeur en entreprise. Ces projets reprennent et synthétisent toutes les notions vues précédemment.
+
+### 🔴 The Legend of Kevin : La Quête du Cerfa A-38
+
+Un jeu de rôle Rogue-like procédural et bureaucratique développé entièrement en Console C#. C'est le projet majeur de la première phase !
+
+![Aperçu de The Legend of Kevin](./assets/images/roguelike.png)
+
+👉 **[Voir les détails du projet Roguelike](./011.Roguelike/README.md)**
+
+---
+
 ## 📁 Fichiers du projet
 
 | Fichier | Description |

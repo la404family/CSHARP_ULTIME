@@ -1,0 +1,106 @@
+\section{Entrées/Sorties, Fichiers et Sérialisation}
+
+La manipulation de données persistantes et la communication inter-systèmes reposent intrinsèquement sur la gestion des flux d'entrées/sorties (I/O). En C\#, l'espace de noms \texttt{System.IO} fournit les abstractions nécessaires pour interagir avec le système de fichiers, tandis que \texttt{System.Text.Json} est le moteur standard pour la sérialisation des données.
+
+\subsection{Manipulation de fichiers avec \texttt{System.IO}}
+
+Le langage propose plusieurs approches pour lire ou écrire des fichiers, allant des méthodes utilitaires de haut niveau (classe statique \texttt{File}) jusqu'à la manipulation granulaire de flux de données via les classes \texttt{StreamReader} et \texttt{StreamWriter}.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System.IO;
+
+public async Task ProcessFileAsync(string filePath)
+{
+    // 1. Approche de haut niveau : Charge tout le fichier en memoire
+    // A utiliser uniquement pour des petits fichiers (quelques Mo maximum)
+    string fullContent = await File.ReadAllTextAsync(filePath);
+    await File.WriteAllTextAsync("backup.txt", fullContent);
+
+    // 2. Approche granulaire : Lecture ligne par ligne (Streaming)
+    // Permet de traiter des fichiers de plusieurs Go sans surcharger la RAM
+    using var reader = new StreamReader(filePath);
+    using var writer = new StreamWriter("output.txt", append: true);
+    
+    string? line;
+    while ((line = await reader.ReadLineAsync()) != null)
+    {
+        if (line.Contains("ERROR"))
+        {
+            await writer.WriteLineAsync($"[LOG] {line}");
+        }
+    }
+} // <- reader.Dispose() et writer.Dispose() sont appeles ici automatiquement
+\end{lstlisting}
+\textit{Explication : La classe statique \texttt{File} est idéale pour des scripts ou de petits fichiers, mais charge l'intégralité des octets en mémoire (Heap). L'utilisation de flux (\texttt{StreamReader}) permet une lecture en mémoire tampon (buffering), traitant les données morceau par morceau.}
+
+\subsection{Sérialisation JSON avec \texttt{System.Text.Json}}
+
+La sérialisation est le processus algorithmique de conversion d'un graphe d'objets en mémoire vers un format textuel ou binaire structuré (ici JSON), souvent dans le but de le stocker ou de le transmettre via un réseau. L'espace de noms \texttt{System.Text.Json} est natif, alloue très peu de mémoire et offre des performances optimales.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System.Text.Json;
+
+public record ServerConfig(string Host, int Port, bool UseSsl);
+
+public void DemonstrateSerialization()
+{
+    var config = new ServerConfig("api.example.com", 443, true);
+
+    // Options de configuration pour le formateur JSON
+    var options = new JsonSerializerOptions 
+    { 
+        WriteIndented = true, // Formatage "pretty-print"
+        PropertyNameCaseInsensitive = true
+    };
+
+    // Serialisation (Objet -> JSON)
+    string jsonString = JsonSerializer.Serialize(config, options);
+    File.WriteAllText("config.json", jsonString);
+
+    // Deserialisation (JSON -> Objet)
+    string readJson = File.ReadAllText("config.json");
+    ServerConfig? loadedConfig = JsonSerializer.Deserialize<ServerConfig>(readJson, options);
+}
+\end{lstlisting}
+\textit{Explication : \texttt{JsonSerializer} repose sur la réflexion au moment de l'exécution, ou sur des générateurs de code source à la compilation, pour mapper les propriétés de la classe avec les clés JSON. Les types immuables modernes (\texttt{record}) sont parfaitement supportés pour la désérialisation.}
+
+\subsection{Mesure de performance avec \texttt{Stopwatch}}
+
+En ingénierie, il est souvent nécessaire de profiler des portions de code pour évaluer l'impact temporel des opérations d'I/O ou des algorithmes complexes. La classe \texttt{Stopwatch} (dans \texttt{System.Diagnostics}) exploite le compteur de haute résolution du système d'exploitation pour fournir des mesures de temps précises.
+
+\begin{lstlisting}[language={[Sharp]C}]
+using System.Diagnostics;
+
+public void ProfileOperation()
+{
+    // Initialisation et demarrage immediat du chronometre
+    Stopwatch sw = Stopwatch.StartNew();
+
+    // Simulation d'une operation lourde (ex: deserialisation d'un gros JSON)
+    DoHeavyWork(); 
+
+    sw.Stop();
+
+    // Acces aux mesures avec differents niveaux de precision
+    Console.WriteLine($"Temps ecoule : {sw.ElapsedMilliseconds} ms");
+    Console.WriteLine($"Temps precis : {sw.Elapsed.TotalSeconds} secondes");
+    Console.WriteLine($"Cycles d'horloge (Ticks) : {sw.ElapsedTicks}");
+}
+\end{lstlisting}
+\textit{Explication : Contrairement à l'approche naïve consistant à soustraire deux objets \texttt{DateTime.Now}, \texttt{Stopwatch} s'appuie sur le \textit{QueryPerformanceCounter} de Windows (ou son équivalent Unix), garantissant une très grande précision non affectée par les synchronisations réseau de l'horloge système.}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Pièges courants \& Erreurs d'exécution]
+\begin{itemize}
+    \item \textbf{Fichiers verrouillés} : Oublier de déclarer un \texttt{StreamReader} ou \texttt{StreamWriter} dans un bloc \texttt{using} gardera le \textit{handle} du fichier ouvert au niveau du système d'exploitation. Toute tentative ultérieure de lire ou supprimer le fichier par un autre processus lèvera une \texttt{IOException} (\textit{Le processus ne peut pas accéder au fichier car il est en cours d'utilisation}).
+    \item \textbf{\texttt{File.ReadAllText} sur des fichiers géants} : Charger un fichier de log de 2 Go avec cette méthode unitaire lèvera une \texttt{OutOfMemoryException}. Toujours utiliser un \texttt{Stream} pour les fichiers dont on ne maîtrise pas la taille limite.
+    \item \textbf{Sensibilité à la casse en JSON} : Par défaut, la désérialisation de \texttt{System.Text.Json} est strictement sensible à la casse. Si votre JSON contient \texttt{"port": 80} et votre classe possède la propriété \texttt{public int Port \{ get; set; \}}, la valeur sera silencieusement ignorée (restera à 0) à moins de définir l'option \texttt{PropertyNameCaseInsensitive = true}.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection*{Synthèse : À retenir}
+\begin{itemize}
+    \item L'espace de noms \texttt{System.IO} nécessite une gestion rigoureuse des ressources non gérées via le mot-clé \texttt{using}.
+    \item Favorisez le traitement par flux (\texttt{Stream}) pour la manipulation de fichiers volumineux afin de minimiser l'empreinte mémoire (\textit{Memory Footprint}).
+    \item \texttt{System.Text.Json} est le standard moderne, sûr et très performant pour la manipulation JSON dans l'écosystème .NET.
+    \item Utilisez exclusivement \texttt{Stopwatch} pour profiler techniquement et comparer les temps d'exécution réels de vos algorithmes.
+\end{itemize}

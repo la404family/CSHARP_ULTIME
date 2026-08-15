@@ -1,0 +1,128 @@
+\section{Types modernes et Pattern Matching}
+
+Depuis C\# 8.0, le langage a introduit de nombreuses fonctionnalités visant à réduire la verbosité du code, à améliorer la sécurité à la compilation (notamment concernant les références nulles) et à encourager l'immuabilité des données.
+
+\subsection{Types immuables : \texttt{record}, \texttt{init} et l'expression \texttt{with}}
+
+En ingénierie logicielle, l'immuabilité garantit qu'une fois instancié, l'état d'un objet ne peut plus être modifié. Cela facilite le raisonnement sur le code, particulièrement dans des environnements concurrents. C\# simplifie l'immuabilité avec les accesseurs \texttt{init} et le mot-clé \texttt{record}.
+
+\begin{lstlisting}[language={[Sharp]C}]
+// L'accesseur 'init' permet l'affectation uniquement lors de l'instanciation
+public class Person
+{
+    public string FirstName { get; init; }
+    public string LastName { get; init; }
+}
+
+// Un 'record' est un type de reference concu pour encapsuler des donnees immuables.
+// Il fournit automatiquement l'egalite par valeur, et non par reference.
+public record Point(int X, int Y, int Z);
+
+public void DemonstrateRecords()
+{
+    var p1 = new Point(1, 2, 3);
+    var p2 = new Point(1, 2, 3);
+    
+    // Vrai, car les records sont compares par la valeur de leurs proprietes
+    bool areEqual = (p1 == p2); 
+    
+    // L'expression 'with' permet de cloner un record en modifiant certaines proprietes
+    var p3 = p1 with { Z = 99 };
+}
+\end{lstlisting}
+\textit{Explication : Les records génèrent automatiquement des méthodes utiles comme \texttt{Equals}, \texttt{GetHashCode} et \texttt{ToString}. L'expression \texttt{with} effectue une copie non destructive de l'objet, en instanciant un nouveau record avec les propriétés altérées.}
+
+\subsection{Nullable Reference Types (\texttt{string?})}
+
+Historiquement en C\#, tous les types référence pouvaient contenir \texttt{null}, conduisant à la tristement célèbre \texttt{NullReferenceException} à l'exécution. En activant les \textit{Nullable Reference Types} (désormais actifs par défaut dans les projets modernes), le compilateur modifie cette règle : un type référence normal (\texttt{string}) ne peut plus logiquement être nul. Si le type doit supporter la nullité, il doit être déclaré explicitement avec un point d'interrogation (\texttt{string?}).
+
+\begin{lstlisting}[language={[Sharp]C}]
+// Generalement active au niveau du fichier .csproj via <Nullable>enable</Nullable>
+
+public class UserRepository
+{
+    // Ne peut pas etre null. Le compilateur avertira si on tente d'y assigner null.
+    public string RequiredName { get; set; } = string.Empty;
+
+    // Peut explicitement contenir null.
+    public string? OptionalMiddleName { get; set; }
+    
+    public void ProcessUser()
+    {
+        // Avertissement du compilateur : Dereferencement possible d'une reference null.
+        int length = OptionalMiddleName.Length; 
+        
+        // Correct : Verification prealable
+        if (OptionalMiddleName != null)
+        {
+            int safeLength = OptionalMiddleName.Length; // Plus d'avertissement
+        }
+    }
+}
+\end{lstlisting}
+\textit{Explication : Cette fonctionnalité décale la gestion des erreurs de l'exécution vers la compilation, forçant le développeur à gérer la nullité explicitement via des vérifications de flux (Flow Analysis de l'analyseur statique).}
+
+\subsection{Pattern Matching avancé (Propriétés et Tuples)}
+
+Le Pattern Matching permet d'évaluer la forme, le type et les propriétés d'un objet de manière extrêmement concise, remplaçant avantageusement de longues chaînes de \texttt{if...else}.
+
+\begin{lstlisting}[language={[Sharp]C}]
+public record Address(string Country, string City);
+public record User(string Name, Address UserAddress);
+
+public decimal CalculateShippingCost(User user) => user switch
+{
+    // Property Pattern : Verification profonde des proprietes
+    { UserAddress: { Country: "France", City: "Paris" } } => 5.0m,
+    { UserAddress: { Country: "France" } } => 8.0m,
+    
+    // Declaration de variable lors du match
+    { UserAddress: { Country: var country } } when country == "Belgique" || country == "Suisse" => 15.0m,
+    
+    // Discard pattern (attrape-tout)
+    _ => 25.0m
+};
+
+// Tuple Pattern
+public string GetDirection(int x, int y) => (x, y) switch
+{
+    (0, 0) => "Origine",
+    (var a, var b) when a == b => "Diagonale",
+    (_, > 0) => "Nord",
+    _ => "Autre direction"
+};
+\end{lstlisting}
+\textit{Explication : L'expression \texttt{switch} moderne retourne une valeur. Les motifs (\textit{patterns}) sont évalués de haut en bas. Le tiret bas \texttt{\_} (discard) est utilisé pour capturer tout ce qui n'a pas été intercepté.}
+
+\subsection{La déclaration \texttt{using} moderne}
+
+La libération des ressources non gérées (fichiers, connexions réseau) nécessite l'appel à \texttt{Dispose()}, traditionnellement géré par un bloc \texttt{using \{ ... \}}. Depuis C\# 8.0, la déclaration \texttt{using} s'affranchit des accolades.
+
+\begin{lstlisting}[language={[Sharp]C}]
+public void ReadConfigurationFile(string path)
+{
+    // La ressource sera liberee automatiquement a la fin de la methode.
+    // Plus besoin d'accolades, ce qui evite une indentation excessive.
+    using var reader = new StreamReader(path);
+    
+    string content = reader.ReadToEnd();
+    Console.WriteLine(content);
+} // <- reader.Dispose() est appele implicitement ici
+\end{lstlisting}
+\textit{Explication : La portée (scope) de la ressource est liée à la portée du bloc englobant (ici, la fin de la méthode). C'est syntaxiquement plus propre et réduit le niveau d'indentation du code.}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Pièges courants \& Erreurs de compilation]
+\begin{itemize}
+    \item \textbf{Mauvaise utilisation de \texttt{with}} : L'expression \texttt{with} sur un \texttt{record} retourne une \textbf{nouvelle instance}. Elle ne modifie pas l'objet d'origine. Écrire \texttt{user with \{ Name = "Bob" \};} sans assigner le résultat à une variable ne sert à rien.
+    \item \textbf{Ignorer les avertissements de Nullability} : Bien qu'ils ne bloquent pas toujours techniquement la compilation, ignorer les avertissements des \textit{Nullable Reference Types} détruit l'intérêt sécuritaire de la fonctionnalité.
+    \item \textbf{Ordre du Pattern Matching} : L'expression \texttt{switch} évalue les cas dans l'ordre de déclaration. Placer un cas trop générique (ou le discard \texttt{\_}) au-dessus de cas spécifiques provoquera une erreur de compilation (\textit{Unreachable code}).
+\end{itemize}
+\end{tcolorbox}
+
+\subsection*{Synthèse : À retenir}
+\begin{itemize}
+    \item Utilisez les \texttt{record} pour les objets de transfert de données (DTO) où l'égalité par valeur et l'immuabilité sont souhaitées.
+    \item Utilisez l'accesseur \texttt{init} pour garantir que les propriétés ne sont mutées que lors de l'instanciation de l'objet, sécurisant son intégrité.
+    \item Les expressions \texttt{switch} associées aux \textit{Property/Tuple Patterns} réduisent significativement la complexité cyclomatique du code logique.
+    \item La nouvelle syntaxe \texttt{using var} sans accolades rend le code de manipulation de flux plus plat et plus lisible.
+\end{itemize}

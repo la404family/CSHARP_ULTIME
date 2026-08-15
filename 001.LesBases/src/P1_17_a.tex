@@ -1,0 +1,97 @@
+\section{Programmation asynchrone}
+
+La programmation asynchrone est un paradigme fondamental en ingénierie logicielle moderne, permettant d'exécuter des opérations non bloquantes, particulièrement celles liées aux entrées/sorties (I/O) ou aux appels réseau. 
+
+\subsection{Pourquoi l'asynchronisme ? (Ne pas bloquer le thread principal)}
+
+Lorsqu'une application exécute une opération longue (comme une requête HTTP, la lecture d'un fichier volumineux ou une requête en base de données) de manière synchrone, le thread en cours d'exécution est mis en pause (bloqué) jusqu'à ce que l'opération se termine. 
+\begin{itemize}
+    \item \textbf{Côté client (UI)} : Un thread principal bloqué entraîne le gel de l'interface graphique (l'application ne répond plus aux événements).
+    \item \textbf{Côté serveur (ASP.NET Core)} : Un thread bloqué consomme inutilement les ressources du Thread Pool, ce qui réduit drastiquement la capacité du serveur à traiter des requêtes concurrentes (phénomène de \textit{Thread Starvation}).
+\end{itemize}
+
+L'asynchronisme permet de libérer le thread appelant pendant l'attente du résultat. Le système d'exploitation signale la fin de l'opération matérielle (I/O completion port), et l'exécution reprend sur un thread disponible.
+
+\subsection{Les mots-clés \texttt{async} et \texttt{await}}
+
+En C\#, le modèle asynchrone (TAP : Task-based Asynchronous Pattern) s'articule principalement autour de deux mots-clés :
+\begin{itemize}
+    \item \texttt{async} : Modificateur placé sur la signature d'une méthode pour indiquer au compilateur qu'elle contient des opérations asynchrones. Il permet l'utilisation du mot-clé \texttt{await} à l'intérieur du corps de la méthode.
+    \item \texttt{await} : Opérateur appliqué à une tâche. Il suspend l'exécution de la méthode englobante jusqu'à ce que la tâche asynchrone soit terminée, tout en retournant le contrôle à l'appelant de la méthode.
+\end{itemize}
+
+\begin{lstlisting}[language={[Sharp]C}]
+public async Task ProcessDataAsync()
+{
+    Console.WriteLine("Début du traitement...");
+
+    // L'exécution est suspendue ici, mais le thread appelant est libéré.
+    // L'opération simule un travail I/O de 2 secondes.
+    await Task.Delay(2000); 
+
+    // Cette ligne s'exécute une fois le délai écoulé (continuation).
+    Console.WriteLine("Traitement terminé.");
+}
+\end{lstlisting}
+\textit{Explication : Lors de l'évaluation de \texttt{await Task.Delay(2000)}, une machine à états (State Machine) est générée par le compilateur C\#. La méthode retourne immédiatement un objet \texttt{Task} non résolu à son appelant, et la suite de la méthode est enregistrée comme une continuation.}
+
+\subsection{Les types \texttt{Task} et \texttt{Task<T>}}
+
+Une méthode marquée comme \texttt{async} doit généralement retourner un objet représentant l'état de l'opération asynchrone :
+\begin{itemize}
+    \item \texttt{Task} : Représente une opération asynchrone qui ne retourne pas de valeur (l'équivalent asynchrone de \texttt{void}).
+    \item \texttt{Task<T>} : Représente une opération asynchrone qui, à terme, retournera une valeur de type \texttt{T}.
+\end{itemize}
+
+\begin{lstlisting}[language={[Sharp]C}]
+public async Task<string> FetchUserDataAsync(int userId)
+{
+    using var httpClient = new HttpClient();
+    
+    // Le mot-clé await déballe le type Task<string> pour extraire le string
+    string jsonResult = await httpClient.GetStringAsync($"https://api.example.com/users/{userId}");
+    
+    // La valeur est automatiquement enveloppée dans une Task<string> au retour
+    return jsonResult; 
+}
+\end{lstlisting}
+\textit{Explication : Bien que la méthode retourne un \texttt{string} dans son corps, la signature indique \texttt{Task<string>}. Le compilateur gère l'encapsulation du résultat lors de la résolution de la tâche.}
+
+\subsection{Parallélisme avec \texttt{Task.WhenAll}}
+
+Il est souvent nécessaire d'exécuter plusieurs opérations asynchrones indépendantes en même temps plutôt que séquentiellement. \texttt{Task.WhenAll} permet d'attendre la complétion d'un ensemble de tâches concurrentes.
+
+\begin{lstlisting}[language={[Sharp]C}]
+public async Task DownloadMultipleFilesAsync()
+{
+    var httpClient = new HttpClient();
+
+    // 1. Démarrer les tâches asynchrones SANS utiliser await immédiatement
+    Task<string> task1 = httpClient.GetStringAsync("https://api.example.com/data1");
+    Task<string> task2 = httpClient.GetStringAsync("https://api.example.com/data2");
+    Task<string> task3 = httpClient.GetStringAsync("https://api.example.com/data3");
+
+    // 2. Les requêtes HTTP sont maintenant en cours simultanément
+    
+    // 3. Attendre que TOUTES les tâches soient terminées
+    string[] results = await Task.WhenAll(task1, task2, task3);
+
+    Console.WriteLine($"Fichiers téléchargés : {results.Length}");
+}
+\end{lstlisting}
+\textit{Explication : Contrairement à l'attente séquentielle (où \texttt{await} est placé devant chaque appel réseau, bloquant le démarrage du suivant), l'instanciation des tâches lance les opérations. \texttt{Task.WhenAll} crée une nouvelle tâche qui sera résolue lorsque la dernière tâche du tableau sera achevée, optimisant considérablement le temps total d'exécution.}
+
+\begin{tcolorbox}[colback=red!5!white,colframe=red!75!black,title=Pièges courants \& Erreurs de compilation]
+\begin{itemize}
+    \item \textbf{L'utilisation de \texttt{async void}} : À proscrire, sauf pour les gestionnaires d'événements (Event Handlers). Une méthode \texttt{async void} ne peut pas être attendue (pas de \texttt{await}), et toute exception levée à l'intérieur fera planter l'application entière car elle ne peut pas être attrapée par l'appelant. Utilisez toujours \texttt{Task} au lieu de \texttt{void}.
+    \item \textbf{Blocage synchrone sur code asynchrone (\textit{Deadlocks})} : Appeler \texttt{.Result} ou \texttt{.Wait()} sur une tâche dans un contexte de synchronisation (comme en WPF ou ASP.NET classique) peut provoquer un interblocage sévère (Deadlock). Toujours utiliser \texttt{await} de bout en bout ("\textit{async all the way}").
+    \item \textbf{Oublier le mot-clé \texttt{await}} : Si vous appelez une méthode retournant une \texttt{Task} sans utiliser \texttt{await}, l'exécution se poursuivra immédiatement et la tâche tournera en arrière-plan (Fire-and-Forget non contrôlé), ce qui entraîne souvent des exceptions silencieuses et des états incohérents.
+\end{itemize}
+\end{tcolorbox}
+
+\subsection*{Synthèse : À retenir}
+\begin{itemize}
+    \item \textbf{I/O bound vs CPU bound} : L'asynchronisme (\texttt{async/await}) est conçu pour libérer le thread lors d'attentes (I/O, réseau, base de données). Il ne sert pas à accélérer un calcul mathématique lourd (pour cela, utilisez le multithreading via \texttt{Task.Run}).
+    \item La règle d'or est la contamination positive : si une méthode dépend d'une opération asynchrone, elle doit devenir asynchrone à son tour (\textit{Async all the way}).
+    \item Utilisez \texttt{Task.WhenAll} pour exécuter et attendre des requêtes asynchrones indépendantes en parallèle, ce qui maximise le débit.
+\end{itemize}
