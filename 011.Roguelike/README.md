@@ -36,6 +36,37 @@ Les deux fenêtres s'ouvrent, se calculent et se positionnent automatiquement en
 - **Rendu Optimisé Console** : Utilisation de `Console.SetCursorPosition` et de `Console.ForegroundColor` pour dessiner sans scintillement.
 - **Logique Algorithmique (Quêtes)** : Séquence de quête générée aléatoirement, avec un système d'indices trompeurs tirés au sort.
 
+## 📂 Architecture du Projet
+
+Voici comment les dossiers et fichiers sont articulés dans le projet :
+
+```text
+📁 011.Roguelike
+├── 📁 Data            # Fichiers de configuration JSON et niveaux
+│   ├── LevelLoader.cs # Charge les niveaux en mémoire
+│   ├── 📁 Levels      # Contient les cartes sous forme de grilles JSON
+│   ├── dialogues.json # Textes et règles des dialogues avec les agents
+│   ├── excuses.json   # Base d'excuses absurdes (pour les mauvaises interactions)
+│   └── intro.json     # Textes d'introduction
+├── 📁 Engine          # Moteur du jeu et de la logique métier
+│   ├── GameManager.cs # Machine à états (State Machine), gère la boucle de jeu et la synchro IPC
+│   ├── InputHandler.cs# Gestion des entrées clavier et des formulaires
+│   └── QuestManager.cs# Génération procédurale de la séquence d'agents et indices
+├── 📁 Models          # Classes de données (POCOs)
+│   ├── Agent.cs       
+│   ├── Entity.cs      
+│   ├── GameState.cs   # L'état global du jeu partagé entre la Map et l'UI
+│   ├── LevelData.cs   
+│   ├── Player.cs      
+│   └── Position.cs    
+├── 📁 UI              # Gestion de l'affichage Console
+│   ├── Renderer.cs    # Moteur de rendu optimisé pour la console
+│   └── WindowManager.cs# Appels natifs Win32 (user32.dll) pour gérer les deux fenêtres
+├── Program.cs         # Point d'entrée (args: "map" ou "ui")
+├── GAME_LOGIC.md      # Règles complètes du gameplay et mécaniques (Boss de fin, indices)
+└── README.md          # Ce fichier
+```
+
 ## 🚀 Comment Jouer
 
 1. Compilez le projet (`dotnet build`).

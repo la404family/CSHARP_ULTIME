@@ -75,6 +75,5 @@ Le contenu théorique est rédigé en **LaTeX** sous la forme d'un livre complet
 
 | Fichier | Description |
 |---|---|
-| [`README.md`](./README.md) | Présentation et objectifs de la formation |
 | [`PROJECTS.md`](./PROJECTS.md) | Liste des 72 projets pratiques organisés en 10 phases |
 | [`PROMPT.md`](./PROMPT.md) | Instructions système pour le formateur IA |
